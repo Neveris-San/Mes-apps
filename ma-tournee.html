@@ -67,8 +67,8 @@
     <button onclick="showBureauScreen()" style="background:var(--bg);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🏢 Changer bureau</button>
     <button onclick="confirmResetLivraisons()" style="background:var(--bg);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🔄 Réinitialiser</button>
     <div style="position:fixed;bottom:60px;right:8px;font-size:9px;color:var(--muted);opacity:0.5;pointer-events:none;z-index:1">build 24/06/2026 23:29</div>
-    <button onclick="showBackupInfo()" style="padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
-    <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
+    <button onclick="showBackupInfo()" style="display:none;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
+    <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
     <div onclick="toggleDarkMode()" style="display:flex;align-items:center;gap:8px;cursor:pointer">
       <div id="dark-track" style="width:36px;height:20px;border-radius:10px;background:var(--border);position:relative;transition:background 0.2s;flex-shrink:0"><div style="position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left 0.2s"></div></div>
       <span id="dark-label" style="font-size:12px;color:var(--muted)">Mode sombre</span>
@@ -217,6 +217,16 @@
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b2f00" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
     <div style="color:#3b2f00;flex:1"><div style="font-size:15px;font-weight:700">Outils</div></div>
+    <!-- Menu caché : backup GPS + purge -->
+    <div style="position:relative">
+      <button onclick="toggleToolsMenu()" id="tools-menu-btn" style="background:rgba(59,47,0,0.12);border:none;color:#3b2f00;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b2f00" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+      </button>
+      <div id="tools-menu-dropdown" style="display:none;position:absolute;top:42px;right:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.15);min-width:180px;z-index:999;overflow:hidden">
+        <button onclick="showBackupInfo();toggleToolsMenu()" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
+        <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();toggleToolsMenu();}" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;font-size:13px;font-weight:600;color:var(--red);cursor:pointer">🗑 Purger le cache</button>
+      </div>
+    </div>
   </div>
   <div style="display:flex;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0">
     <button class="tools-tab active" id="tab-btn-clients" onclick="switchToolsTab('clients')" style="flex:1;padding:10px 6px;font-size:11px;font-weight:600;color:var(--accent);border:none;background:none;cursor:pointer;border-bottom:2px solid var(--accent)">👥 Clients</button>
@@ -1300,7 +1310,19 @@ var isCurr=curr&&s.key===curr.key;var bg=s.done?'#bbb':(isCurr?'#0d2a6e':'#1a4fa
   var sz2=isCurr?34:22;
   var lbl2=s.done?'✓':(i+1);
   m.setIcon(L.divIcon({className:'nsmi',html:'<div style="width:'+sz2+'px;height:'+sz2+'px;border-radius:50%;background:'+bg+';border:'+(isCurr?'3':'2')+'px solid #fff;display:flex;align-items:center;justify-content:center;font-size:'+(isCurr?12:9)+'px;font-weight:700;color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.4)">'+lbl2+'</div>',iconSize:[sz2,sz2],iconAnchor:[sz2/2,sz2/2]}));
-}});};function showBackupInfo(){
+}});};function toggleToolsMenu(){
+  var d=document.getElementById('tools-menu-dropdown');
+  if(d) d.style.display=d.style.display==='none'?'block':'none';
+}
+/* Fermer le menu si on clique ailleurs */
+document.addEventListener('click',function(e){
+  var btn=document.getElementById('tools-menu-btn');
+  var dd=document.getElementById('tools-menu-dropdown');
+  if(dd&&btn&&!btn.contains(e.target)&&!dd.contains(e.target)){
+    dd.style.display='none';
+  }
+});
+function showBackupInfo(){
   var info=getBackupInfo();
   if(!info){showToast('Aucun backup GPS disponible');return;}
   var date=new Date(info.date).toLocaleString('fr-FR');
