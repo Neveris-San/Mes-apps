@@ -2141,6 +2141,9 @@ html+='</div>';
 if(!isGroupHeader){
 html+='<div class="aes-section"><div class="aes-section-label">Destinataire'+(balIdx>0?' — BAL '+(balIdx+1):'')+'</div>';html+='<div class="aes-field"><div class="aes-field-label">Nom / Prénom</div>';html+='<input class="aes-input'+(bal.nom?' filled':'')+'\" id="aes-nom" value="'+escHtml(bal.nom)+'" placeholder="Ex: DUPONT Jean"></div>';html+='<div class="aes-field"><div class="aes-field-label">Nom d\'entreprise</div>';html+='<input class="aes-input'+(bal.entreprise?' filled':'')+'\" id="aes-entr" value="'+escHtml(bal.entreprise)+'" placeholder="Ex: SARL Dupont..."></div>';html+='<div class="aes-field"><div class="aes-field-label">Numéro de téléphone</div>';html+='<input class="aes-input'+(bal.tel?' filled':'')+'\" id="aes-tel" type="tel" value="'+escHtml(bal.tel)+'" placeholder="Ex: 06 12 34 56 78"></div>';
 html+='</div>';
+if(balIdx>0){
+  html+='<button type="button" onclick="removeBoiteFromView('+a.ordre+','+(balIdx-1)+')" style="width:100%;padding:10px;border-radius:10px;border:1.5px solid #d43030;background:#fff0f0;color:#d43030;font-size:13px;font-weight:700;cursor:pointer;margin-top:4px">🗑 Supprimer cette BAL</button>';
+}
 } else {
 html+='<div style="padding:10px 4px;font-size:12px;color:var(--muted)">Pour modifier le nom d\'un destinataire, ouvrez le groupe et modifiez la BAL correspondante.</div>';
 }
@@ -2195,6 +2198,20 @@ function removeBoite(ordre,boiteIdx){
   renderEditList();
   showToast('BAL supprimée ✓');
   openAesPanel(aesCurrentOrdre,aesCurrentBalIdx);
+}
+function removeBoiteFromView(ordre,boiteIdx){
+  var t=getTourneeData(editScreenCode);
+  var a=t.adresses.find(function(x){return x.ordre===ordre;});
+  if(!a||!a.boites||!a.boites[boiteIdx])return;
+  if(!confirm('Supprimer cette BAL ?'))return;
+  a.boites.splice(boiteIdx,1);
+  a.nbBal=1+a.boites.length;
+  if(!a._edited)a._edited={};
+  a._edited.boites=true;
+  saveTourneeData();
+  renderEditList();
+  showToast('BAL supprimée ✓');
+  closeAesPanel(null);
 }
 function setSplitHere(ordre){
   var t=getTourneeData(editScreenCode);
