@@ -2152,6 +2152,15 @@ if(isMainBal){
   /* Séparation Partie A / Partie B */
   var curSplit=t.splitOrdre;
   var isSplitHere=curSplit===a.ordre;
+  /* Gestion des BAL (nombre de boîtes aux lettres) */
+  html+='<div class="aes-section"><div class="aes-section-label">Boîtes aux lettres ('+(1+(a.boites?a.boites.length:0))+')</div>';
+  html+='<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="width:24px;height:24px;border-radius:50%;background:#6278a0;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">1</div><div style="flex:1;font-size:13px;color:var(--text)">BAL principale'+(a.nom?' — '+escHtml(a.nom):'')+'</div></div>';
+  (a.boites||[]).forEach(function(b,bi){
+    var label=b.nom||b.entreprise||b.complement||('BAL '+(bi+2));
+    html+='<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="width:24px;height:24px;border-radius:50%;background:#6278a0;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">'+(bi+2)+'</div><div style="flex:1;font-size:13px;color:var(--text)">'+escHtml(label)+'</div><button type="button" onclick="removeBoite('+a.ordre+','+bi+')" style="background:#fff0f0;border:1px solid #d43030;color:#d43030;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0">Supprimer</button></div>';
+  });
+  html+='<button type="button" onclick="addBoite('+a.ordre+')" style="width:100%;margin-top:10px;padding:9px;border-radius:10px;border:1.5px dashed var(--accent);background:none;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer">+ Ajouter une BAL</button>';
+  html+='</div>';
   html+='<div class="aes-section"><div class="aes-section-label">Découpage tournée</div>';
   html+='<div style="font-size:12px;color:var(--muted);margin-bottom:8px">Définit où se termine la Partie A (le reste devient la Partie B). Arrêt actuel : #'+a.ordre+(curSplit?(' · Fin de Partie A actuellement définie à l\'arrêt #'+curSplit):' · Aucune séparation définie')+'</div>';
   html+='<button type="button" onclick="setSplitHere('+a.ordre+')" style="width:100%;padding:11px;border-radius:10px;border:1.5px solid '+(isSplitHere?'#0d8a4f':'var(--accent)')+';background:'+(isSplitHere?'#e6f7ee':'var(--accent-light)')+';color:'+(isSplitHere?'#0d8a4f':'var(--accent)')+';font-size:13px;font-weight:700;cursor:pointer">'+(isSplitHere?'✓ Fin de Partie A ici':'📍 Marquer fin de Partie A ici')+'</button>';
@@ -2159,6 +2168,34 @@ if(isMainBal){
   html+='</div>';
 }
 document.getElementById('aes-body').innerHTML=html;var ao=document.getElementById('aes-overlay');ao.style.display='flex';ao.classList.add('open');}
+function addBoite(ordre){
+  var t=getTourneeData(editScreenCode);
+  var a=t.adresses.find(function(x){return x.ordre===ordre;});
+  if(!a)return;
+  if(!a.boites)a.boites=[];
+  a.boites.push({nom:'',complement:'',lieu_dit:'',entreprise:'',tel:'',nom_entreprise:''});
+  a.nbBal=1+a.boites.length;
+  if(!a._edited)a._edited={};
+  a._edited.boites=true;
+  saveTourneeData();
+  renderEditList();
+  showToast('BAL ajoutée ✓');
+  openAesPanel(aesCurrentOrdre,aesCurrentBalIdx);
+}
+function removeBoite(ordre,boiteIdx){
+  var t=getTourneeData(editScreenCode);
+  var a=t.adresses.find(function(x){return x.ordre===ordre;});
+  if(!a||!a.boites||!a.boites[boiteIdx])return;
+  if(!confirm('Supprimer cette BAL ?'))return;
+  a.boites.splice(boiteIdx,1);
+  a.nbBal=1+a.boites.length;
+  if(!a._edited)a._edited={};
+  a._edited.boites=true;
+  saveTourneeData();
+  renderEditList();
+  showToast('BAL supprimée ✓');
+  openAesPanel(aesCurrentOrdre,aesCurrentBalIdx);
+}
 function setSplitHere(ordre){
   var t=getTourneeData(editScreenCode);
   t.splitOrdre=ordre;
