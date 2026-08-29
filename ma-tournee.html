@@ -66,7 +66,7 @@
   <div style="padding:10px 14px;border-top:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;padding-bottom:max(10px,env(safe-area-inset-bottom))">
     <button onclick="showBureauScreen()" style="background:var(--bg);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🏢 Changer bureau</button>
     <button onclick="confirmResetLivraisons()" style="background:var(--bg);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🔄 Réinitialiser</button>
-    <div style="position:fixed;bottom:60px;right:8px;font-size:9px;color:var(--muted);opacity:0.5;pointer-events:none;z-index:1">build 28/08/2026 16:44</div>
+    <div style="position:fixed;bottom:60px;right:8px;font-size:9px;color:var(--muted);opacity:0.5;pointer-events:none;z-index:1">build 29/08/2026 22:02</div>
     <button onclick="showBackupInfo()" style="display:none;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
     <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
     <div onclick="toggleDarkMode()" style="display:flex;align-items:center;gap:8px;cursor:pointer">
@@ -331,10 +331,18 @@
         <div id="nav-current-name" style="font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">—</div>
         <div id="nav-current-addr" style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">—</div>
       </div>
+      <button id="nav-info-btn" onclick="toggleNavPanel()" style="background:var(--accent-light);border:none;color:var(--accent);border-radius:8px;width:34px;height:34px;font-size:15px;font-weight:700;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center">ⓘ</button>
+      <a id="nav-quickcall-btn" href="tel:" style="display:none;background:var(--green);border:none;color:#fff;border-radius:8px;width:34px;height:34px;flex-shrink:0;align-items:center;justify-content:center;text-decoration:none">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.07 12 19.79 19.79 0 0 1 1 3.18 2 2 0 0 1 3 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21 15z"/></svg>
+      </a>
       <button id="nav-done-btn" onclick="markNavStopDone(navCurrentStop||navGetFirstPending())" style="background:var(--green);border:none;color:#fff;border-radius:8px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0">✓</button>
     </div>
     <!-- Zone étendue : tél + note -->
     <div id="nav-panel-extra" style="display:none;padding:0 14px 12px;border-top:1px solid var(--border);margin-top:4px">
+      <div id="nav-extra-identity" style="display:none;padding:10px 0;border-bottom:1px solid var(--border)">
+        <div id="nav-extra-nom" style="font-size:14px;font-weight:700;color:var(--text)"></div>
+        <div id="nav-extra-entr" style="font-size:12px;color:var(--muted);margin-top:2px"></div>
+      </div>
       <div id="nav-extra-tel" style="display:none;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.07 12 19.79 19.79 0 0 1 1 3.18 2 2 0 0 1 3 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21 15z"/></svg>
         <span id="nav-tel-text" style="flex:1;font-size:14px;color:var(--text);font-weight:600"></span>
@@ -2262,7 +2270,7 @@ function closePinMap(saved){var spm=document.getElementById('screen-pinmap');spm
 var navMapInstance=null,navUserMarker=null,navStopMarkers={},navCurrentStop=null,navStops=[];var navFollowGPS=true,navWatchId=null,navListVisible=false,stopMeta={};var navStartTime=null,navChronoInterval=null;var navRouteLayer=null;function navGetCurrentStop(){if(navCurrentStop)return navStops.find(function(s){return s.key===navCurrentStop&&!s.done})||null;return navStops.find(function(s){return!s.done})||null;}
 function navGetFirstPending(){var s=navGetCurrentStop();return s?s.key:null;}
 function toggleAdresseDone(ordre,forceValue){if(!currentTourneeCode)return false;var t=getTourneeData(currentTourneeCode);var a=t.adresses.find(function(x){return x.ordre===ordre;});if(!a)return false;var keys=buildBalList(a).map(function(b){return a.ordre+'-'+b.balIdx;});var nextValue=forceValue;if(nextValue===undefined)nextValue=!keys.every(function(k){return!!t.done[k];});keys.forEach(function(k){if(nextValue)t.done[k]=true;else delete t.done[k];});saveTourneeData();updateHomeCards();return nextValue;}
-function openNavScreen(){var ebb=document.getElementById('edit-bottom-bar');if(ebb)ebb.style.display='none';var t=getTourneeData(currentTourneeCode);navStops=[];t.adresses.forEach(function(a){var allBals=buildBalList(a);var sel=allBals.filter(function(b){return!!selectedStops[a.ordre+'-'+b.balIdx];});if(!sel.length)return;var aggTypes={courrier:false,colis:false,recommande:false};sel.forEach(function(b){var tp=stopTypes[a.ordre+'-'+b.balIdx]||{};if(tp.courrier)aggTypes.courrier=true;if(tp.colis)aggTypes.colis=true;if(tp.recommande)aggTypes.recommande=true;});navStops.push({key:String(a.ordre),ordre:a.ordre,num:a.num,rue:a.rue,nom:a.complement||a.nom||a.entreprise||((a.num?a.num+' ':'')+a.rue),complement:a.complement||'',cp_ville:a.cp_ville||'',tel:a.tel||'',note:a.note||'',lat:a.lat||null,lng:a.lng||null,types:aggTypes,done:allBals.every(function(b){return!!t.done[a.ordre+'-'+b.balIdx];})});});if(!navStops.length){showToast('Sélectionnez au moins un arrêt');return;}
+function openNavScreen(){var ebb=document.getElementById('edit-bottom-bar');if(ebb)ebb.style.display='none';var t=getTourneeData(currentTourneeCode);navStops=[];t.adresses.forEach(function(a){var allBals=buildBalList(a);var sel=allBals.filter(function(b){return!!selectedStops[a.ordre+'-'+b.balIdx];});if(!sel.length)return;var aggTypes={courrier:false,colis:false,recommande:false};sel.forEach(function(b){var tp=stopTypes[a.ordre+'-'+b.balIdx]||{};if(tp.courrier)aggTypes.courrier=true;if(tp.colis)aggTypes.colis=true;if(tp.recommande)aggTypes.recommande=true;});navStops.push({key:String(a.ordre),ordre:a.ordre,num:a.num,rue:a.rue,nom:a.complement||a.nom||a.entreprise||((a.num?a.num+' ':'')+a.rue),clientNom:a.nom||'',entreprise:a.entreprise||'',lieu_dit:a.lieu_dit||'',complement:a.complement||'',cp_ville:a.cp_ville||'',tel:a.tel||'',note:a.note||'',lat:a.lat||null,lng:a.lng||null,types:aggTypes,done:allBals.every(function(b){return!!t.done[a.ordre+'-'+b.balIdx];})});});if(!navStops.length){showToast('Sélectionnez au moins un arrêt');return;}
 navCurrentStop=null;navFollowGPS=true;navListVisible=false;var sn=document.getElementById('screen-nav');sn.style.display='flex';var ov=document.getElementById('nav-overview');if(ov)ov.style.display='flex';var cp=document.getElementById('nav-compact-panel');if(cp)cp.style.display='none';renderNavOverview();setTimeout(function(){if(!navMapInstance){navMapInstance=L.map('nav-map',{zoomControl:false,attributionControl:false,dragging:false,touchZoom:false,scrollWheelZoom:false,doubleClickZoom:false,boxZoom:false,keyboard:false});navMapInstance.setView([43.5297,5.4474],14);L.control.zoom({position:'bottomright'}).addTo(navMapInstance);setTileLayer('nav','plan');navMapInstance.on('dragstart',function(){setNavFollow(false);});}
 navMapInstance.invalidateSize();initNavMap();var pts=navStops.filter(function(s){return s.lat&&s.lng;});if(pts.length>0){var bounds=L.latLngBounds(pts.map(function(s){return[s.lat,s.lng];}));navMapInstance.fitBounds(bounds,{padding:[50,50],maxZoom:15,animate:false});}},300);}
 function openNavScreen2(){openNavScreen();}
@@ -2322,30 +2330,46 @@ function toggleNavPanel(){
   }
 }
 function renderNavCompact(){var curr=navGetCurrentStop(),pending=navStops.filter(function(s){return!s.done;}),done=navStops.length-pending.length,pct=navStops.length?Math.round(done/navStops.length*100):0;var fill=document.getElementById('nav-progress-fill');if(fill)fill.style.width=pct+'%';var ctr=document.getElementById('nav-counter-text');if(ctr)ctr.textContent=done+' / '+navStops.length+' arrêt'+(navStops.length>1?'s':'');if(!curr){document.getElementById('nav-current-name').textContent='✓ Tournée terminée !';document.getElementById('nav-current-addr').textContent=done+' arrêts livrés';document.getElementById('nav-current-badge').textContent='✓';document.getElementById('nav-done-btn').style.display='none';document.getElementById('nav-next-stop').style.display='none';return;}
-var idx=navStops.findIndex(function(s){return s.key===curr.key});document.getElementById('nav-current-badge').textContent=idx+1;document.getElementById('nav-done-btn').style.display='flex';var name=curr.nom||(curr.num?curr.num+' ':'')+curr.rue;var addr=(curr.num?curr.num+' ':'')+curr.rue+(curr.complement?' — '+curr.complement:'')+(curr.cp_ville?' · '+curr.cp_ville:'');document.getElementById('nav-current-name').textContent=name;document.getElementById('nav-current-addr').textContent=addr;/* Tél et note dans le panneau étendu */
+var idx=navStops.findIndex(function(s){return s.key===curr.key});document.getElementById('nav-current-badge').textContent=idx+1;document.getElementById('nav-done-btn').style.display='flex';var name=curr.nom||(curr.num?curr.num+' ':'')+curr.rue;var addr=(curr.num?curr.num+' ':'')+curr.rue+(curr.complement?' — '+curr.complement:'')+(curr.cp_ville?' · '+curr.cp_ville:'');document.getElementById('nav-current-name').textContent=name;document.getElementById('nav-current-addr').textContent=addr;/* Identité, tél et note dans le panneau étendu */
+var idEl=document.getElementById('nav-extra-identity');
+var nomTxt=document.getElementById('nav-extra-nom');
+var entrTxt=document.getElementById('nav-extra-entr');
+if((curr.clientNom||curr.entreprise||curr.lieu_dit)&&idEl&&nomTxt&&entrTxt){
+  nomTxt.textContent=curr.clientNom||'(nom non renseigné)';
+  var entrParts=[];
+  if(curr.entreprise)entrParts.push(curr.entreprise);
+  if(curr.lieu_dit)entrParts.push(curr.lieu_dit);
+  entrTxt.textContent=entrParts.join(' · ');
+  entrTxt.style.display=entrParts.length?'block':'none';
+  idEl.style.display='block';
+} else if(idEl){idEl.style.display='none';}
+
 var telEl=document.getElementById('nav-extra-tel');
 var telTxt=document.getElementById('nav-tel-text');
 var telLink=document.getElementById('nav-tel-link');
+var quickCall=document.getElementById('nav-quickcall-btn');
 var noteEl=document.getElementById('nav-extra-note');
 var noteTxt=document.getElementById('nav-note-text');
 if(curr.tel&&telEl&&telTxt&&telLink){
   telTxt.textContent=curr.tel;
   telLink.href='tel:'+curr.tel.replace(/\s/g,'');
   telEl.style.display='flex';
-} else if(telEl){telEl.style.display='none';}
+  if(quickCall){quickCall.href='tel:'+curr.tel.replace(/\s/g,'');quickCall.style.display='flex';}
+} else {
+  if(telEl)telEl.style.display='none';
+  if(quickCall)quickCall.style.display='none';
+}
 if(curr.note&&noteEl&&noteTxt){
   noteTxt.textContent=curr.note;
   noteEl.style.display='block';
 } else if(noteEl){noteEl.style.display='none';}
-/* Ouvrir auto le panneau si note ou tél */
+/* Ouvrir auto le panneau seulement s'il y a un tél ou une note (pas juste le nom, toujours présent) */
 var panel=document.getElementById('nav-compact-panel');
 var extra=document.getElementById('nav-panel-extra');
 if(curr.tel||curr.note){
-  /* Ouvrir auto si infos disponibles */
   if(panel){panel.style.maxHeight='50vh';}
   if(extra){extra.style.display='block';}
 } else {
-  /* Refermer si pas d'infos */
   if(panel){panel.style.maxHeight='15vh';}
   if(extra){extra.style.display='none';}
 }
