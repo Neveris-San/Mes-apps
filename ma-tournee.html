@@ -32,6 +32,33 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
 .modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .card-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px}
 .row-sep{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
+
+/* --- Regles restaurees (supprimees a tort lors du nettoyage precedent) --- */
+.header-title{font-size:15px;font-weight:600}
+.bottom-panel{background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;z-index:1000;max-height:47vh;display:flex;flex-direction:column}
+.tab{flex:0 0 auto;padding:10px 12px;text-align:center;font-size:11px;font-weight:500;color:var(--muted);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;white-space:nowrap}
+.stat{flex:1;text-align:center;padding:7px 4px;border-right:1px solid var(--border)}
+.badge{font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;flex-shrink:0}
+.btn{padding:9px 16px;border-radius:8px;border:none;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;justify-content:center;width:100%}
+.field-label{font-size:12px;font-weight:500;color:var(--muted);margin-bottom:4px}
+.edit-header{padding:10px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.tlist-group{border:1px solid var(--border);border-radius:10px;margin-bottom:6px;overflow:hidden;background:var(--surface)}
+.nsm{border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.3);line-height:1}
+.tlist-bal-item{display:flex;align-items:center;gap:10px;padding:9px 12px 9px 20px;border-bottom:1px solid var(--border);cursor:pointer;background:#fff}
+.pinmap-title{color:#fff;flex:1;min-width:0}
+.sel-check{width:28px;height:28px;min-width:28px;max-width:28px;border-radius:50%;border:2px solid #5a7898;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;box-sizing:border-box}
+.tlist-bottom-panel{position:absolute;bottom:0;left:0;right:0;z-index:200;background:var(--surface);border-radius:16px 16px 0 0;box-shadow:0 -4px 20px rgba(0,0,0,0.12);display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}
+.nav-show-all{font-size:11px;color:var(--accent);font-weight:600;cursor:pointer}
+.nav-all-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;margin-bottom:3px;cursor:pointer}
+.map-layer-btn{position:absolute;top:10px;left:58px;z-index:600;background:#1a4fa8;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.35);display:flex;align-items:center;gap:5px;letter-spacing:0.02em}
+.type-sheet{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:540px;padding:0 0 env(safe-area-inset-bottom)}
+.tlist-bottom-panel,#edit-bottom-panel,.nav-compact-panel,.tools-map-panel,.addr-detail-sheet,.addr-edit-sheet,.new-addr-sheet,.type-sheet{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 4px)}
+.tlist-item,.tlist-group-header{padding:13px 16px}
+.tournee-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:border-color 0.15s,background 0.15s}
+.tournee-code{font-size:15px;font-weight:700;color:var(--text)}
+.tlist-title{color:#fff;flex:1;min-width:0}
+.sort-btn{padding:7px 11px;font-size:11px;font-weight:600;border:none;background:var(--bg);color:var(--muted);cursor:pointer;white-space:nowrap}
+.tlist-item{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;margin-bottom:6px;border:1px solid var(--border);background:var(--surface);cursor:pointer}
 </style>
 </head>
 <body>
@@ -119,7 +146,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
         <button onclick="setTheme('sun')" id="theme-btn-sun" style="flex:1;padding:9px 4px;border:none;border-left:1px solid var(--border);background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🔆 Plein soleil</button>
       </div>
     </div>
-    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 30/08/2026 21:10</div>
+    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 30/08/2026 21:23</div>
   </div>
 </div>
 
