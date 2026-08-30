@@ -81,7 +81,7 @@
   <div style="padding:10px 14px;border-top:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;padding-bottom:max(10px,env(safe-area-inset-bottom))">
     <button onclick="showBureauScreen()" style="background:var(--bg);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🏢 Changer bureau</button>
     <button onclick="confirmResetLivraisons()" style="background:var(--bg);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🔄 Réinitialiser</button>
-    <div style="position:fixed;bottom:60px;right:8px;font-size:9px;color:var(--muted);opacity:0.5;pointer-events:none;z-index:1">build 30/08/2026 15:37</div>
+    <div style="position:fixed;bottom:60px;right:8px;font-size:9px;color:var(--muted);opacity:0.5;pointer-events:none;z-index:1">build 30/08/2026 16:47</div>
     <button onclick="showBackupInfo()" style="display:none;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
     <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
     <div onclick="toggleDarkMode()" style="display:flex;align-items:center;gap:8px;cursor:pointer">
@@ -1858,34 +1858,46 @@ function drawToolsRoute(code){
   var t=getTourneeData(code);
   var placed=(t.adresses||[]).filter(function(a){return a.lat&&a.lng;}).sort(function(a,b){return a.ordre-b.ordre;});
   if(placed.length<2)return;
+  try{
   var basePoints=placed.map(function(a){return{lat:a.lat,lng:a.lng,ordre:a.ordre};});
   var fullPoints=injectCustomWaypoints(code,basePoints);
   routeEditLayer=L.layerGroup().addTo(toolsMapInstance);
-  var CHUNK=20,chunks=[];
-  for(var ci=0;ci<fullPoints.length;ci+=CHUNK-1){var sl=fullPoints.slice(ci,ci+CHUNK);if(sl.length>=2)chunks.push(sl);}
   var allCoords=[],polyLine=null;
+  function setLine(coordsLngLat){
+    var ll=coordsLngLat.map(function(c){return[c[1],c[0]];});
+    if(!polyLine){polyLine=L.polyline(ll,{color:'#6b46c1',weight:4,opacity:0.85,lineJoin:'round',lineCap:'round'}).addTo(routeEditLayer);}
+    else{polyLine.setLatLngs(ll);}
+  }
   function appendCoords(coords){
     if(!coords||!coords.length)return;
     var skip=allCoords.length>0?1:0;
     for(var k=skip;k<coords.length;k++)allCoords.push(coords[k]);
-    var ll=allCoords.map(function(c){return[c[1],c[0]];});
-    if(!polyLine){polyLine=L.polyline(ll,{color:'#6b46c1',weight:4,opacity:0.85,lineJoin:'round',lineCap:'round'}).addTo(routeEditLayer);}
-    else{polyLine.setLatLngs(ll);}
+    setLine(allCoords);
   }
+  /* Filet de securite : ligne droite immediate avant meme d'essayer Valhalla */
+  try{setLine(fullPoints.map(function(p){return[Number(p.lng),Number(p.lat)];}));}catch(e0){}
+  var CHUNK=20,chunks=[];
+  for(var ci=0;ci<fullPoints.length;ci+=CHUNK-1){var sl=fullPoints.slice(ci,ci+CHUNK);if(sl.length>=2)chunks.push(sl);}
   function fetchChunk(chunk){
     var payload={locations:chunk.map(function(p){return{lat:Number(p.lat),lon:Number(p.lng),type:'break'};}),costing:'auto',directions_type:'none',units:'kilometers',format:'osrm',shape_format:'geojson'};
     var url='https://valhalla1.openstreetmap.de/route?json='+encodeURIComponent(JSON.stringify(payload));
+    try{
     return fetch(url).then(function(r){return r.json();}).then(function(d){
       if(d&&d.routes&&d.routes[0]&&d.routes[0].geometry&&d.routes[0].geometry.coordinates&&d.routes[0].geometry.coordinates.length)return d.routes[0].geometry.coordinates;
       throw new Error('empty');
     });
+    }catch(eFetch){return Promise.reject(eFetch);}
   }
+  var realRouteStarted=false;
   function processNext(idx){
     if(idx>=chunks.length)return;
-    fetchChunk(chunks[idx]).then(function(coords){appendCoords(coords);processNext(idx+1);})
-      .catch(function(){appendCoords(chunks[idx].map(function(p){return[Number(p.lng),Number(p.lat)];}));processNext(idx+1);});
+    fetchChunk(chunks[idx]).then(function(coords){
+      if(!realRouteStarted){allCoords=[];realRouteStarted=true;}
+      appendCoords(coords);processNext(idx+1);
+    }).catch(function(){processNext(idx+1);});
   }
   processNext(0);
+  }catch(eOuter){console.warn('drawToolsRoute error',eOuter);}
   /* Afficher les marqueurs des points de passage personnalises (draggables) */
   var custom=t.routeWaypoints||[];
   custom.forEach(function(w){
@@ -1904,17 +1916,39 @@ function drawToolsRoute(code){
   });
 }
 function drawOSRMRoute(waypoints,color){
+try{
 if(!waypoints||waypoints.length<2)return;
 if(!navMapInstance)return;
 if(navRouteLayer){try{navRouteLayer.remove();}catch(e){}navRouteLayer=null;}
-var rg=L.layerGroup().addTo(navMapInstance);navRouteLayer=rg;var allCoords=[],polyY=null,polyB=null;function appendCoords(coords){if(!coords||!coords.length)return;var skip=allCoords.length>0?1:0;for(var k=skip;k<coords.length;k++)allCoords.push(coords[k]);var ll=allCoords.map(function(c){return[c[1],c[0]];});if(!polyY){polyY=L.polyline(ll,{color:'#f5c800',weight:8,opacity:0.9,lineJoin:'round',lineCap:'round'}).addTo(rg);polyB=L.polyline(ll,{color:color,weight:4,opacity:0.95,lineJoin:'round',lineCap:'round'}).addTo(rg);}else{polyY.setLatLngs(ll);polyB.setLatLngs(ll);}}
-function drawFallback(){appendCoords(waypoints.map(function(p){return[Number(p.lng),Number(p.lat)];}));}
+var rg=L.layerGroup().addTo(navMapInstance);navRouteLayer=rg;var allCoords=[],polyY=null,polyB=null;
+function setLine(coordsLngLat){
+  var ll=coordsLngLat.map(function(c){return[c[1],c[0]];});
+  if(!polyY){polyY=L.polyline(ll,{color:'#f5c800',weight:8,opacity:0.9,lineJoin:'round',lineCap:'round'}).addTo(rg);polyB=L.polyline(ll,{color:color,weight:4,opacity:0.95,lineJoin:'round',lineCap:'round'}).addTo(rg);}
+  else{polyY.setLatLngs(ll);polyB.setLatLngs(ll);}
+}
+function appendCoords(coords){if(!coords||!coords.length)return;var skip=allCoords.length>0?1:0;for(var k=skip;k<coords.length;k++)allCoords.push(coords[k]);setLine(allCoords);}
+/* Filet de securite : tracer IMMEDIATEMENT une ligne droite entre tous les points,
+   avant meme d'essayer Valhalla. Ainsi il y a toujours un trace visible, meme si
+   le calcul d'itineraire routier echoue pour n'importe quelle raison (reseau, CORS, etc.) */
+try{setLine(waypoints.map(function(p){return[Number(p.lng),Number(p.lat)];}));}catch(e0){}
 var CHUNK=20,chunks=[];for(var ci=0;ci<waypoints.length;ci+=CHUNK-1){var sl=waypoints.slice(ci,ci+CHUNK);if(sl.length>=2)chunks.push(sl);}
-function fetchChunk(chunk){var payload={locations:chunk.map(function(p){return{lat:Number(p.lat),lon:Number(p.lng),type:'break'};}),costing:'auto',directions_type:'none',units:'kilometers',format:'osrm',shape_format:'geojson'};var url='https://valhalla1.openstreetmap.de/route?json='+encodeURIComponent(JSON.stringify(payload));return fetch(url).then(function(r){return r.json();}).then(function(d){if(d&&d.routes&&d.routes[0]&&d.routes[0].geometry&&d.routes[0].geometry.coordinates&&d.routes[0].geometry.coordinates.length)
-return d.routes[0].geometry.coordinates;throw new Error('empty');});}
-function processNext(idx){if(idx>=chunks.length){if(!polyY)drawFallback();return;}
-fetchChunk(chunks[idx]).then(function(coords){appendCoords(coords);processNext(idx+1);}).catch(function(){appendCoords(chunks[idx].map(function(p){return[Number(p.lng),Number(p.lat)];}));processNext(idx+1);});}
-processNext(0);}
+function fetchChunk(chunk){var payload={locations:chunk.map(function(p){return{lat:Number(p.lat),lon:Number(p.lng),type:'break'};}),costing:'auto',directions_type:'none',units:'kilometers',format:'osrm',shape_format:'geojson'};var url='https://valhalla1.openstreetmap.de/route?json='+encodeURIComponent(JSON.stringify(payload));
+try{
+return fetch(url).then(function(r){return r.json();}).then(function(d){if(d&&d.routes&&d.routes[0]&&d.routes[0].geometry&&d.routes[0].geometry.coordinates&&d.routes[0].geometry.coordinates.length)
+return d.routes[0].geometry.coordinates;throw new Error('empty');});
+}catch(eFetch){return Promise.reject(eFetch);}
+}
+/* Une fois qu'au moins un chunk Valhalla reussit, on repart de zero (allCoords vide)
+   pour remplacer la ligne droite par le vrai trace routier */
+var realRouteStarted=false;
+function processNext(idx){if(idx>=chunks.length){return;}
+fetchChunk(chunks[idx]).then(function(coords){
+  if(!realRouteStarted){allCoords=[];realRouteStarted=true;}
+  appendCoords(coords);processNext(idx+1);
+}).catch(function(){processNext(idx+1);});}
+processNext(0);
+}catch(eOuter){console.warn('drawOSRMRoute error',eOuter);}
+}
 var gpsTrackPoints=[],gpsDistanceKm=0;function haversineKm(lat1,lng1,lat2,lng2){var R=6371,dLat=(lat2-lat1)*Math.PI/180,dLng=(lng2-lng1)*Math.PI/180,a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));}
 function resetGpsTracking(){gpsTrackPoints=[];gpsDistanceKm=0;}
 function addGpsTrackPoint(lat,lng){var n=gpsTrackPoints.length;if(n>0){var prev=gpsTrackPoints[n-1],d=haversineKm(prev.lat,prev.lng,lat,lng);if(d<0.5)gpsDistanceKm+=d;}gpsTrackPoints.push({lat:lat,lng:lng});}
