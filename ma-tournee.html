@@ -138,7 +138,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
         <button onclick="setTheme('sun')" id="theme-btn-sun" style="flex:1;padding:9px 4px;border:none;border-left:1px solid var(--border);background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🔆 Plein soleil</button>
       </div>
     </div>
-    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 31/08/2026 16:57</div>
+    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 31/08/2026 21:14</div>
   </div>
 </div>
 
@@ -3475,7 +3475,7 @@ function clearSplit(){
 function saveAesPanel(){if(aesCurrentOrdre===null)return;pushUndo(editScreenCode,'Modification adresse');var t=getTourneeData(editScreenCode);var a=t.adresses.find(function(x){return x.ordre===aesCurrentOrdre});if(!a)return;var nom=document.getElementById('aes-nom')?document.getElementById('aes-nom').value.trim():'';var entr=document.getElementById('aes-entr')?document.getElementById('aes-entr').value.trim():'';var tel=document.getElementById('aes-tel')?document.getElementById('aes-tel').value.trim():'';var num=document.getElementById('aes-num').value.trim();var compl=document.getElementById('aes-complement')?document.getElementById('aes-complement').value.trim():null;var cpville=document.getElementById('aes-cpville')?document.getElementById('aes-cpville').value.trim():null;var rue=document.getElementById('aes-rue')?document.getElementById('aes-rue').value.trim():null;if(aesCurrentBalIdx===-1){if(!a._edited)a._edited={};var noteElG=document.getElementById('aes-note');if(noteElG&&noteElG.value.trim()){addNoteToHistory(a,noteElG.value);a._edited.note=true;a._edited.noteHistory=true;}if(rue){a.rue=rue.toUpperCase();a._edited.rue=true;}a.num=num;a._edited.num=true;if(cpville){a.cp_ville=cpville;a._edited.cp_ville=true;}if(compl!==null){
       var LIEU_PAT_G=/\b(mas|mazet|villa|bastide|hameau|domaine|moulin|ferme|campagne|clos|haras|manoir|château|cabanon|bergerie|pepiniere|earl|scea|manade|ecuries|quartier|chemin|domaine|le |la |les )\b/i;
       if(compl&&LIEU_PAT_G.test(compl)){a.lieu_dit=compl;a._edited.lieu_dit=true;a.complement='';}
-      else{a.complement=compl;a._edited.complement=true;a.lieu_dit='';a._edited.lieu_dit=true;}
+      else{a.complement=compl;a._edited.complement=true;}
     }var parts2=[];if(a.num)parts2.push(a.num);parts2.push(a.rue);if(a.complement)parts2.push(a.complement);if(a.cp_ville)parts2.push(a.cp_ville);a.adresse=parts2.join(', ');}else if(aesCurrentBalIdx===0){if(!a._edited)a._edited={};a.nom=nom;a._edited.nom=true;a.entreprise=entr;a._edited.entreprise=true;a.tel=tel;a._edited.tel=true;var noteEl=document.getElementById('aes-note');if(noteEl&&noteEl.value.trim()){addNoteToHistory(a,noteEl.value);a._edited.note=true;a._edited.noteHistory=true;}a.num=num;a._edited.num=true;if(rue){a.rue=rue.toUpperCase();a._edited.rue=true;}if(cpville){a.cp_ville=cpville;a._edited.cp_ville=true;}if(compl!==null){
       /* Détecter si c'est un lieu-dit (mas, mazet, villa, etc.) */
       var LIEU_PAT=/(mas|mazet|villa|bastide|hameau|domaine|moulin|ferme|campagne|clos|haras|manoir|château|cabanon|bergerie|pepiniere|earl|scea|manade|ecuries|quartier|chemin|domaine|le |la |les )/i;
@@ -3484,7 +3484,7 @@ function saveAesPanel(){if(aesCurrentOrdre===null)return;pushUndo(editScreenCode
         a.complement='';
       } else {
         a.complement=compl;a._edited.complement=true;
-        a.lieu_dit='';
+        /* Ne plus effacer a.lieu_dit ici : perte de donnees silencieuse sinon */
       }
     }
 var parts=[];if(a.num)parts.push(a.num);parts.push(a.rue);if(a.complement)parts.push(a.complement);if(a.cp_ville)parts.push(a.cp_ville);a.adresse=parts.join(', ');}else{var bi=aesCurrentBalIdx-1;if(!a.boites)a.boites=[];if(!a.boites[bi])a.boites[bi]={};a.boites[bi].nom=nom;a.boites[bi].nom_entreprise=entr;a.boites[bi].tel=tel;a.boites[bi]._edited=true;if(!a._edited)a._edited={};a._edited.boites=true;}
@@ -4167,7 +4167,20 @@ SEL(bKey)+'<div style="flex:1;min-width:0">'+
     (bEntr?'<div class="tlist-bal-compl" style="color:'+(LIEU_PAT_B.test(bEntr)?'#c0392b':'#1a6b1a')+'!important;font-weight:700">'+escHtml(bEntr)+'</div>':'')+'</div>'+
   '</div>'+
   renderTypePillsHtml(bKey)+
-'</div>'+'</div>';}).join(''):'';var gLieu=a.lieu_dit||'';var gEntr=a.entreprise||'';
+'</div>'+'</div>';}).join(''):'';/* Agreger le lieu-dit du groupe : d'abord celui de l'adresse principale,
+   sinon regarder dans les BAL (au cas ou seule une BAL a ete renseignee,
+   ou que celui de l'adresse principale a ete efface par erreur) */
+var gLieu=a.lieu_dit||'';
+if(!gLieu){
+  var balLieux=[];
+  allBals.forEach(function(b){
+    var bl=b.lieu_dit||'';
+    if(bl&&balLieux.indexOf(bl)<0)balLieux.push(bl);
+  });
+  if(balLieux.length===1){gLieu=balLieux[0];}
+  else if(balLieux.length>1){gLieu='🏡 '+balLieux.length+' lieux-dits différents';}
+}
+var gEntr=a.entreprise||'';
 var subGrp=[];if(a.cp_ville)subGrp.push(escHtml(a.cp_ville));subGrp.push(nbBal+' BAL');if(doneCount>0)subGrp.push(doneCount+'/'+nbBal+' livrés');
 if(gLieu)subGrp.push('<span style="color:#c0392b!important;font-weight:700">'+escHtml(gLieu)+'</span>');
 if(gEntr)subGrp.push('<span style="color:#1a6b1a!important;font-weight:700">'+escHtml(gEntr)+'</span>');
