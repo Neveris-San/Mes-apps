@@ -102,31 +102,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <button onclick="openToolsScreen()" id="home-btn-tools" style="flex:1;padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🔧 Outils</button>
     </div>
   </div>
-  <!-- ===== SELECTION DE PROFIL ===== -->
-  <div id="profile-select-overlay" style="position:fixed;inset:0;z-index:9999997;background:var(--bg);display:none;flex-direction:column">
-    <div style="flex:1;overflow-y:auto;padding:24px 20px;display:flex;flex-direction:column;align-items:center">
-      <div style="width:56px;height:56px;background:var(--yellow);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:20px 0 16px">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2b2b28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      </div>
-      <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px;text-align:center">Qui es-tu ?</div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:24px;text-align:center" id="profile-select-sub">Pour que chacun puisse travailler sans se gêner</div>
-      <div id="profile-existing-list" style="width:100%;max-width:400px;display:flex;flex-direction:column;gap:8px;margin-bottom:16px"></div>
-      <div style="width:100%;max-width:400px;display:flex;gap:8px">
-        <input id="profile-new-name" type="text" placeholder="Ton prénom…" style="flex:1;padding:12px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:14px">
-        <button onclick="createNewProfile()" style="padding:12px 18px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer;white-space:nowrap">Valider</button>
-      </div>
-    </div>
-  </div>
-  <!-- ===== RECHERCHE GLOBALE ===== -->
-  <div id="global-search-overlay" style="position:fixed;inset:0;z-index:9999998;background:var(--bg);display:none;flex-direction:column">
-    <div style="background:var(--surface);border-bottom:1px solid var(--border);padding:12px 14px;padding-top:max(12px,env(safe-area-inset-top));display:flex;align-items:center;gap:10px;flex-shrink:0">
-      <button onclick="closeGlobalSearch()" style="background:var(--bg);border:1.5px solid var(--border);color:var(--text);border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-      </button>
-      <input id="global-search-input" type="text" placeholder="Rechercher une adresse, un nom, une rue…" oninput="performGlobalSearch(this.value)" style="flex:1;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:14px">
-    </div>
-    <div id="global-search-results" style="flex:1;overflow-y:auto;padding:10px 12px"></div>
-  </div>
+  
   <div style="flex:1;overflow-y:auto;padding:10px 12px;-webkit-overflow-scrolling:touch">
     <div id="resume-nav-banner" onclick="resumeNavigation()" style="display:none;align-items:center;gap:12px;background:#fff3e0;border:1.5px solid #ff9800;border-radius:12px;padding:12px 14px;margin-bottom:10px;cursor:pointer">
       <div style="font-size:22px;flex-shrink:0">⏸️</div>
@@ -162,7 +138,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
         <button onclick="setTheme('sun')" id="theme-btn-sun" style="flex:1;padding:9px 4px;border:none;border-left:1px solid var(--border);background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🔆 Plein soleil</button>
       </div>
     </div>
-    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 31/08/2026 16:42</div>
+    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 31/08/2026 16:57</div>
   </div>
 </div>
 
@@ -340,6 +316,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
         <button onclick="showBackupInfo();toggleToolsMenu()" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
         <button onclick="exportRawData();toggleToolsMenu()" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);cursor:pointer">📤 Exporter mes données</button>
         <button onclick="openProfileSelectScreen(true);toggleToolsMenu()" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);cursor:pointer">👤 Changer de profil<span id="tools-menu-profile-name" style="float:right;color:var(--muted);font-weight:400"></span></button>
+        <button onclick="openProfileManage();toggleToolsMenu()" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);cursor:pointer">🖼️ Gérer les profils</button>
         <button onclick="openBugReportModal();toggleToolsMenu()" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);cursor:pointer">🐛 Signaler un problème</button>
         <button onclick="viewBugReports();toggleToolsMenu()" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);cursor:pointer">📋 Voir mes signalements</button>
         <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();toggleToolsMenu();}" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;font-size:13px;font-weight:600;color:var(--red);cursor:pointer">🗑 Purger le cache</button>
@@ -508,7 +485,46 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<!-- ===== PANNEAU AES (édition adresse) ===== -->
+<!-- ===== GESTION DES PROFILS (photos, renommage) ===== -->
+  <div id="profile-manage-overlay" style="position:fixed;inset:0;z-index:9999998;background:var(--bg);display:none;flex-direction:column">
+    <div style="background:var(--surface);border-bottom:1px solid var(--border);padding:12px 14px;padding-top:max(12px,env(safe-area-inset-top));display:flex;align-items:center;gap:10px;flex-shrink:0">
+      <button onclick="closeProfileManage()" style="background:var(--bg);border:1.5px solid var(--border);color:var(--text);border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div style="font-size:15px;font-weight:700;color:var(--text)">Gérer les profils</div>
+    </div>
+    <div id="profile-manage-list" style="flex:1;overflow-y:auto;padding:14px"></div>
+    <input type="file" accept="image/*" id="profile-photo-input" style="display:none" onchange="handleProfilePhotoSelected(this)">
+  </div>
+  <!-- ===== SELECTION DE PROFIL ===== -->
+  <div id="profile-select-overlay" style="position:fixed;inset:0;z-index:9999997;background:var(--bg);display:none;flex-direction:column">
+    <div style="flex:1;overflow-y:auto;padding:24px 20px;display:flex;flex-direction:column;align-items:center">
+      <div style="width:56px;height:56px;background:var(--yellow);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:20px 0 16px">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2b2b28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px;text-align:center">Qui es-tu ?</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:24px;text-align:center" id="profile-select-sub">Pour que chacun puisse travailler sans se gêner</div>
+      <div id="profile-existing-list" style="width:100%;max-width:400px;display:flex;flex-direction:column;gap:8px;margin-bottom:16px"></div>
+      <div style="width:100%;max-width:400px;display:flex;gap:8px">
+        <input id="profile-new-name" type="text" placeholder="Ton prénom…" style="flex:1;padding:12px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:14px">
+        <button onclick="createNewProfile()" style="padding:12px 18px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer;white-space:nowrap">Valider</button>
+      </div>
+      <button onclick="openProfileManage()" style="margin-top:16px;background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;text-decoration:underline">Gérer les profils (photos, renommer)</button>
+    </div>
+  </div>
+
+  <!-- ===== RECHERCHE GLOBALE ===== -->
+  <div id="global-search-overlay" style="position:fixed;inset:0;z-index:9999998;background:var(--bg);display:none;flex-direction:column">
+    <div style="background:var(--surface);border-bottom:1px solid var(--border);padding:12px 14px;padding-top:max(12px,env(safe-area-inset-top));display:flex;align-items:center;gap:10px;flex-shrink:0">
+      <button onclick="closeGlobalSearch()" style="background:var(--bg);border:1.5px solid var(--border);color:var(--text);border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <input id="global-search-input" type="text" placeholder="Rechercher une adresse, un nom, une rue…" oninput="performGlobalSearch(this.value)" style="flex:1;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:14px">
+    </div>
+    <div id="global-search-results" style="flex:1;overflow-y:auto;padding:10px 12px"></div>
+  </div>
+
+  <!-- ===== PANNEAU AES (édition adresse) ===== -->
 <div id="aes-overlay" onclick="closeAesPanel(event)" style="position:fixed;inset:0;z-index:99100;background:rgba(0,0,0,0.5);display:none;align-items:flex-end">
   <div style="width:100%;background:var(--surface);border-radius:16px 16px 0 0;padding:16px;max-height:85vh;overflow-y:auto">
     <div class="modal-handle"></div>
@@ -2408,20 +2424,39 @@ function openProfileSelectScreen(forceSwitch){
 function renderExistingProfilesList(){
   var list=document.getElementById('profile-existing-list');
   if(!list)return;
-  var profiles=_allBureauProfiles[currentBureau]||[];
+  var profiles=getProfilesForBureau();
   if(!profiles.length){
     list.innerHTML='';
     return;
   }
   list.innerHTML='<div style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:4px">Profils déjà utilisés sur ce bureau</div>'+
-    profiles.map(function(name){
-      return '<button onclick="selectExistingProfile(\''+name.replace(/'/g,"\\'")+'\')" style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;text-align:left">'+
-        '<div style="width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0">'+escHtml(name.charAt(0).toUpperCase())+'</div>'+
-        '<span style="font-size:14px;font-weight:600;color:var(--text)">'+escHtml(name)+'</span>'+
+    profiles.map(function(p){
+      var avatarInner=p.photo
+        ? '<img src="'+p.photo+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">'
+        : escHtml(p.name.charAt(0).toUpperCase());
+      return '<button onclick="selectExistingProfile(\''+p.name.replace(/'/g,"\\'")+'\')" style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;text-align:left">'+
+        '<div style="width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;overflow:hidden">'+avatarInner+'</div>'+
+        '<span style="font-size:14px;font-weight:600;color:var(--text)">'+escHtml(p.name)+'</span>'+
       '</button>';
     }).join('');
 }
 
+function normalizeProfile(p){
+  if(typeof p==='string')return{name:p,photo:null};
+  return{name:p.name||'',photo:p.photo||null};
+}
+function getProfilesForBureau(){
+  var raw=_allBureauProfiles[currentBureau]||[];
+  return raw.map(normalizeProfile);
+}
+function saveProfilesForBureau(list){
+  _allBureauProfiles[currentBureau]=list;
+  if(db){
+    var payload={};
+    payload[currentBureau]=list;
+    db.collection('app_data').doc('profiles').set(payload,{merge:true}).catch(function(){});
+  }
+}
 function selectExistingProfile(name){
   setCurrentProfile(name);
 }
@@ -2444,14 +2479,105 @@ function setCurrentProfile(name){
 }
 
 function addProfileToBureauList(name){
-  if(!_allBureauProfiles[currentBureau])_allBureauProfiles[currentBureau]=[];
-  if(_allBureauProfiles[currentBureau].indexOf(name)<0){
-    _allBureauProfiles[currentBureau].push(name);
+  var list=getProfilesForBureau();
+  if(!list.some(function(p){return p.name===name;})){
+    list.push({name:name,photo:null});
+    saveProfilesForBureau(list);
   }
+}
+/* ===== GESTION DES PROFILS (photos, renommage) ===== */
+var _pendingPhotoProfile=null;
+function openProfileManage(){
+  var overlay=document.getElementById('profile-manage-overlay');
+  if(!overlay)return;
+  var selOverlay=document.getElementById('profile-select-overlay');
+  if(selOverlay)selOverlay.style.display='none';
+  overlay.style.display='flex';
+  renderProfileManageList();
   if(db){
-    var fieldPath=currentBureau+'.'+(_allBureauProfiles[currentBureau].length-1);
-    db.collection('app_data').doc('profiles').set(_allBureauProfiles,{merge:true}).catch(function(){});
+    db.collection('app_data').doc('profiles').get().then(function(doc){
+      if(doc.exists){
+        var data=doc.data();
+        _allBureauProfiles[currentBureau]=data[currentBureau]||[];
+      }
+      renderProfileManageList();
+    }).catch(function(){});
   }
+}
+function closeProfileManage(){
+  var overlay=document.getElementById('profile-manage-overlay');
+  if(overlay)overlay.style.display='none';
+}
+function renderProfileManageList(){
+  var list=document.getElementById('profile-manage-list');
+  if(!list)return;
+  var profiles=getProfilesForBureau();
+  if(!profiles.length){
+    list.innerHTML='<div style="text-align:center;padding:30px 10px;color:var(--muted);font-size:13px">Aucun profil pour l\'instant. Crée-en un depuis l\'écran de sélection.</div>';
+    return;
+  }
+  list.innerHTML=profiles.map(function(p,idx){
+    var avatarInner=p.photo
+      ? '<img src="'+p.photo+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">'
+      : escHtml(p.name.charAt(0).toUpperCase());
+    return '<div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:8px">'+
+      '<div onclick="openProfilePhotoPicker(\''+p.name.replace(/'/g,"\\'")+'\')" style="position:relative;width:48px;height:48px;flex-shrink:0;cursor:pointer">'+
+        '<div style="width:48px;height:48px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;overflow:hidden">'+avatarInner+'</div>'+
+        '<div style="position:absolute;bottom:-2px;right:-2px;width:20px;height:20px;border-radius:50%;background:var(--yellow);border:2px solid var(--surface);display:flex;align-items:center;justify-content:center;font-size:10px">📷</div>'+
+      '</div>'+
+      '<input value="'+escHtml(p.name)+'" onchange="renameProfileTo(\''+p.name.replace(/'/g,"\\'")+'\',this.value)" style="flex:1;padding:8px 10px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;font-weight:600">'+
+      '<button onclick="deleteProfileFromList(\''+p.name.replace(/'/g,"\\'")+'\')" style="background:#fdecea;border:none;color:var(--red);border-radius:8px;padding:8px 10px;font-size:12px;cursor:pointer;flex-shrink:0">✕</button>'+
+    '</div>';
+  }).join('');
+}
+function openProfilePhotoPicker(name){
+  _pendingPhotoProfile=name;
+  var input=document.getElementById('profile-photo-input');
+  if(input)input.click();
+}
+function handleProfilePhotoSelected(input){
+  var file=input.files&&input.files[0];
+  if(!file||!_pendingPhotoProfile)return;
+  input.value='';
+  var reader=new FileReader();
+  reader.onload=function(e){
+    compressImage(e.target.result,300,0.6,function(compressedDataUrl){
+      setProfilePhoto(_pendingPhotoProfile,compressedDataUrl);
+    });
+  };
+  reader.readAsDataURL(file);
+}
+function setProfilePhoto(name,dataUrl){
+  var list=getProfilesForBureau();
+  var entry=list.find(function(p){return p.name===name;});
+  if(!entry)return;
+  entry.photo=dataUrl;
+  saveProfilesForBureau(list);
+  renderProfileManageList();
+  showToast('Photo mise à jour ✓');
+}
+function renameProfileTo(oldName,newName){
+  newName=(newName||'').trim();
+  if(!newName||newName===oldName){renderProfileManageList();return;}
+  var list=getProfilesForBureau();
+  var entry=list.find(function(p){return p.name===oldName;});
+  if(!entry)return;
+  entry.name=newName;
+  saveProfilesForBureau(list);
+  /* Si c'est le profil actif, mettre a jour aussi la reference locale */
+  if(currentProfile&&currentProfile.name===oldName){
+    currentProfile={name:newName};
+    try{localStorage.setItem(getProfileStorageKey(),newName);}catch(e){}
+  }
+  showToast('Profil renommé ✓');
+  renderProfileManageList();
+}
+function deleteProfileFromList(name){
+  if(!confirm('Supprimer le profil "'+name+'" ?'))return;
+  var list=getProfilesForBureau().filter(function(p){return p.name!==name;});
+  saveProfilesForBureau(list);
+  renderProfileManageList();
+  showToast('Profil supprimé');
 }
 
 /* ===== PRESENCE (savoir si quelqu'un d'autre travaille deja sur une tournee) ===== */
