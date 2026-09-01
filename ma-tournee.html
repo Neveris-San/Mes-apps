@@ -146,7 +146,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
         <button onclick="setTheme('sun')" id="theme-btn-sun" style="flex:1;padding:9px 4px;border:none;border-left:1px solid var(--border);background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🔆 Plein soleil</button>
       </div>
     </div>
-    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 01/09/2026 18:49</div>
+    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 01/09/2026 20:16</div>
   </div>
 </div>
 
@@ -338,15 +338,23 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
     <button class="tools-tab" id="tab-btn-infos" onclick="switchToolsTab('infos')" style="flex:1;padding:10px 6px;font-size:11px;font-weight:600;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent">ℹ️ Infos</button>
   </div>
   <div style="flex:1;position:relative;overflow:hidden">
-    <div id="tab-clients" style="position:absolute;inset:0;overflow-y:auto;padding:10px 12px;display:block"></div>
+    <div id="tab-clients" style="position:absolute;inset:0;display:flex;flex-direction:column">
+      <div style="padding:10px 12px 0;flex-shrink:0">
+        <input id="clients-search-input" type="text" placeholder="🔍 Rechercher un client, une adresse…" oninput="renderClientsTab()" style="width:100%;box-sizing:border-box;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:14px">
+      </div>
+      <div id="tab-clients-list" style="flex:1;overflow-y:auto;padding:10px 12px"></div>
+    </div>
     <div id="tab-map-container" style="position:absolute;inset:0;display:none;flex-direction:column">
       <div id="tools-map-bar" style="flex-shrink:0;background:var(--surface);border-bottom:1px solid var(--border);padding:8px 10px">
         <div id="tools-map-buttons" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:4px"></div>
         <div style="display:flex;align-items:center;gap:8px">
           <div id="tools-map-info" style="flex:1;font-size:11px;color:var(--muted)">Appuyez sur une tournée</div>
+          <button onclick="toggleMapLayer('tools')" id="tools-layer-btn" style="flex-shrink:0;padding:5px 10px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">🛰 Satellite</button>
+          <button onclick="toggleCityBoundariesMode()" id="city-mode-btn" style="flex-shrink:0;padding:5px 10px;border-radius:20px;border:1.5px solid #1a7a3a;background:#fff;color:#1a7a3a;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">🗺️ Villes</button>
           <button onclick="toggleRouteEditMode()" id="route-edit-btn" style="flex-shrink:0;padding:5px 10px;border-radius:20px;border:1.5px solid #6b46c1;background:#fff;color:#6b46c1;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">🛣️ Corriger le tracé</button>
         </div>
         <div id="route-edit-banner" style="display:none;margin-top:6px;padding:8px 10px;background:#f3edfd;border-radius:8px;font-size:11px;color:#6b46c1;font-weight:600;text-align:center">Touchez la carte pour ajouter un point de passage</div>
+        <div id="city-chips-bar" style="display:none;margin-top:6px;gap:5px;flex-wrap:wrap"></div>
       </div>
       <div id="tools-map" style="position:relative;height:400px"></div>
       <div id="route-waypoints-list" style="display:none;flex-shrink:0;max-height:140px;overflow-y:auto;background:var(--surface);border-top:1px solid var(--border);padding:8px 10px"></div>
@@ -507,7 +515,12 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
   <!-- ===== SELECTION DE PROFIL ===== -->
   <div id="profile-select-overlay" style="position:fixed;inset:0;z-index:9999997;background:var(--bg);display:none;flex-direction:column">
-    <div style="flex:1;overflow-y:auto;padding:24px 20px;display:flex;flex-direction:column;align-items:center">
+    <div style="padding:12px 14px;padding-top:max(12px,env(safe-area-inset-top));flex-shrink:0">
+      <button id="profile-select-back-btn" onclick="closeProfileSelectScreen()" style="display:none;background:var(--surface);border:1.5px solid var(--border);color:var(--text);border-radius:50%;width:38px;height:38px;align-items:center;justify-content:center;cursor:pointer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:0 20px 24px;display:flex;flex-direction:column;align-items:center">
       <div style="width:56px;height:56px;background:var(--yellow);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:20px 0 16px">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2b2b28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </div>
@@ -2231,12 +2244,24 @@ renderEditList();}
 function resetAndContinue(){if(!currentTourneeCode)return;var t=getTourneeData(currentTourneeCode);t.done={};t.courrierState={};saveTourneeData();navStartTime=null;navStops=[];navCurrentStop=null;selectedStops={};stopTypes={};var sr2=document.getElementById('screen-recap');sr2.classList.remove('open');sr2.style.display='none';finishTournee();}
 function toggleEditStreetGroup(el){var keyEl=el.querySelector('.edit-street-key');if(!keyEl)return;var k=keyEl.textContent;editOpenStreetGroups[k]=!editOpenStreetGroups[k];var parent=el.parentElement;var body=parent.querySelector('[data-editstreetbody]');var arrow=el.querySelector('svg');if(body)body.style.display=editOpenStreetGroups[k]?'block':'none';if(arrow)arrow.style.transform='rotate('+(editOpenStreetGroups[k]?90:0)+'deg)';}
 function toggleEditStreetGroupRun(el,key){editOpenStreetGroups[key]=!editOpenStreetGroups[key];var container=document.getElementById('edit-tlist-items');var body=container.querySelector('[data-streetbody="'+key+'"]');var arrow=el.querySelector('svg');if(body)body.style.display=editOpenStreetGroups[key]?'block':'none';if(arrow)arrow.style.transform='rotate('+(editOpenStreetGroups[key]?90:0)+'deg)';}
-function renderClientsTab(){var container=document.getElementById('tab-clients');if(!container)return;var codes=TOURNEE_CODES.length>0?TOURNEE_CODES:(currentBureau?(BUREAU_TOURNEES[currentBureau]||[]):[]);if(!codes.length){container.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">Ouvrez une tournée pour voir les clients.</div>';return;}
+function renderClientsTab(){var container=document.getElementById('tab-clients-list');if(!container)return;var codes=TOURNEE_CODES.length>0?TOURNEE_CODES:(currentBureau?(BUREAU_TOURNEES[currentBureau]||[]):[]);if(!codes.length){container.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">Ouvrez une tournée pour voir les clients.</div>';return;}
 function isRealClientName(name){var nomClean=(name||'').trim();if(nomClean.length<=1)return false;if(/^\d+$/.test(nomClean)||/^\d/.test(nomClean))return false;var upper=nomClean.toUpperCase().replace(/[ÀÂÄ]/g,'A').replace(/[ÉÈÊË]/g,'E').replace(/[ÎÏ]/g,'I').replace(/[ÔÖ]/g,'O').replace(/[ÙÛÜ]/g,'U').replace(/Ç/g,'C');if(/^(APPARTEMENT|APT|BATIMENT|BAT\b|BAL\b|BOITE\b|BOITE AUX LETTRES|CASIER|LOT|LOCAL|PORTE|ETAGE|ESCALIER|IMMEUBLE)\b/.test(upper))return false;if(/\b(APPARTEMENT|APT|BOITE AUX LETTRES)\b/.test(upper))return false;return true;}
 function splitClientNames(name){return(name||'').split(/\s+-\s+|\s+ET\s+|\s+&\s+|\/|, (?=[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ])/i).map(function(part){return part.trim();}).filter(function(part){return isRealClientName(part);});}
 var clients=[];function hasUpperWord(s){return s.trim().split(/\s+/).some(function(w){return w.length>1&&w===w.toUpperCase()&&/^[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ]/.test(w);});}
 function splitPersons(fullNom){return(fullNom||'').split(/\s+-\s+/).map(function(p){return p.trim();}).filter(function(p){return p.length>1;});}
-codes.forEach(function(code){var t=getTourneeData(code);(t.adresses||[]).forEach(function(a){var addrStr=(a.num?a.num+' ':'')+a.rue;buildBalList(a).forEach(function(b){var nomClient=(b.nom||(b.balIdx===0?a.nom:'')||'').trim();if(!nomClient)return;var telClient=b.tel||(b.balIdx===0?a.tel:'')||'';splitPersons(nomClient).forEach(function(part){clients.push({nom:part,addr:addrStr,cp:a.cp_ville||'',tournee:code,tel:telClient});});});});});var seen={};clients=clients.filter(function(c){var k=c.nom+'|'+c.addr+'|'+c.tournee;if(seen[k])return false;seen[k]=true;return true;});if(!clients.length){container.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">Aucun client renseigné.<br><br>Ajoutez des noms dans le menu Modifier.</div>';return;}
+codes.forEach(function(code){var t=getTourneeData(code);(t.adresses||[]).forEach(function(a){var addrStr=(a.num?a.num+' ':'')+a.rue;buildBalList(a).forEach(function(b){var nomClient=(b.nom||(b.balIdx===0?a.nom:'')||'').trim();if(!nomClient)return;var telClient=b.tel||(b.balIdx===0?a.tel:'')||'';splitPersons(nomClient).forEach(function(part){clients.push({nom:part,addr:addrStr,cp:a.cp_ville||'',tournee:code,tel:telClient});});});});});var seen={};clients=clients.filter(function(c){var k=c.nom+'|'+c.addr+'|'+c.tournee;if(seen[k])return false;seen[k]=true;return true;});
+  var searchEl=document.getElementById('clients-search-input');
+  var searchQ=(searchEl?searchEl.value:'').trim().toLowerCase();
+  if(searchQ){
+    clients=clients.filter(function(c){
+      return c.nom.toLowerCase().indexOf(searchQ)>=0||
+             c.addr.toLowerCase().indexOf(searchQ)>=0||
+             (c.cp&&c.cp.toLowerCase().indexOf(searchQ)>=0)||
+             (c.tel&&c.tel.indexOf(searchQ)>=0)||
+             c.tournee.toLowerCase().indexOf(searchQ)>=0;
+    });
+  }
+  if(!clients.length){container.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">'+(searchQ?'Aucun résultat pour « '+escHtml(searchQ)+' ».':'Aucun client renseigné.<br><br>Ajoutez des noms dans le menu Modifier.')+'</div>';return;}
 clients.sort(function(a,b){var ka=a.nom.split(/[\s,]+/)[0].toUpperCase();var kb=b.nom.split(/[\s,]+/)[0].toUpperCase();return ka.localeCompare(kb,'fr');});var groups={};clients.forEach(function(elt){var letter=elt.nom.trim()[0].toUpperCase();if(!groups[letter])groups[letter]=[];groups[letter].push(elt);});var html='';Object.keys(groups).sort().forEach(function(letter){html+='<div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;padding:8px 4px 4px">'+letter+'</div>';groups[letter].forEach(function(cli){var initials=cli.nom.split(' ').map(function(w){return w[0]||'';}).slice(0,2).join('').toUpperCase();html+='<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;margin-bottom:3px;background:var(--surface);border:1px solid var(--border)">'+'<div style="width:32px;height:32px;border-radius:50%;background:'+getTourneeColor(cli.tournee)+';color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">'+escHtml(initials)+'</div>'+'<div style="flex:1;min-width:0">'+'<div style="font-size:13px;font-weight:600;color:var(--text)">'+escHtml(cli.nom)+'</div>'+'<div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escHtml(cli.addr)+(cli.cp?' · '+escHtml(cli.cp):'')+(cli.tel?' · 📞 '+escHtml(cli.tel):'')+'</div>'+'</div>'+(cli.tel?'<a href="tel:'+cli.tel.replace(/\s/g,'')+'" onclick="event.stopPropagation()" style="width:30px;height:30px;border-radius:50%;background:var(--green-light);color:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0;text-decoration:none"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.07 12 19.79 19.79 0 0 1 1 3.18 2 2 0 0 1 3 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21 15z"/></svg></a>':'')+'<span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:10px;background:var(--accent-light);color:var(--accent);flex-shrink:0">'+cli.tournee+'</span>'+'</div>';});});container.innerHTML=html;}
 /* ===== PARTAGE DE POSITION ===== */
 function shareMyPosition(){
@@ -2432,11 +2457,20 @@ function checkProfileNeeded(){
   openProfileSelectScreen();
 }
 
+function closeProfileSelectScreen(){
+  var overlay=document.getElementById('profile-select-overlay');
+  if(overlay)overlay.style.display='none';
+}
 function openProfileSelectScreen(forceSwitch){
   var overlay=document.getElementById('profile-select-overlay');
   if(!overlay)return;
   var sub=document.getElementById('profile-select-sub');
   if(sub)sub.textContent=forceSwitch?'Changer de profil':'Pour que chacun puisse travailler sans se gêner';
+  /* Le bouton retour n'a de sens que si on change volontairement de profil
+     (il y a deja un profil actif vers lequel revenir) - pas lors de la
+     premiere configuration obligatoire, ou il n'y a rien a "annuler". */
+  var backBtn=document.getElementById('profile-select-back-btn');
+  if(backBtn)backBtn.style.display=(forceSwitch&&currentProfile)?'flex':'none';
   overlay.style.display='flex';
   renderExistingProfilesList();
   /* Charger la liste des profils connus pour ce bureau depuis Firebase */
@@ -3017,9 +3051,153 @@ function renderResumeNavBanner(){
 function showHome(){document.getElementById('screen-home').style.display='flex';updateHomeCards();loadWeather();renderPartieBadge();renderResumeNavBanner();renderSessionBadge();var sub=document.getElementById('home-bureau-sub');if(sub&&currentBureau){var labels={'ARLES':'Arles','CHATEAURENARD':'Châteaurenard','NOVES':'Noves','SAINT-MARTIN-DE-CRAU':'Saint-Martin-de-Crau','SAINT-REMY-DE-PROVENCE':'Saint-Rémy-de-Provence','SALON-DE-PROVENCE':'Salon-de-Provence','SENAS':'Sénas','TARASCON':'Tarascon'};sub.textContent='Bureau de '+(labels[currentBureau]||currentBureau);}}
 /* [code mort supprime: renderInfosTab (premiere declaration, ecrasee plus loin dans le fichier)] */
 var toolsMapInstance=null;var toolsMapLayer=null;var toolsMapActive=null;function initToolsMap(){var container=document.getElementById('tab-map-container');var bar=document.getElementById('tools-map-bar');var mapEl=document.getElementById('tools-map');if(!mapEl)return;var barH=bar?bar.offsetHeight:80;var h=window.innerHeight-120-barH;mapEl.style.height=Math.max(250,h)+'px';var btnWrap=document.getElementById('tools-map-buttons');if(btnWrap&&!btnWrap.hasChildNodes()){var codes=getBureauTournees(currentBureau);btnWrap.innerHTML=codes.map(function(code){var clr=getTourneeColor(code);return'<button data-tmcode="'+code+'" style="padding:5px 10px;border-radius:20px;border:1.5px solid '+clr+';background:#fff;color:'+clr+';font-size:11px;font-weight:700;cursor:pointer">'+code+'</button>';}).join('');btnWrap.onclick=function(e){var b=e.target.closest('[data-tmcode]');if(b)selectToolsMapTournee(b.getAttribute('data-tmcode'));};}
-if(!toolsMapInstance){toolsMapInstance=L.map('tools-map',{zoomControl:true,attributionControl:false,preferCanvas:true});toolsMapInstance.setView(getBureauCenter(),12);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{subdomains:'abc',maxZoom:19,attribution:'© OpenStreetMap'}).addTo(toolsMapInstance);toolsMapLayer=L.layerGroup().addTo(toolsMapInstance);}
+if(!toolsMapInstance){toolsMapInstance=L.map('tools-map',{zoomControl:true,attributionControl:false,preferCanvas:true});toolsMapInstance.setView(getBureauCenter(),12);setTileLayer('tools',mapLayers['tools']||'plan');toolsMapLayer=L.layerGroup().addTo(toolsMapInstance);}
 setTimeout(function(){if(toolsMapInstance)toolsMapInstance.invalidateSize();},100);if(toolsMapActive)setTimeout(function(){selectToolsMapTournee(toolsMapActive);},600);}
-function selectToolsMapTournee(code){toolsMapActive=code;if(!toolsMapInstance){initToolsMap();return;}
+/* ===== FRONTIERES DE VILLES (limites communales, filtrage par ville) ===== */
+var cityBoundaryLayer=null;
+var cityBoundaryCache={}; /* nomVille -> geojson contour, ou null si echec */
+var CITY_PALETTE=['#1a7a3a','#1a4fa8','#c0392b','#c9781f','#6b46c1','#0d8a8a','#a83e6c','#5a7d1f'];
+var cityBoundariesMode=false;
+var activeCityFilter=null;
+
+/* Villes toujours affichees sur la carte, meme sans le moindre point actuellement */
+var ALWAYS_SHOW_CITIES=['Fontvieille','Boulbon','Mas Blanc des Alpilles'];
+function getDistinctCitiesForBureau(){
+  var codes=getBureauTournees(currentBureau);
+  var cities={};
+  ALWAYS_SHOW_CITIES.forEach(function(nom){cities[nom]=0;});
+  codes.forEach(function(code){
+    var t=getTourneeData(code);
+    (t.adresses||[]).forEach(function(a){
+      var cpv=(a.cp_ville||'').trim();
+      if(!cpv)return;
+      /* Format attendu "13150 Tarascon" : extraire le nom apres le code postal */
+      var m=cpv.match(/^\d{4,5}\s+(.+)$/);
+      var nom=m?m[1].trim():cpv;
+      if(nom)cities[nom]=(cities[nom]||0)+1;
+    });
+  });
+  return Object.keys(cities).sort().map(function(nom){return{nom:nom,count:cities[nom]};});
+}
+
+function toggleCityBoundariesMode(){
+  cityBoundariesMode=!cityBoundariesMode;
+  var btn=document.getElementById('city-mode-btn');
+  var chipsBar=document.getElementById('city-chips-bar');
+  var btnWrap=document.getElementById('tools-map-buttons');
+  if(cityBoundariesMode){
+    if(btn){btn.style.background='#1a7a3a';btn.style.color='#fff';}
+    if(chipsBar)chipsBar.style.display='flex';
+    if(btnWrap)btnWrap.style.display='none';
+    activeCityFilter=null;
+    drawAllCityBoundaries();
+  } else {
+    if(btn){btn.style.background='#fff';btn.style.color='#1a7a3a';}
+    if(chipsBar)chipsBar.style.display='none';
+    if(btnWrap)btnWrap.style.display='flex';
+    if(cityBoundaryLayer)cityBoundaryLayer.clearLayers();
+    if(toolsMapLayer)toolsMapLayer.clearLayers();
+    var infoEl=document.getElementById('tools-map-info');
+    if(infoEl)infoEl.textContent='Appuyez sur une tournée';
+  }
+}
+
+function fetchCityBoundary(nom,callback){
+  if(cityBoundaryCache.hasOwnProperty(nom)){callback(cityBoundaryCache[nom]);return;}
+  var url='https://geo.api.gouv.fr/communes?nom='+encodeURIComponent(nom)+'&fields=nom,contour,centre&format=json&geometry=contour&boost=population';
+  fetch(url).then(function(r){return r.ok?r.json():[];}).then(function(list){
+    var match=list&&list[0]?list[0]:null;
+    cityBoundaryCache[nom]=match?match.contour:null;
+    callback(cityBoundaryCache[nom]);
+  }).catch(function(){cityBoundaryCache[nom]=null;callback(null);});
+}
+
+function drawAllCityBoundaries(){
+  if(!toolsMapInstance)return;
+  if(!cityBoundaryLayer)cityBoundaryLayer=L.layerGroup().addTo(toolsMapInstance);
+  cityBoundaryLayer.clearLayers();
+  if(toolsMapLayer)toolsMapLayer.clearLayers();
+  var cities=getDistinctCitiesForBureau();
+  var chipsBar=document.getElementById('city-chips-bar');
+  var infoEl=document.getElementById('tools-map-info');
+  if(infoEl)infoEl.textContent=cities.length+' ville'+(cities.length>1?'s':'')+' · chargement des frontières…';
+  if(chipsBar){
+    chipsBar.innerHTML=cities.map(function(c,idx){
+      var color=CITY_PALETTE[idx%CITY_PALETTE.length];
+      var safeNom=c.nom.replace(/'/g,"\\'");
+      return '<button onclick="selectCityFilter(\''+safeNom+'\')" data-cityname="'+escHtml(c.nom)+'" style="padding:5px 10px;border-radius:20px;border:1.5px solid '+color+';background:#fff;color:'+color+';font-size:11px;font-weight:700;cursor:pointer">'+escHtml(c.nom)+' ('+c.count+')</button>';
+    }).join('');
+  }
+  var allBounds=[];
+  var remaining=cities.length;
+  if(!remaining){if(infoEl)infoEl.textContent='Aucune ville détectée sur ce bureau.';return;}
+  cities.forEach(function(c,idx){
+    fetchCityBoundary(c.nom,function(contour){
+      remaining--;
+      if(contour){
+        var color=CITY_PALETTE[idx%CITY_PALETTE.length];
+        var layer=L.geoJSON(contour,{style:{color:color,weight:2,fillColor:color,fillOpacity:0.06}});
+        layer.eachLayer(function(l){
+          l.bindTooltip(c.nom,{sticky:true});
+          l.on('click',function(){selectCityFilter(c.nom);});
+        });
+        layer.addTo(cityBoundaryLayer);
+        try{allBounds=allBounds.concat(layer.getBounds().pad ? [layer.getBounds()] : []);}catch(e){}
+      }
+      if(remaining===0){
+        if(infoEl)infoEl.textContent=cities.length+' ville'+(cities.length>1?'s':'')+' · touchez une frontière ou un nom pour filtrer';
+        if(allBounds.length){
+          var combined=allBounds[0];
+          for(var i=1;i<allBounds.length;i++)combined.extend(allBounds[i]);
+          try{toolsMapInstance.fitBounds(combined,{padding:[30,30]});}catch(e){}
+        }
+      }
+    });
+  });
+}
+
+function selectCityFilter(nom){
+  activeCityFilter=nom;
+  var chipsBar=document.getElementById('city-chips-bar');
+  if(chipsBar){
+    Array.prototype.forEach.call(chipsBar.querySelectorAll('[data-cityname]'),function(btn){
+      var active=btn.getAttribute('data-cityname')===nom;
+      var color=btn.style.borderColor;
+      btn.style.background=active?color:'#fff';
+      btn.style.color=active?'#fff':color;
+    });
+  }
+  if(!toolsMapLayer)return;
+  toolsMapLayer.clearLayers();
+  var codes=getBureauTournees(currentBureau);
+  var placed=[];
+  codes.forEach(function(code){
+    var t=getTourneeData(code);
+    (t.adresses||[]).forEach(function(a){
+      if(!a.lat||!a.lng)return;
+      var cpv=(a.cp_ville||'').trim();
+      var m=cpv.match(/^\d{4,5}\s+(.+)$/);
+      var aNom=m?m[1].trim():cpv;
+      if(aNom===nom)placed.push({a:a,code:code});
+    });
+  });
+  var infoEl=document.getElementById('tools-map-info');
+  if(!placed.length){if(infoEl)infoEl.textContent=nom+' : aucun point placé.';return;}
+  var bounds=[];
+  placed.forEach(function(p){
+    var clr=getTourneeColor(p.code);
+    L.circleMarker([p.a.lat,p.a.lng],{radius:8,fillColor:clr,fillOpacity:0.9,color:'#fff',weight:1.5})
+      .bindTooltip(p.code+' · '+(p.a.num?p.a.num+' ':'')+p.a.rue+(p.a.nom?' — '+p.a.nom:''),{direction:'top'})
+      .addTo(toolsMapLayer);
+    bounds.push([p.a.lat,p.a.lng]);
+  });
+  if(infoEl)infoEl.textContent=nom+' : '+placed.length+' point'+(placed.length>1?'s':'')+' placé'+(placed.length>1?'s':'');
+  toolsMapInstance.fitBounds(bounds,{padding:[40,40],maxZoom:16});
+}
+
+function selectToolsMapTournee(code){
+  if(cityBoundariesMode)toggleCityBoundariesMode();
+  toolsMapActive=code;if(!toolsMapInstance){initToolsMap();return;}
 var btnWrap=document.getElementById('tools-map-buttons');if(btnWrap)Array.prototype.forEach.call(btnWrap.querySelectorAll('[data-tmcode]'),function(btn){var active=btn.getAttribute('data-tmcode')===code;var clr2=getTourneeColor(btn.getAttribute('data-tmcode'));btn.style.background=active?clr2:'#fff';btn.style.color=active?'#fff':clr2;});toolsMapLayer.clearLayers();var t=getTourneeData(code);var placed=(t.adresses||[]).filter(function(a){return a.lat&&a.lng;});var infoEl=document.getElementById('tools-map-info');if(!placed.length){if(infoEl)infoEl.textContent=code+' : aucun point placé.';toolsMapInstance.invalidateSize();return;}
 var bounds=[];var clrSel=getTourneeColor(code);placed.forEach(function(a){L.circleMarker([a.lat,a.lng],{radius:9,fillColor:clrSel,fillOpacity:0.9,color:'#fff',weight:1.5}).bindTooltip(a.ordre+' · '+(a.num?a.num+' ':'')+a.rue+(a.nom?' — '+a.nom:''),{direction:'top'}).addTo(toolsMapLayer);bounds.push([a.lat,a.lng]);});if(infoEl)infoEl.textContent=code+' : '+placed.length+' point'+(placed.length>1?'s':'')+' placé'+(placed.length>1?'s':'');toolsMapInstance.fitBounds(bounds,{padding:[40,40],maxZoom:16});toolsMapInstance.invalidateSize();if(routeEditMode){drawToolsRoute(code);renderRouteWaypointsList();}}
 function getTourneeColor(code){var map={'TM01':'#2196F3','TL02':'#FF9800','TL03':'#F44336','TL04':'#9C27B0','TM05':'#4CAF50','TM06':'#0D2A6E','FERRAGES':'#E65100','TM07':'#795548','TM08':'#E91E63','TM09':'#00BCD4','TM10':'#FFC107','TM11':'#0A1628','TL12':'#9E9E9E','TM13':'#424242','TC9002':'#FF9800','TC9003':'#F44336','TC9004':'#9C27B0',};return map[code]||'#607D8B';}
@@ -3386,7 +3564,7 @@ function closeEditScreen(){var ebb=document.getElementById('edit-bottom-bar');if
 function setEditSort(s){var bd=document.getElementById('edit-sort-distrib');var ba=document.getElementById('edit-sort-alpha');if(bd){bd.style.background=s==='distrib'?'var(--accent)':'var(--bg)';bd.style.color=s==='distrib'?'#fff':'var(--muted)';}
 if(ba){ba.style.background=s==='alpha'?'var(--accent)':'var(--bg)';ba.style.color=s==='alpha'?'#fff':'var(--muted)';}
 editSort=s;renderEditList();}
-var editSort='distrib';function openAesPanel(ordre,balIdx){aesCurrentOrdre=ordre;aesCurrentBalIdx=balIdx;var t=getTourneeData(editScreenCode);var a=t.adresses.find(function(x){return x.ordre===ordre});if(!a)return;var isGroupHeader=balIdx===-1;var isMainBal=balIdx===0||isGroupHeader;var bal=(balIdx>=0)?(balIdx===0?{nom:a.nom||'',tel:a.tel||'',entreprise:a.entreprise||'',complement:a.complement||'',num:a.num||'',hasPresse:!!a.hasPresse,presseNom:a.presseNom||''}:(a.boites&&a.boites[balIdx-1]?{nom:a.boites[balIdx-1].nom||'',tel:a.boites[balIdx-1].tel||'',entreprise:a.boites[balIdx-1].nom_entreprise||a.boites[balIdx-1].entreprise||'',complement:a.boites[balIdx-1].complement||'',num:a.num||'',hasPresse:!!a.boites[balIdx-1].hasPresse,presseNom:a.boites[balIdx-1].presseNom||'',lieuDit:a.boites[balIdx-1].lieu_dit||''}:{nom:'',tel:'',entreprise:'',complement:'',num:a.num||'',hasPresse:false,presseNom:'',lieuDit:''})):{nom:a.nom||'',tel:a.tel||'',entreprise:a.entreprise||'',complement:a.complement||'',num:a.num||'',hasPresse:!!a.hasPresse,presseNom:a.presseNom||''};var title=(a.num?a.num+' ':'')+a.rue+(balIdx>0?' · BAL '+(balIdx+1):'')+(isGroupHeader?' · Groupe':'');document.getElementById('aes-title').textContent=title;var html='';html+='<div class="aes-section"><div class="aes-section-label">Adresse</div>';html+='<div class="aes-field"><div class="aes-field-label">Numéro de voie</div>';html+='<input class="aes-input'+(a.num?' filled':'')+'\" id="aes-num" value="'+escHtml(a.num||'')+'" placeholder="Ex: 12, 12bis..." '+(isMainBal?'':'readonly style="opacity:0.6"')+'></div>';html+='<div class="aes-field"><div class="aes-field-label">Rue</div>';html+='<input class="aes-input filled" id="aes-rue" value="'+escHtml(a.rue||'')+'" placeholder="Nom de la rue"></div>';html+='<div class="aes-field"><div class="aes-field-label">Code postal + Ville</div>';html+='<input class="aes-input'+(a.cp_ville?' filled':'')+'\" id="aes-cpville" value="'+escHtml(a.cp_ville||'')+'" placeholder="Ex: 13150 Tarascon" '+(isGroupHeader?'':' readonly style="opacity:0.6"')+'></div>';if(isGroupHeader){var displayedGroupLieuDit=resolveGroupLieuDitDisplay(a);html+='<div class="aes-field"><div class="aes-field-label">Lieu-dit du groupe (bâtiment, résidence…) — affiché pour tous les arrêts</div>';html+='<input class="aes-input'+(displayedGroupLieuDit?' filled':'')+'\" id="aes-group-lieudit" value="'+escHtml(displayedGroupLieuDit)+'" placeholder="Ex: Bâtiment A, Résidence les Oliviers..."></div>';}
+var editSort='distrib';function openAesPanel(ordre,balIdx){aesCurrentOrdre=ordre;aesCurrentBalIdx=balIdx;var t=getTourneeData(editScreenCode);var a=t.adresses.find(function(x){return x.ordre===ordre});if(!a)return;var isGroupHeader=balIdx===-1;var isMainBal=balIdx===0||isGroupHeader;var bal=(balIdx>=0)?(balIdx===0?{nom:a.nom||'',tel:a.tel||'',entreprise:a.entreprise||'',complement:a.complement||'',num:a.num||'',hasPresse:!!a.hasPresse,presseNom:a.presseNom||''}:(a.boites&&a.boites[balIdx-1]?{nom:a.boites[balIdx-1].nom||'',tel:a.boites[balIdx-1].tel||'',entreprise:a.boites[balIdx-1].nom_entreprise||a.boites[balIdx-1].entreprise||'',complement:a.boites[balIdx-1].complement||'',num:a.num||'',hasPresse:!!a.boites[balIdx-1].hasPresse,presseNom:a.boites[balIdx-1].presseNom||'',lieuDit:a.boites[balIdx-1].lieu_dit||''}:{nom:'',tel:'',entreprise:'',complement:'',num:a.num||'',hasPresse:false,presseNom:'',lieuDit:''})):{nom:a.nom||'',tel:a.tel||'',entreprise:a.entreprise||'',complement:a.complement||'',num:a.num||'',hasPresse:!!a.hasPresse,presseNom:a.presseNom||''};var title=(a.num?a.num+' ':'')+a.rue+(balIdx>0?' · BAL '+(balIdx+1):'')+(isGroupHeader?' · Groupe':'');document.getElementById('aes-title').textContent=title;var html='';html+='<div class="aes-section"><div class="aes-section-label">Adresse</div>';html+='<div class="aes-field"><div class="aes-field-label">Numéro de voie</div>';html+='<input class="aes-input'+(a.num?' filled':'')+'\" id="aes-num" value="'+escHtml(a.num||'')+'" placeholder="Ex: 12, 12bis..." '+(isMainBal?'':'readonly style="opacity:0.6"')+'></div>';html+='<div class="aes-field"><div class="aes-field-label">Rue</div>';html+='<input class="aes-input filled" id="aes-rue" value="'+escHtml(a.rue||'')+'" placeholder="Nom de la rue"></div>';html+='<div class="aes-field"><div class="aes-field-label">Code postal + Ville</div>';html+='<input class="aes-input'+(a.cp_ville?' filled':'')+'\" id="aes-cpville" value="'+escHtml(a.cp_ville||'')+'" placeholder="Ex: 13150 Tarascon"></div>';if(isGroupHeader){var displayedGroupLieuDit=resolveGroupLieuDitDisplay(a);html+='<div class="aes-field"><div class="aes-field-label">Lieu-dit du groupe (bâtiment, résidence…) — affiché pour tous les arrêts</div>';html+='<input class="aes-input'+(displayedGroupLieuDit?' filled':'')+'\" id="aes-group-lieudit" value="'+escHtml(displayedGroupLieuDit)+'" placeholder="Ex: Bâtiment A, Résidence les Oliviers..."></div>';}
 if(isMainBal&&!isGroupHeader){var balIdx0LieuDit=a.lieu_dit||a.complement||'';html+='<div class="aes-field"><div class="aes-field-label">Lieu-dit de cet arrêt (ex: appartement, étage…)</div>';html+='<input class="aes-input'+(balIdx0LieuDit?' filled':'')+'\" id="aes-complement" value="'+escHtml(balIdx0LieuDit)+'" placeholder="Ex: Appartement 38, 2e étage..."></div>';}
 html+='</div>';
 if(!isGroupHeader){
@@ -4014,7 +4192,7 @@ renderEditList();}
 var toolsTab='clients',toolsMapLayer=null,toolsSelectedTournee=null,infosData={},toolsMapSelectedTournees=[];function openToolsScreen(){var ebb=document.getElementById('edit-bottom-bar');if(ebb)ebb.style.display='none';navigateToScreen('screen-home','screen-tools','forward');switchToolsTab('clients');}
 function closeToolsScreen(){var ebb=document.getElementById('edit-bottom-bar');if(ebb&&editScreenCode)ebb.style.display='block';navigateToScreen('screen-tools','screen-home','back');setHomeMode(homeMode);}
 function switchToolsTab(tab){toolsTab=tab;['clients','map','infos'].forEach(function(t){var btn=document.getElementById('tab-btn-'+t);var panel=document.getElementById(t==='map'?'tab-map-container':'tab-'+t);var active=t===tab;if(btn){btn.style.color=active?'var(--accent)':'var(--muted)';btn.style.borderBottom=active?'2px solid var(--accent)':'2px solid transparent';btn.style.fontWeight=active?'700':'500';}
-if(panel)panel.style.display=active?(t==='map'?'flex':'block'):'none';});if(tab==='clients')renderClientsTab();if(tab==='map')setTimeout(initToolsMap,100);if(tab==='infos')renderInfosTab();}
+if(panel)panel.style.display=active?((t==='map'||t==='clients')?'flex':'block'):'none';});if(tab==='clients')renderClientsTab();if(tab==='map')setTimeout(initToolsMap,100);if(tab==='infos')renderInfosTab();}
 function stopInternalNav(){}
 function closeAddrDetail(evt){var ov=document.getElementById('addr-detail-overlay');if(evt&&ov&&evt.target!==ov)return;if(ov)ov.classList.remove('open');}
 function navToCurrentAddr(){closeAddrDetail(null);}
