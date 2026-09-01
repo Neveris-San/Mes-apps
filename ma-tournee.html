@@ -146,7 +146,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
         <button onclick="setTheme('sun')" id="theme-btn-sun" style="flex:1;padding:9px 4px;border:none;border-left:1px solid var(--border);background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🔆 Plein soleil</button>
       </div>
     </div>
-    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 01/09/2026 23:43</div>
+    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 01/09/2026 23:51</div>
   </div>
 </div>
 
@@ -1742,7 +1742,7 @@ function buildHomeTourneeCards(){var container=document.getElementById('home-tou
 var firebaseConfig={apiKey:"AIzaSyCJRHL5MhawTwXPDwk-ZBWgk9hZ5bSABIA",authDomain:"ma-tournee.firebaseapp.com",projectId:"ma-tournee",storageBucket:"ma-tournee.firebasestorage.app",messagingSenderId:"290874680683",appId:"1:290874680683:web:73aa7477ea84614f43d82e"};var fbApp=null,db=null,fbSyncTimeout=null,fbSyncStatus='idle';function initFirebase(){try{fbApp=firebase.initializeApp(firebaseConfig);db=firebase.firestore();showSyncStatus('connected');}catch(e){db=null;}}
 function showSyncStatus(s){fbSyncStatus=s;var el=document.getElementById('sync-status-badge');if(!el)return;var labels={connected:{text:'☁️ Connecté',color:'#27a355'},saving:{text:'⏳ Sync...',color:'#c49b00'},saved:{text:'✓ Synchronisé',color:'#27a355'},error:{text:'⚠️ Hors ligne',color:'#d05040'},idle:{text:'☁️',color:'#6278a0'}};var st=labels[s]||labels.idle;el.textContent=st.text;el.style.color=st.color;}
 function fbSaveDebounced(){if(fbSyncTimeout)clearTimeout(fbSyncTimeout);fbSyncTimeout=setTimeout(fbSaveAll,1500);showSyncStatus('saving');}
-function fbSaveAll(){if(!db||!_fbLoaded)return;try{var toSave={};var allCodes=[];Object.keys(BUREAU_TOURNEES).forEach(function(b){(BUREAU_TOURNEES[b]||[]).forEach(function(code){if(allCodes.indexOf(code)<0)allCodes.push(code);});});allCodes.forEach(function(code){if(TOURNEES_DATA[code]){
+function fbSaveAll(forceCode){if(!db||!_fbLoaded)return;try{var toSave={};var allCodes=[];Object.keys(BUREAU_TOURNEES).forEach(function(b){(BUREAU_TOURNEES[b]||[]).forEach(function(code){if(allCodes.indexOf(code)<0)allCodes.push(code);});});allCodes.forEach(function(code){if(TOURNEES_DATA[code]){
       var t=TOURNEES_DATA[code];
       /* Ne sauvegarder que si la tournée a des données réelles
          pour éviter d'écraser Firebase avec des entrées vides au démarrage */
@@ -1750,7 +1750,12 @@ function fbSaveAll(){if(!db||!_fbLoaded)return;try{var toSave={};var allCodes=[]
       if(t._lazy) return;
       if(code==='TL02'&&!t._tl02loaded) return;
       var STATIC_FB=['TM06','FERRAGES','TL02'];
+      /* forceCode : action deliberee de l'utilisateur (ex: reinitialiser les livraisons) sur
+         une tournee deja chargee — on sauvegarde meme si tout est vide, car "vide" est ici
+         le resultat voulu, pas l'absence de donnees. Sans ca, une remise a zero (done={})
+         ressemble exactement a "rien a sauvegarder" et Firebase garde l'ancienne donnee. */
       var hasRealData=
+        (forceCode===true||forceCode===code) ||
         Object.keys(t.done||{}).length>0 ||
         Object.keys(t.courrierState||{}).length>0 ||
         (t.adresses||[]).some(function(a){return a.lat&&a.lng;}) ||
@@ -4004,7 +4009,15 @@ navStartTime=null;navElapsedMs=0;navPaused=false;navPausedTourneeCode=null;navSt
 navigateToScreen('screen-recap','screen-home','back');updateHomeCards();loadWeather();renderPartieBadge();}
 function resetAndFinishTournee(){if(currentTourneeCode){var t=getTourneeData(currentTourneeCode);t.done={};t.courrierState={};saveTourneeData();updateHomeCards();}
 finishTournee();}
-function confirmResetLivraisons(){if(!confirm('Réinitialiser toutes les livraisons effectuées ?'))return;TOURNEE_CODES.forEach(function(code){var t=getTourneeData(code);t.done={};t.courrierState={};});saveTourneeData();updateHomeCards();showToast('Livraisons réinitialisées !');}
+function confirmResetLivraisons(){if(!confirm('Réinitialiser toutes les livraisons effectuées ?'))return;TOURNEE_CODES.forEach(function(code){var t=getTourneeData(code);t.done={};t.courrierState={};});saveTourneeData();updateHomeCards();
+  /* Action deliberee et peu frequente : sauvegarder IMMEDIATEMENT sur Firebase (pas de debounce)
+     ET forcer l'inclusion meme si tout est vide (forceCode=true), sinon un "done={}" ressemble
+     a "rien a sauvegarder" et Firebase garde l'ancienne donnee, faisant "reapparaitre" les
+     livraisons au prochain lancement malgre la remise a zero. */
+  if(fbSyncTimeout)clearTimeout(fbSyncTimeout);
+  try{fbSaveAll(true);}catch(e){}
+  showToast('Livraisons réinitialisées !');
+}
 function setTheme(theme){
   document.body.classList.remove('dark','sun');
   if(theme==='dark')document.body.classList.add('dark');
@@ -4048,16 +4061,16 @@ function toggleAesPresseNomWrap(checkboxEl){
 var TYPE_PILL_DEFS={
   courrier:{icon:'📬',label:'Courrier',color:'#1a4fa8',bg:'#e9f0fb'},
   colis:{icon:'📦',label:'Colis',color:'#c9781f',bg:'#fdf0e0'},
-  recommande:{icon:'✅',label:'Reco',color:'#c0392b',bg:'#fdecea'},
+  recommande:{icon:'✅',label:'Recommandé',color:'#c0392b',bg:'#fdecea'},
   presse:{icon:'📰',label:'Presse',color:'#6b46c1',bg:'#f3edfd'}
 };
 function renderTypePillsHtml(key){
   var st=stopTypes[key];
-  var html='<div class="type-pills-row" style="display:flex;gap:4px;margin-top:6px;padding-left:38px;flex-wrap:nowrap" onclick="event.stopPropagation()">';
+  var html='<div class="type-pills-row" style="display:flex;gap:5px;margin-top:6px;padding-left:38px;flex-wrap:wrap" onclick="event.stopPropagation()">';
   ['courrier','colis','recommande','presse'].forEach(function(tp){
     var def=TYPE_PILL_DEFS[tp];
     var active=!!(st&&st[tp]);
-    html+='<span onclick="toggleStopTypeDirect(\''+key+'\',\''+tp+'\')" style="font-size:9px;font-weight:700;padding:3px 6px;border-radius:20px;cursor:pointer;background:'+(active?def.color:'var(--bg)')+';color:'+(active?'#fff':'var(--muted)')+';border:1px solid '+(active?def.color:'var(--border)')+';white-space:nowrap;flex:1;text-align:center">'+def.icon+' '+def.label+'</span>';
+    html+='<span onclick="toggleStopTypeDirect(\''+key+'\',\''+tp+'\')" style="font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;cursor:pointer;background:'+(active?def.color:'var(--bg)')+';color:'+(active?'#fff':'var(--muted)')+';border:1px solid '+(active?def.color:'var(--border)')+'">'+def.icon+' '+def.label+'</span>';
   });
   html+='</div>';
   return html;
@@ -4068,11 +4081,11 @@ function renderTypePillsHtml(key){
 function renderGroupTypePillsHtml(ordre,allBalsKeys){
   /* padding-left 76px = largeur case a cocher (28px) + espace (10px) + retrait normal (38px),
      pour s'aligner avec le retrait des adresses simples ou la case fait deja partie du wrapper */
-  var html='<div class="type-pills-row" style="display:flex;gap:4px;margin-top:6px;padding-left:76px;flex-wrap:nowrap" onclick="event.stopPropagation()">';
+  var html='<div class="type-pills-row" style="display:flex;gap:5px;margin-top:6px;padding-left:76px;flex-wrap:wrap" onclick="event.stopPropagation()">';
   ['courrier','colis','recommande','presse'].forEach(function(tp){
     var def=TYPE_PILL_DEFS[tp];
     var active=allBalsKeys.some(function(k){return stopTypes[k]&&stopTypes[k][tp];});
-    html+='<span onclick="toggleGroupTypeDirect('+ordre+',\''+tp+'\')" style="font-size:9px;font-weight:700;padding:3px 6px;border-radius:20px;cursor:pointer;background:'+(active?def.color:'var(--bg)')+';color:'+(active?'#fff':'var(--muted)')+';border:1px solid '+(active?def.color:'var(--border)')+';white-space:nowrap;flex:1;text-align:center">'+def.icon+' '+def.label+'</span>';
+    html+='<span onclick="toggleGroupTypeDirect('+ordre+',\''+tp+'\')" style="font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;cursor:pointer;background:'+(active?def.color:'var(--bg)')+';color:'+(active?'#fff':'var(--muted)')+';border:1px solid '+(active?def.color:'var(--border)')+'">'+def.icon+' '+def.label+'</span>';
   });
   html+='</div>';
   return html;
