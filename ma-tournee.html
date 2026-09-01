@@ -84,17 +84,25 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
 <!-- ===== ÉCRAN ACCUEIL ===== -->
 <div id="screen-home" style="position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;overflow:hidden;min-height:0">
   <div style="background:var(--surface);border-bottom:1px solid var(--border);padding:12px 14px;padding-top:max(12px,env(safe-area-inset-top));flex-shrink:0">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-      <div style="width:38px;height:38px;background:var(--yellow);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2b2b28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 6l8 7 8-7"/></svg>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <div style="flex:1;display:flex;align-items:center;gap:10px;min-width:0">
+        <div style="width:38px;height:38px;background:var(--yellow);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2b2b28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 6l8 7 8-7"/></svg>
+        </div>
+        <div style="min-width:0;overflow:hidden">
+          <div style="color:var(--text);font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Ma Tournée</div>
+          <div style="color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="home-bureau-sub">—</div>
+        </div>
       </div>
-      <div style="flex:1;min-width:0;overflow:hidden">
-        <div style="color:var(--text);font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Ma Tournée</div>
-        <div style="color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="home-bureau-sub">—</div>
+      <div id="session-badge" onclick="openProfileSelectScreen(true)" style="display:none;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:4px 10px 4px 4px;cursor:pointer;flex-shrink:0">
+        <div id="session-badge-avatar" style="width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;overflow:hidden;flex-shrink:0"></div>
+        <span id="session-badge-name" style="font-size:11px;font-weight:600;color:var(--text);white-space:nowrap"></span>
       </div>
-      <button onclick="openGlobalSearch()" style="width:36px;height:36px;flex-shrink:0;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      </button>
+      <div style="flex:1;display:flex;justify-content:flex-end">
+        <button onclick="openGlobalSearch()" style="width:36px;height:36px;flex-shrink:0;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+      </div>
     </div>
     <div style="display:flex;gap:6px">
       <button onclick="setHomeMode('distrib')" id="home-btn-distrib" style="flex:1;padding:8px 4px;border-radius:8px;border:none;background:var(--yellow);color:#2b2b28;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">📬 Distribution</button>
@@ -138,7 +146,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
         <button onclick="setTheme('sun')" id="theme-btn-sun" style="flex:1;padding:9px 4px;border:none;border-left:1px solid var(--border);background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🔆 Plein soleil</button>
       </div>
     </div>
-    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 31/08/2026 22:13</div>
+    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 01/09/2026 18:49</div>
   </div>
 </div>
 
@@ -2418,6 +2426,7 @@ function checkProfileNeeded(){
   if(saved){
     currentProfile={name:saved};
     startPresenceHeartbeatLoop();
+    renderSessionBadge();
     return;
   }
   openProfileSelectScreen();
@@ -2496,6 +2505,7 @@ function setCurrentProfile(name){
   var overlay=document.getElementById('profile-select-overlay');
   if(overlay)overlay.style.display='none';
   showToast('Bonjour '+name+' ✓');
+  renderSessionBadge();
   startPresenceHeartbeatLoop();
 }
 
@@ -2576,6 +2586,7 @@ function setProfilePhoto(name,dataUrl){
   saveProfilesForBureau(list);
   renderProfileManageList();
   showToast('Photo mise à jour ✓');
+  renderSessionBadge();
 }
 function renameProfileTo(oldName,newName){
   newName=(newName||'').trim();
@@ -2592,6 +2603,7 @@ function renameProfileTo(oldName,newName){
   }
   showToast('Profil renommé ✓');
   renderProfileManageList();
+  renderSessionBadge();
 }
 function deleteProfileFromList(name){
   if(!confirm('Supprimer le profil "'+name+'" ?'))return;
@@ -2972,6 +2984,24 @@ function displayWeather(data){
   }
   widget.style.display='flex';
 }
+function renderSessionBadge(){
+  var badge=document.getElementById('session-badge');
+  if(!badge)return;
+  if(!currentProfile||!currentProfile.name){badge.style.display='none';return;}
+  badge.style.display='flex';
+  var nameEl=document.getElementById('session-badge-name');
+  if(nameEl)nameEl.textContent=currentProfile.name;
+  var avatarEl=document.getElementById('session-badge-avatar');
+  if(avatarEl){
+    var profiles=getProfilesForBureau();
+    var mine=profiles.find(function(p){return p.name===currentProfile.name;});
+    if(mine&&mine.photo){
+      avatarEl.innerHTML='<img src="'+mine.photo+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+    } else {
+      avatarEl.innerHTML=escHtml(currentProfile.name.charAt(0).toUpperCase());
+    }
+  }
+}
 function renderResumeNavBanner(){
   var banner=document.getElementById('resume-nav-banner');
   if(!banner)return;
@@ -2984,7 +3014,7 @@ function renderResumeNavBanner(){
     banner.style.display='none';
   }
 }
-function showHome(){document.getElementById('screen-home').style.display='flex';updateHomeCards();loadWeather();renderPartieBadge();renderResumeNavBanner();var sub=document.getElementById('home-bureau-sub');if(sub&&currentBureau){var labels={'ARLES':'Arles','CHATEAURENARD':'Châteaurenard','NOVES':'Noves','SAINT-MARTIN-DE-CRAU':'Saint-Martin-de-Crau','SAINT-REMY-DE-PROVENCE':'Saint-Rémy-de-Provence','SALON-DE-PROVENCE':'Salon-de-Provence','SENAS':'Sénas','TARASCON':'Tarascon'};sub.textContent='Bureau de '+(labels[currentBureau]||currentBureau);}}
+function showHome(){document.getElementById('screen-home').style.display='flex';updateHomeCards();loadWeather();renderPartieBadge();renderResumeNavBanner();renderSessionBadge();var sub=document.getElementById('home-bureau-sub');if(sub&&currentBureau){var labels={'ARLES':'Arles','CHATEAURENARD':'Châteaurenard','NOVES':'Noves','SAINT-MARTIN-DE-CRAU':'Saint-Martin-de-Crau','SAINT-REMY-DE-PROVENCE':'Saint-Rémy-de-Provence','SALON-DE-PROVENCE':'Salon-de-Provence','SENAS':'Sénas','TARASCON':'Tarascon'};sub.textContent='Bureau de '+(labels[currentBureau]||currentBureau);}}
 /* [code mort supprime: renderInfosTab (premiere declaration, ecrasee plus loin dans le fichier)] */
 var toolsMapInstance=null;var toolsMapLayer=null;var toolsMapActive=null;function initToolsMap(){var container=document.getElementById('tab-map-container');var bar=document.getElementById('tools-map-bar');var mapEl=document.getElementById('tools-map');if(!mapEl)return;var barH=bar?bar.offsetHeight:80;var h=window.innerHeight-120-barH;mapEl.style.height=Math.max(250,h)+'px';var btnWrap=document.getElementById('tools-map-buttons');if(btnWrap&&!btnWrap.hasChildNodes()){var codes=getBureauTournees(currentBureau);btnWrap.innerHTML=codes.map(function(code){var clr=getTourneeColor(code);return'<button data-tmcode="'+code+'" style="padding:5px 10px;border-radius:20px;border:1.5px solid '+clr+';background:#fff;color:'+clr+';font-size:11px;font-weight:700;cursor:pointer">'+code+'</button>';}).join('');btnWrap.onclick=function(e){var b=e.target.closest('[data-tmcode]');if(b)selectToolsMapTournee(b.getAttribute('data-tmcode'));};}
 if(!toolsMapInstance){toolsMapInstance=L.map('tools-map',{zoomControl:true,attributionControl:false,preferCanvas:true});toolsMapInstance.setView(getBureauCenter(),12);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{subdomains:'abc',maxZoom:19,attribution:'© OpenStreetMap'}).addTo(toolsMapInstance);toolsMapLayer=L.layerGroup().addTo(toolsMapInstance);}
@@ -3357,7 +3387,7 @@ function setEditSort(s){var bd=document.getElementById('edit-sort-distrib');var 
 if(ba){ba.style.background=s==='alpha'?'var(--accent)':'var(--bg)';ba.style.color=s==='alpha'?'#fff':'var(--muted)';}
 editSort=s;renderEditList();}
 var editSort='distrib';function openAesPanel(ordre,balIdx){aesCurrentOrdre=ordre;aesCurrentBalIdx=balIdx;var t=getTourneeData(editScreenCode);var a=t.adresses.find(function(x){return x.ordre===ordre});if(!a)return;var isGroupHeader=balIdx===-1;var isMainBal=balIdx===0||isGroupHeader;var bal=(balIdx>=0)?(balIdx===0?{nom:a.nom||'',tel:a.tel||'',entreprise:a.entreprise||'',complement:a.complement||'',num:a.num||'',hasPresse:!!a.hasPresse,presseNom:a.presseNom||''}:(a.boites&&a.boites[balIdx-1]?{nom:a.boites[balIdx-1].nom||'',tel:a.boites[balIdx-1].tel||'',entreprise:a.boites[balIdx-1].nom_entreprise||a.boites[balIdx-1].entreprise||'',complement:a.boites[balIdx-1].complement||'',num:a.num||'',hasPresse:!!a.boites[balIdx-1].hasPresse,presseNom:a.boites[balIdx-1].presseNom||'',lieuDit:a.boites[balIdx-1].lieu_dit||''}:{nom:'',tel:'',entreprise:'',complement:'',num:a.num||'',hasPresse:false,presseNom:'',lieuDit:''})):{nom:a.nom||'',tel:a.tel||'',entreprise:a.entreprise||'',complement:a.complement||'',num:a.num||'',hasPresse:!!a.hasPresse,presseNom:a.presseNom||''};var title=(a.num?a.num+' ':'')+a.rue+(balIdx>0?' · BAL '+(balIdx+1):'')+(isGroupHeader?' · Groupe':'');document.getElementById('aes-title').textContent=title;var html='';html+='<div class="aes-section"><div class="aes-section-label">Adresse</div>';html+='<div class="aes-field"><div class="aes-field-label">Numéro de voie</div>';html+='<input class="aes-input'+(a.num?' filled':'')+'\" id="aes-num" value="'+escHtml(a.num||'')+'" placeholder="Ex: 12, 12bis..." '+(isMainBal?'':'readonly style="opacity:0.6"')+'></div>';html+='<div class="aes-field"><div class="aes-field-label">Rue</div>';html+='<input class="aes-input filled" id="aes-rue" value="'+escHtml(a.rue||'')+'" placeholder="Nom de la rue"></div>';html+='<div class="aes-field"><div class="aes-field-label">Code postal + Ville</div>';html+='<input class="aes-input'+(a.cp_ville?' filled':'')+'\" id="aes-cpville" value="'+escHtml(a.cp_ville||'')+'" placeholder="Ex: 13150 Tarascon" '+(isGroupHeader?'':' readonly style="opacity:0.6"')+'></div>';if(isGroupHeader){var displayedGroupLieuDit=resolveGroupLieuDitDisplay(a);html+='<div class="aes-field"><div class="aes-field-label">Lieu-dit du groupe (bâtiment, résidence…) — affiché pour tous les arrêts</div>';html+='<input class="aes-input'+(displayedGroupLieuDit?' filled':'')+'\" id="aes-group-lieudit" value="'+escHtml(displayedGroupLieuDit)+'" placeholder="Ex: Bâtiment A, Résidence les Oliviers..."></div>';}
-if(isMainBal&&!isGroupHeader){html+='<div class="aes-field"><div class="aes-field-label">Lieu-dit / Complément (spécifique à cet arrêt)</div>';html+='<input class="aes-input'+(a.complement?' filled':'')+'\" id="aes-complement" value="'+escHtml(a.complement||a.lieu_dit||'')+'" placeholder="Appartement, Mas, hameau..."></div>';}
+if(isMainBal&&!isGroupHeader){var balIdx0LieuDit=a.lieu_dit||a.complement||'';html+='<div class="aes-field"><div class="aes-field-label">Lieu-dit de cet arrêt (ex: appartement, étage…)</div>';html+='<input class="aes-input'+(balIdx0LieuDit?' filled':'')+'\" id="aes-complement" value="'+escHtml(balIdx0LieuDit)+'" placeholder="Ex: Appartement 38, 2e étage..."></div>';}
 html+='</div>';
 if(!isGroupHeader){
 html+='<div class="aes-section"><div class="aes-section-label">Destinataire'+(balIdx>0?' — BAL '+(balIdx+1):'')+'</div>';html+='<div class="aes-field"><div class="aes-field-label">Nom / Prénom</div>';html+='<input class="aes-input'+(bal.nom?' filled':'')+'\" id="aes-nom" value="'+escHtml(bal.nom)+'" placeholder="Ex: DUPONT Jean"></div>';html+='<div class="aes-field"><div class="aes-field-label">Nom d\'entreprise</div>';html+='<input class="aes-input'+(bal.entreprise?' filled':'')+'\" id="aes-entr" value="'+escHtml(bal.entreprise)+'" placeholder="Ex: SARL Dupont..."></div>';html+='<div class="aes-field"><div class="aes-field-label">Numéro de téléphone</div>';html+='<input class="aes-input'+(bal.tel?' filled':'')+'\" id="aes-tel" type="tel" value="'+escHtml(bal.tel)+'" placeholder="Ex: 06 12 34 56 78"></div>';
@@ -3539,15 +3569,9 @@ function saveAesPanel(){if(aesCurrentOrdre===null)return;pushUndo(editScreenCode
       if(compl&&LIEU_PAT_G.test(compl)){a.lieu_dit=compl;a._edited.lieu_dit=true;a.complement='';}
       else{a.complement=compl;a._edited.complement=true;}
     }var parts2=[];if(a.num)parts2.push(a.num);parts2.push(a.rue);if(a.complement)parts2.push(a.complement);if(a.cp_ville)parts2.push(a.cp_ville);a.adresse=parts2.join(', ');}else if(aesCurrentBalIdx===0){if(!a._edited)a._edited={};a.nom=nom;a._edited.nom=true;a.entreprise=entr;a._edited.entreprise=true;a.tel=tel;a._edited.tel=true;var presseElM=document.getElementById('aes-presse');if(presseElM){a.hasPresse=presseElM.checked;a._edited.hasPresse=true;var presseNomElM=document.getElementById('aes-presse-nom');a.presseNom=presseNomElM?presseNomElM.value.trim():'';a._edited.presseNom=true;}var noteEl=document.getElementById('aes-note');if(noteEl&&noteEl.value.trim()){addNoteToHistory(a,noteEl.value);a._edited.note=true;a._edited.noteHistory=true;}a.num=num;a._edited.num=true;if(rue){a.rue=rue.toUpperCase();a._edited.rue=true;}if(cpville){a.cp_ville=cpville;a._edited.cp_ville=true;}if(compl!==null){
-      /* Détecter si c'est un lieu-dit (mas, mazet, villa, etc.) */
-      var LIEU_PAT=/(mas|mazet|villa|bastide|hameau|domaine|moulin|ferme|campagne|clos|haras|manoir|château|cabanon|bergerie|pepiniere|earl|scea|manade|ecuries|quartier|chemin|domaine|le |la |les )/i;
-      if(compl&&LIEU_PAT.test(compl)){
-        a.lieu_dit=compl;a._edited.lieu_dit=true;
-        a.complement='';
-      } else {
-        a.complement=compl;a._edited.complement=true;
-        /* Ne plus effacer a.lieu_dit ici : perte de donnees silencieuse sinon */
-      }
+      /* Le lieu-dit de cet arret specifique s'ecrit directement, sans detection
+         de mots-cles (comme pour les autres BAL du groupe) */
+      a.lieu_dit=compl;a._edited.lieu_dit=true;
     }
 var parts=[];if(a.num)parts.push(a.num);parts.push(a.rue);if(a.complement)parts.push(a.complement);if(a.cp_ville)parts.push(a.cp_ville);a.adresse=parts.join(', ');}else{var bi=aesCurrentBalIdx-1;if(!a.boites)a.boites=[];if(!a.boites[bi])a.boites[bi]={};a.boites[bi].nom=nom;a.boites[bi].nom_entreprise=entr;a.boites[bi].tel=tel;var presseElB=document.getElementById('aes-presse');if(presseElB){a.boites[bi].hasPresse=presseElB.checked;var presseNomElB=document.getElementById('aes-presse-nom');a.boites[bi].presseNom=presseNomElB?presseNomElB.value.trim():'';}var balLieuDitEl=document.getElementById('aes-bal-lieudit');if(balLieuDitEl){a.boites[bi].lieu_dit=balLieuDitEl.value.trim();}var noteElB=document.getElementById('aes-note');if(noteElB&&noteElB.value.trim()){addNoteToHistory(a.boites[bi],noteElB.value);}a.boites[bi]._edited=true;if(!a._edited)a._edited={};a._edited.boites=true;}
 saveTourneeData();closeAesPanel(null);renderEditList();updateHomeCards();showToast('Modifications enregistrées !');}
@@ -3569,7 +3593,14 @@ function closePinMap(saved){var spm=document.getElementById('screen-pinmap');spm
 var navMapInstance=null,navUserMarker=null,navStopMarkers={},navCurrentStop=null,navStops=[];var navFollowGPS=true,navWatchId=null,navListVisible=false,stopMeta={};var navStartTime=null,navChronoInterval=null;var navRouteLayer=null;function navGetCurrentStop(){if(navCurrentStop)return navStops.find(function(s){return s.key===navCurrentStop&&!s.done})||null;return navStops.find(function(s){return!s.done})||null;}
 function navGetFirstPending(){var s=navGetCurrentStop();return s?s.key:null;}
 function toggleAdresseDone(ordre,forceValue){if(!currentTourneeCode)return false;var t=getTourneeData(currentTourneeCode);var a=t.adresses.find(function(x){return x.ordre===ordre;});if(!a)return false;var keys=buildBalList(a).map(function(b){return a.ordre+'-'+b.balIdx;});var nextValue=forceValue;if(nextValue===undefined)nextValue=!keys.every(function(k){return!!t.done[k];});keys.forEach(function(k){if(nextValue)t.done[k]=true;else delete t.done[k];});saveTourneeData();updateHomeCards();return nextValue;}
-function openNavScreen(){navPaused=false;navPausedTourneeCode=null;resetChrono();var ebb=document.getElementById('edit-bottom-bar');if(ebb)ebb.style.display='none';var t=getTourneeData(currentTourneeCode);navStops=[];t.adresses.forEach(function(a){var allBals=buildBalList(a);var sel=allBals.filter(function(b){return!!selectedStops[a.ordre+'-'+b.balIdx];});if(!sel.length)return;var aggTypes={courrier:false,colis:false,recommande:false,presse:false};sel.forEach(function(b){var tp=stopTypes[a.ordre+'-'+b.balIdx]||{};if(tp.courrier)aggTypes.courrier=true;if(tp.colis)aggTypes.colis=true;if(tp.recommande)aggTypes.recommande=true;if(tp.presse)aggTypes.presse=true;});navStops.push({key:String(a.ordre),ordre:a.ordre,num:a.num,rue:a.rue,nom:a.complement||a.nom||a.entreprise||((a.num?a.num+' ':'')+a.rue),clientNom:a.nom||'',entreprise:a.entreprise||'',lieu_dit:a.lieu_dit||'',complement:a.complement||'',cp_ville:a.cp_ville||'',tel:a.tel||'',note:a.note||'',lat:a.lat||null,lng:a.lng||null,types:aggTypes,done:allBals.every(function(b){return!!t.done[a.ordre+'-'+b.balIdx];})});});if(!navStops.length){showToast('Sélectionnez au moins un arrêt');return;}
+function openNavScreen(){navPaused=false;navPausedTourneeCode=null;resetChrono();var ebb=document.getElementById('edit-bottom-bar');if(ebb)ebb.style.display='none';var t=getTourneeData(currentTourneeCode);navStops=[];t.adresses.forEach(function(a){var allBals=buildBalList(a);var sel=allBals.filter(function(b){return!!selectedStops[a.ordre+'-'+b.balIdx];});if(!sel.length)return;var aggTypes={courrier:false,colis:false,recommande:false,presse:false};sel.forEach(function(b){var tp=stopTypes[a.ordre+'-'+b.balIdx]||{};if(tp.courrier)aggTypes.courrier=true;if(tp.colis)aggTypes.colis=true;if(tp.recommande)aggTypes.recommande=true;if(tp.presse)aggTypes.presse=true;});
+      /* Utiliser le nom de la/les BAL reellement selectionnee(s), pas systematiquement
+         celui de la BAL principale : important quand seule une BAL specifique du groupe
+         est concernee (ex: le bouton Presses ne selectionne que les abonnes). */
+      var selDistinctNames=[];
+      sel.forEach(function(b){var bn=b.nom||b.entreprise||'';if(bn&&selDistinctNames.indexOf(bn)<0)selDistinctNames.push(bn);});
+      var selectedNom=selDistinctNames.length===1?selDistinctNames[0]:(selDistinctNames.length>1?selDistinctNames[0]+' +'+(selDistinctNames.length-1):'');
+      navStops.push({key:String(a.ordre),ordre:a.ordre,num:a.num,rue:a.rue,nom:selectedNom||a.nom||a.entreprise||a.complement||((a.num?a.num+' ':'')+a.rue),clientNom:a.nom||'',entreprise:a.entreprise||'',lieu_dit:a.lieu_dit||'',complement:a.complement||'',cp_ville:a.cp_ville||'',tel:a.tel||'',note:a.note||'',lat:a.lat||null,lng:a.lng||null,types:aggTypes,done:allBals.every(function(b){return!!t.done[a.ordre+'-'+b.balIdx];})});});if(!navStops.length){showToast('Sélectionnez au moins un arrêt');return;}
 navCurrentStop=null;navFollowGPS=true;navListVisible=false;slideOverlayIn('screen-nav');var ov=document.getElementById('nav-overview');if(ov)ov.style.display='flex';var cp=document.getElementById('nav-compact-panel');if(cp)cp.style.display='none';renderNavOverview();setTimeout(function(){if(!navMapInstance){navMapInstance=L.map('nav-map',{zoomControl:false,attributionControl:false,dragging:false,touchZoom:false,scrollWheelZoom:false,doubleClickZoom:false,boxZoom:false,keyboard:false});navMapInstance.setView([43.5297,5.4474],14);L.control.zoom({position:'bottomright'}).addTo(navMapInstance);setTileLayer('nav','plan');navMapInstance.on('dragstart',function(){setNavFollow(false);});}
 navMapInstance.invalidateSize();initNavMap();var pts=navStops.filter(function(s){return s.lat&&s.lng;});if(pts.length>0){var bounds=L.latLngBounds(pts.map(function(s){return[s.lat,s.lng];}));navMapInstance.fitBounds(bounds,{padding:[50,50],maxZoom:15,animate:false});}},300);}
 function openNavScreen2(){openNavScreen();}
@@ -3622,7 +3653,7 @@ if(navMapInstance) setTimeout(function(){
 /* [code mort supprime: initNavMapOverview (premiere declaration, ecrasee plus loin dans le fichier)] */
 function renderNavOverview(){var sub=document.getElementById('nav-overview-sub');var list=document.getElementById('nav-overview-list');if(sub)sub.textContent=navStops.length+' arrêt'+(navStops.length>1?'s':'')+' sélectionné'+(navStops.length>1?'s':'');if(!list)return;var NAV_PALETTE=['rgba(255,220,60,0.25)','rgba(255,130,130,0.25)','rgba(100,170,255,0.25)','rgba(100,220,140,0.25)','rgba(190,130,255,0.25)','rgba(255,160,90,0.25)','rgba(60,220,200,0.25)','rgba(255,130,190,0.25)','rgba(150,220,110,0.25)','rgba(255,190,80,0.25)',];var navStreetMap={},navStreetIdx=0;function navStreetBg(rue){var key=(rue||'').trim().toUpperCase();if(navStreetMap[key]===undefined){navStreetMap[key]=navStreetIdx%NAV_PALETTE.length;navStreetIdx++;}
 return NAV_PALETTE[navStreetMap[key]];}
-list.innerHTML='<div style="display:flex;align-items:center;gap:10px;background:rgba(245,200,0,0.16);border:1px solid rgba(245,200,0,0.45);border-radius:12px;padding:10px 12px;color:#fff">'+'<div style="width:26px;height:26px;border-radius:50%;background:var(--yellow);color:#3b2f00;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0">D</div>'+'<div style="min-width:0;flex:1"><div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Départ</div><div style="font-size:11px;color:rgba(255,255,255,0.72);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escHtml(NAV_START_POINT.label)+'</div></div>'+'</div>'+navStops.map(function(s,i){var name=s.nom||(s.num?s.num+' ':'')+s.rue;var bg=navStreetBg(s.rue);var isDarkMode=document.body.classList.contains('dark');var txtColor=isDarkMode?'#fff':'#1a1a1a';var subColor=isDarkMode?'rgba(255,255,255,0.72)':'rgba(0,0,0,0.55)';var borderColor=isDarkMode?'rgba(255,255,255,0.18)':'rgba(0,0,0,0.12)';return'<div style="display:flex;align-items:center;gap:10px;background:'+bg+';border:1px solid '+borderColor+';border-radius:12px;padding:10px 12px;color:'+txtColor+'">'+'<div style="width:26px;height:26px;border-radius:50%;background:var(--yellow);color:#3b2f00;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0">'+(i+1)+'</div>'+'<div style="min-width:0;flex:1"><div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escHtml(name)+'</div><div style="font-size:11px;color:'+subColor+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(s.num?s.num+' ':'')+escHtml(s.rue)+(s.cp_ville?' · '+escHtml(s.cp_ville):'')+'</div></div>'+'</div>';}).join('');}
+list.innerHTML='<div style="display:flex;align-items:center;gap:10px;background:rgba(245,200,0,0.16);border:1px solid rgba(245,200,0,0.45);border-radius:12px;padding:10px 12px;color:#fff">'+'<div style="width:26px;height:26px;border-radius:50%;background:var(--yellow);color:#3b2f00;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0">D</div>'+'<div style="min-width:0;flex:1"><div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Départ</div><div style="font-size:11px;color:rgba(255,255,255,0.72);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escHtml(NAV_START_POINT.label)+'</div></div>'+'</div>'+navStops.map(function(s,i){var name=s.nom||(s.num?s.num+' ':'')+s.rue;var bg=navStreetBg(s.rue);var isDarkMode=document.body.classList.contains('dark');var txtColor=isDarkMode?'#fff':'#1a1a1a';var subColor=isDarkMode?'rgba(255,255,255,0.72)':'rgba(0,0,0,0.55)';var borderColor=isDarkMode?'rgba(255,255,255,0.18)':'rgba(0,0,0,0.12)';var lieuColor=isDarkMode?'#ff8a70':'#c0392b';return'<div style="display:flex;align-items:center;gap:10px;background:'+bg+';border:1px solid '+borderColor+';border-radius:12px;padding:10px 12px;color:'+txtColor+'">'+'<div style="width:26px;height:26px;border-radius:50%;background:var(--yellow);color:#3b2f00;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0">'+(i+1)+'</div>'+'<div style="min-width:0;flex:1"><div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escHtml(name)+'</div><div style="font-size:11px;color:'+subColor+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(s.num?s.num+' ':'')+escHtml(s.rue)+(s.cp_ville?' · '+escHtml(s.cp_ville):'')+(s.lieu_dit?' · <span style="color:'+lieuColor+';font-weight:700">'+escHtml(s.lieu_dit)+'</span>':'')+'</div></div>'+'</div>';}).join('');}
 /* Cree le marqueur adapte : divIcon (DOM) seulement pour l'arret courant, circleMarker (canvas) pour tous les autres.
    Le canvas est bien plus performant sur Android avec des tournees de centaines d'arrets. */
 function navCreateMarker(s,idx,isCurr){
@@ -4384,7 +4415,7 @@ function getTourneeData(code){
   
   return TOURNEES_DATA[code];
 }
-function buildBalList(a){var list=[];list.push({balIdx:0,nom:a.nom||'',complement:a.complement||'',lieu_dit:a.lieu_dit||'',entreprise:a.entreprise||'',nom_entreprise:''});(a.boites||[]).forEach(function(b,i){list.push({balIdx:i+1,nom:b.nom||'',complement:b.complement||'',lieu_dit:b.lieu_dit||'',entreprise:b.entreprise||'',nom_entreprise:b.nom_entreprise||''});});return list;}
+function buildBalList(a){var list=[];list.push({balIdx:0,nom:a.nom||'',complement:a.complement||'',lieu_dit:a.lieu_dit||a.complement||'',entreprise:a.entreprise||'',nom_entreprise:''});(a.boites||[]).forEach(function(b,i){list.push({balIdx:i+1,nom:b.nom||'',complement:b.complement||'',lieu_dit:b.lieu_dit||'',entreprise:b.entreprise||'',nom_entreprise:b.nom_entreprise||''});});return list;}
 function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function showToast(msg){var t=document.getElementById('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2200);}
 function applyDarkMode(){
