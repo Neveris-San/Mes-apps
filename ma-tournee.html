@@ -146,7 +146,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
         <button onclick="setTheme('sun')" id="theme-btn-sun" style="flex:1;padding:9px 4px;border:none;border-left:1px solid var(--border);background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🔆 Plein soleil</button>
       </div>
     </div>
-    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 01/09/2026 22:47</div>
+    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 01/09/2026 22:54</div>
   </div>
 </div>
 
@@ -324,6 +324,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <div id="tools-menu-dropdown" style="display:none;position:absolute;top:42px;right:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.15);min-width:180px;z-index:999;overflow:hidden">
         <button onclick="showBackupInfo();toggleToolsMenu()" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
         <button onclick="exportRawData();toggleToolsMenu()" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);cursor:pointer">📤 Exporter mes données</button>
+        <button onclick="if(confirm('Vider le cache local de ce navigateur ? Firebase ne sera pas touché, seulement ce qui est stocké sur cet appareil.')){clearLocalCacheOnly();}toggleToolsMenu()" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);cursor:pointer">🧹 Vider le cache local (sans toucher Firebase)</button>
         <button onclick="openProfileSelectScreen(true);toggleToolsMenu()" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);cursor:pointer">👤 Changer de profil<span id="tools-menu-profile-name" style="float:right;color:var(--muted);font-weight:400"></span></button>
         <button onclick="openProfileManage();toggleToolsMenu()" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);cursor:pointer">🖼️ Gérer les profils</button>
         <button onclick="openBugReportModal();toggleToolsMenu()" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);cursor:pointer">🐛 Signaler un problème</button>
@@ -4719,6 +4720,17 @@ function showBackupInfo(){
   }
 }
 function purgeFirebaseAndReset(){if(!db)return;var clean={_version:TOURNEES_DATA_VERSION};db.collection('app_data').doc('tournees').set(clean).then(function(){showToast('Firebase purgé ✓');}).catch(function(){showToast('Erreur purge Firebase');});try{localStorage.removeItem('tournee_done_v1');localStorage.removeItem('bureau_tournees_v1');localStorage.removeItem('infos_utiles_v1');}catch(e){}}
+/* Vide UNIQUEMENT le cache local du navigateur, sans jamais toucher a Firebase.
+   Utile quand l'affichage semble incoherent avec les vraies donnees en ligne. */
+function clearLocalCacheOnly(){
+  try{
+    localStorage.removeItem('tournee_done_v1');
+    localStorage.removeItem('bureau_tournees_v1');
+    localStorage.removeItem('infos_utiles_v1');
+  }catch(e){}
+  showToast('Cache local vidé (Firebase intact) ✓ — rechargement…');
+  setTimeout(function(){location.reload();},900);
+}
 window.addEventListener('load',function(){applyDarkMode();initFirebase();showBureauScreen();});window.addEventListener('load',function(){try{var raw=localStorage.getItem('tournee_done_v1');if(!raw)return;var saved=JSON.parse(raw);Object.keys(saved||{}).forEach(function(code){if(!TOURNEES_DATA[code])return;TOURNEES_DATA[code].infos=saved[code].infos||TOURNEES_DATA[code].infos||{vehicle:'',services:'',notes:''};});}catch(e){}});function getToolsMapCodes(){var codes=currentBureau?(BUREAU_TOURNEES[currentBureau]||[]).slice():[];if(!codes.length&&currentBureau){codes=Object.keys(TOURNEES_DATA||{}).filter(function(code){return(BUREAU_TOURNEES[currentBureau]||[]).indexOf(code)>=0;});}
 return codes.filter(function(code,idx){return code&&codes.indexOf(code)===idx;});}
 function normalizeTourneeCode(code){var raw=(code||'').trim().toUpperCase();if(/^TM\d$/.test(raw))return'TM0'+raw.slice(2);if(/^TL\d$/.test(raw))return'TL0'+raw.slice(2);return raw;}
