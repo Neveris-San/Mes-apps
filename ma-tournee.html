@@ -94,7 +94,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
           <div style="color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="home-bureau-sub">—</div>
         </div>
       </div>
-      <div id="session-badge" onclick="openProfileSelectScreen(true)" style="display:none;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:4px 10px 4px 4px;cursor:pointer;flex-shrink:0">
+      <div id="session-badge" onclick="openProfileSelectScreen(true)" style="display:none;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:4px 10px 4px 4px;cursor:pointer;flex-shrink:0;margin-left:8px">
         <div id="session-badge-avatar" style="width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;overflow:hidden;flex-shrink:0"></div>
         <span id="session-badge-name" style="font-size:11px;font-weight:600;color:var(--text);white-space:nowrap"></span>
       </div>
@@ -146,7 +146,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
         <button onclick="setTheme('sun')" id="theme-btn-sun" style="flex:1;padding:9px 4px;border:none;border-left:1px solid var(--border);background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🔆 Plein soleil</button>
       </div>
     </div>
-    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 01/09/2026 23:51</div>
+    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 02/09/2026 00:00</div>
   </div>
 </div>
 
@@ -324,6 +324,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <div id="tools-menu-dropdown" style="display:none;position:absolute;top:42px;right:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.15);min-width:180px;z-index:999;overflow:hidden">
         <button onclick="showBackupInfo();toggleToolsMenu()" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
         <button onclick="exportRawData();toggleToolsMenu()" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);cursor:pointer">📤 Exporter mes données</button>
+        <button onclick="if(confirm('Vider le cache local de ce navigateur ? Firebase ne sera pas touché, seulement ce qui est stocké sur cet appareil.')){clearLocalCacheOnly();}toggleToolsMenu()" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);cursor:pointer">🧹 Vider le cache local (sans toucher Firebase)</button>
         <button onclick="openProfileSelectScreen(true);toggleToolsMenu()" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);cursor:pointer">👤 Changer de profil<span id="tools-menu-profile-name" style="float:right;color:var(--muted);font-weight:400"></span></button>
         <button onclick="openProfileManage();toggleToolsMenu()" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);cursor:pointer">🖼️ Gérer les profils</button>
         <button onclick="openBugReportModal();toggleToolsMenu()" style="width:100%;padding:12px 16px;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);cursor:pointer">🐛 Signaler un problème</button>
@@ -581,7 +582,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='02/09/2026 00:00';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -1740,7 +1741,44 @@ var s=document.getElementById('screen-bureau');s.style.display='flex';var c=docu
 function hideBureauScreen(){var s=document.getElementById('screen-bureau');s.style.display='none';s.classList.add('hidden');document.getElementById('screen-home').style.display='flex';}
 function buildHomeTourneeCards(){var container=document.getElementById('home-tournee-cards');if(!container)return;container.innerHTML='';var modeColor=homeMode==='edit'?'var(--accent)':'var(--green)';TOURNEE_CODES.forEach(function(code){var badge=code.startsWith('TL')?'TL':code.startsWith('TC')?'TC':code==='RENFORT'?'RF':'TM';var color=getTourneeColor(code);var div=document.createElement('div');div.id='home-card-'+code;div.style.cssText='display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;border:1px solid var(--border);border-left:4px solid '+modeColor+';background:var(--surface);cursor:pointer;margin-bottom:2px';div.innerHTML='<div style="width:36px;height:36px;border-radius:50%;background:'+color+';color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">'+badge+'</div>'+'<div style="flex:1;min-width:0">'+'<div style="font-size:14px;font-weight:700;color:var(--text)">'+code+'</div>'+'<div id="home-desc-'+code+'" style="font-size:11px;color:var(--muted)"></div>'+'</div>'+'<div id="home-prog-'+code+'" style="font-size:12px;font-weight:700;color:var(--muted)">—</div>'+'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>';div.onclick=function(){homeCardClick(code);};container.appendChild(div);});}
 var firebaseConfig={apiKey:"AIzaSyCJRHL5MhawTwXPDwk-ZBWgk9hZ5bSABIA",authDomain:"ma-tournee.firebaseapp.com",projectId:"ma-tournee",storageBucket:"ma-tournee.firebasestorage.app",messagingSenderId:"290874680683",appId:"1:290874680683:web:73aa7477ea84614f43d82e"};var fbApp=null,db=null,fbSyncTimeout=null,fbSyncStatus='idle';function initFirebase(){try{fbApp=firebase.initializeApp(firebaseConfig);db=firebase.firestore();showSyncStatus('connected');}catch(e){db=null;}}
-function showSyncStatus(s){fbSyncStatus=s;var el=document.getElementById('sync-status-badge');if(!el)return;var labels={connected:{text:'☁️ Connecté',color:'#27a355'},saving:{text:'⏳ Sync...',color:'#c49b00'},saved:{text:'✓ Synchronisé',color:'#27a355'},error:{text:'⚠️ Hors ligne',color:'#d05040'},idle:{text:'☁️',color:'#6278a0'}};var st=labels[s]||labels.idle;el.textContent=st.text;el.style.color=st.color;}
+function showSyncStatus(s){fbSyncStatus=s;var el=document.getElementById('sync-status-badge');if(el){var labels={connected:{text:'☁️ Connecté',color:'#27a355'},saving:{text:'⏳ Sync...',color:'#c49b00'},saved:{text:'✓ Synchronisé',color:'#27a355'},error:{text:'⚠️ Hors ligne',color:'#d05040'},idle:{text:'☁️',color:'#6278a0'}};var st=labels[s]||labels.idle;el.textContent=st.text;el.style.color=st.color;}
+  if(s==='error'){showFirebaseBlockedWarning();}
+  else if(s==='saved'||s==='connected'){var w=document.getElementById('firebase-blocked-warning');if(w)w.remove();}
+}
+var _fbWarningShown=false;
+function checkForNewVersion(){
+  if(!navigator.onLine)return;
+  var url=location.href.split('?')[0]+'?nocache='+Date.now();
+  fetch(url,{cache:'no-store'}).then(function(r){return r.ok?r.text():null;}).then(function(txt){
+    if(!txt)return;
+    var m=txt.match(/var APP_BUILD='02/09/2026 00:00']+)'/);
+    if(m&&m[1]&&m[1]!==APP_BUILD){
+      showNewVersionBanner();
+    }
+  }).catch(function(){});
+}
+var _newVersionBannerShown=false;
+function showNewVersionBanner(){
+  if(_newVersionBannerShown)return;
+  if(document.getElementById('new-version-banner'))return;
+  _newVersionBannerShown=true;
+  var banner=document.createElement('div');
+  banner.id='new-version-banner';
+  banner.style.cssText='position:fixed;top:0;left:0;right:0;z-index:999999999;padding:12px 14px;background:#1a7a3a;color:#fff;font-size:12px;font-weight:700;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.3);cursor:pointer';
+  banner.innerHTML='🔄 Nouvelle version disponible — Toucher pour recharger';
+  banner.onclick=function(){location.href=location.href.split('?')[0]+'?v='+Date.now();};
+  document.body.appendChild(banner);
+}
+function showFirebaseBlockedWarning(){
+  if(_fbWarningShown)return;
+  if(document.getElementById('firebase-blocked-warning'))return;
+  _fbWarningShown=true;
+  var banner=document.createElement('div');
+  banner.id='firebase-blocked-warning';
+  banner.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999999;padding:12px 14px;background:#d05040;color:#fff;font-size:12px;font-weight:600;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.3)';
+  banner.innerHTML='⚠️ Connexion à Firebase impossible — les données affichées peuvent être anciennes.<br><span style="font-weight:400;font-size:11px">Vérifie qu\'un bloqueur de publicité ne bloque pas ce site, puis recharge la page.</span> <span style="text-decoration:underline;cursor:pointer;font-weight:700" onclick="this.parentElement.remove()">Fermer</span>';
+  document.body.appendChild(banner);
+}
 function fbSaveDebounced(){if(fbSyncTimeout)clearTimeout(fbSyncTimeout);fbSyncTimeout=setTimeout(fbSaveAll,1500);showSyncStatus('saving');}
 function fbSaveAll(forceCode){if(!db||!_fbLoaded)return;try{var toSave={};var allCodes=[];Object.keys(BUREAU_TOURNEES).forEach(function(b){(BUREAU_TOURNEES[b]||[]).forEach(function(code){if(allCodes.indexOf(code)<0)allCodes.push(code);});});allCodes.forEach(function(code){if(TOURNEES_DATA[code]){
       var t=TOURNEES_DATA[code];
@@ -1847,7 +1885,11 @@ if(tourneeDoc.exists){var saved=tourneeDoc.data();var allCodes=[];Object.keys(BU
       if(eb.note!==undefined)a.boites[bi].note=eb.note;
       if(eb.noteHistory!==undefined)a.boites[bi].noteHistory=eb.noteHistory;
     });}}});}
-var coords=saved[code].coords||{};(t.adresses||[]).forEach(function(a){if(coords[a.ordre]){a.lat=coords[a.ordre].lat;a.lng=coords[a.ordre].lng;a.pinned=true;}});try{var local=JSON.parse(localStorage.getItem('tournee_done_v1')||'{}');local[code]={done:saved[code].done||{},coords:saved[code].coords||{},edits:saved[code].edits||{},courrierState:saved[code].courrierState||{},notes:saved[code].notes||{}};localStorage.setItem('tournee_done_v1',JSON.stringify(local));}catch(e){}}});}
+var coords=saved[code].coords||{};(t.adresses||[]).forEach(function(a){if(coords[a.ordre]){a.lat=coords[a.ordre].lat;a.lng=coords[a.ordre].lng;a.pinned=true;}});try{var local=JSON.parse(localStorage.getItem('tournee_done_v1')||'{}');local[code]={done:saved[code].done||{},coords:saved[code].coords||{},edits:saved[code].edits||{},courrierState:saved[code].courrierState||{},notes:saved[code].notes||{}};
+          if(saved[code]._restructured){
+            local[code]._restructured=true;
+            if(saved[code].adresses&&saved[code].adresses.length>0)local[code].adresses=saved[code].adresses;
+          }localStorage.setItem('tournee_done_v1',JSON.stringify(local));}catch(e){}}});}
 if(infosDoc.exists){try{localStorage.setItem('infos_utiles_v1',JSON.stringify(infosDoc.data()));}catch(e){}}
 showSyncStatus('saved');if(callback)callback(true);}).catch(function(e){showSyncStatus('error');_fbLoaded=true;if(callback)callback(false);});}
 var fbUnsubscribe=null;function fbStartLiveSync(){if(!db)return;fbLoadAll(function(ok){if(ok){updateHomeCards();if(currentTourneeCode)renderTList();if(editScreenCode)renderEditList();}});}
@@ -3484,7 +3526,11 @@ window.addEventListener('load',function(){applyDarkMode();try{var raw=localStora
   }
   var lastBureau=null;try{lastBureau=localStorage.getItem('last_bureau');}catch(e){}
 showBureauScreen();if(lastBureau&&BUREAUX_LIST.indexOf(lastBureau)>=0){selectBureau(lastBureau);var bcb=document.getElementById('btn-confirm-bureau');if(bcb)bcb.disabled=false;}
-try{initFirebase();fbStartLiveSync();}catch(e){}});var editScreenCode=null;var homeMode='distrib';var reorderMode=false;var editOpenGroups={};var aesCurrentOrdre=null;var aesCurrentBalIdx=null;var dragSrcOrdre=null;var userMarker=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var toolsMapInstance=null;var openGroups={};var bottomPanelOpen=false;function homeCardClick(code){if(homeMode==='distrib')openTournee(code);else openEditScreen(code);}
+try{initFirebase();fbStartLiveSync();}catch(e){}
+setTimeout(checkForNewVersion,4000);
+setInterval(checkForNewVersion,5*60*1000);
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')checkForNewVersion();});
+});var editScreenCode=null;var homeMode='distrib';var reorderMode=false;var editOpenGroups={};var aesCurrentOrdre=null;var aesCurrentBalIdx=null;var dragSrcOrdre=null;var userMarker=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var toolsMapInstance=null;var openGroups={};var bottomPanelOpen=false;function homeCardClick(code){if(homeMode==='distrib')openTournee(code);else openEditScreen(code);}
 /* ===== TRANSITION GLISSEMENT POUR OVERLAYS (Nav, Pinmap : l'ecran du dessous reste affiche) ===== */
 function slideOverlayIn(id){
   var el=document.getElementById(id);
@@ -4061,16 +4107,16 @@ function toggleAesPresseNomWrap(checkboxEl){
 var TYPE_PILL_DEFS={
   courrier:{icon:'📬',label:'Courrier',color:'#1a4fa8',bg:'#e9f0fb'},
   colis:{icon:'📦',label:'Colis',color:'#c9781f',bg:'#fdf0e0'},
-  recommande:{icon:'✅',label:'Recommandé',color:'#c0392b',bg:'#fdecea'},
+  recommande:{icon:'✅',label:'Reco',color:'#c0392b',bg:'#fdecea'},
   presse:{icon:'📰',label:'Presse',color:'#6b46c1',bg:'#f3edfd'}
 };
 function renderTypePillsHtml(key){
   var st=stopTypes[key];
-  var html='<div class="type-pills-row" style="display:flex;gap:5px;margin-top:6px;padding-left:38px;flex-wrap:wrap" onclick="event.stopPropagation()">';
+  var html='<div class="type-pills-row" style="display:flex;gap:4px;margin-top:6px;padding-left:38px;flex-wrap:nowrap" onclick="event.stopPropagation()">';
   ['courrier','colis','recommande','presse'].forEach(function(tp){
     var def=TYPE_PILL_DEFS[tp];
     var active=!!(st&&st[tp]);
-    html+='<span onclick="toggleStopTypeDirect(\''+key+'\',\''+tp+'\')" style="font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;cursor:pointer;background:'+(active?def.color:'var(--bg)')+';color:'+(active?'#fff':'var(--muted)')+';border:1px solid '+(active?def.color:'var(--border)')+'">'+def.icon+' '+def.label+'</span>';
+    html+='<span onclick="toggleStopTypeDirect(\''+key+'\',\''+tp+'\')" style="font-size:9px;font-weight:700;padding:3px 6px;border-radius:20px;cursor:pointer;background:'+(active?def.color:'var(--bg)')+';color:'+(active?'#fff':'var(--muted)')+';border:1px solid '+(active?def.color:'var(--border)')+';white-space:nowrap;flex:1;text-align:center">'+def.icon+' '+def.label+'</span>';
   });
   html+='</div>';
   return html;
@@ -4081,11 +4127,11 @@ function renderTypePillsHtml(key){
 function renderGroupTypePillsHtml(ordre,allBalsKeys){
   /* padding-left 76px = largeur case a cocher (28px) + espace (10px) + retrait normal (38px),
      pour s'aligner avec le retrait des adresses simples ou la case fait deja partie du wrapper */
-  var html='<div class="type-pills-row" style="display:flex;gap:5px;margin-top:6px;padding-left:76px;flex-wrap:wrap" onclick="event.stopPropagation()">';
+  var html='<div class="type-pills-row" style="display:flex;gap:4px;margin-top:6px;padding-left:76px;flex-wrap:nowrap" onclick="event.stopPropagation()">';
   ['courrier','colis','recommande','presse'].forEach(function(tp){
     var def=TYPE_PILL_DEFS[tp];
     var active=allBalsKeys.some(function(k){return stopTypes[k]&&stopTypes[k][tp];});
-    html+='<span onclick="toggleGroupTypeDirect('+ordre+',\''+tp+'\')" style="font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;cursor:pointer;background:'+(active?def.color:'var(--bg)')+';color:'+(active?'#fff':'var(--muted)')+';border:1px solid '+(active?def.color:'var(--border)')+'">'+def.icon+' '+def.label+'</span>';
+    html+='<span onclick="toggleGroupTypeDirect('+ordre+',\''+tp+'\')" style="font-size:9px;font-weight:700;padding:3px 6px;border-radius:20px;cursor:pointer;background:'+(active?def.color:'var(--bg)')+';color:'+(active?'#fff':'var(--muted)')+';border:1px solid '+(active?def.color:'var(--border)')+';white-space:nowrap;flex:1;text-align:center">'+def.icon+' '+def.label+'</span>';
   });
   html+='</div>';
   return html;
@@ -4732,6 +4778,15 @@ function showBackupInfo(){
   }
 }
 function purgeFirebaseAndReset(){if(!db)return;var clean={_version:TOURNEES_DATA_VERSION};db.collection('app_data').doc('tournees').set(clean).then(function(){showToast('Firebase purgé ✓');}).catch(function(){showToast('Erreur purge Firebase');});try{localStorage.removeItem('tournee_done_v1');localStorage.removeItem('bureau_tournees_v1');localStorage.removeItem('infos_utiles_v1');}catch(e){}}
+function clearLocalCacheOnly(){
+  try{
+    localStorage.removeItem('tournee_done_v1');
+    localStorage.removeItem('bureau_tournees_v1');
+    localStorage.removeItem('infos_utiles_v1');
+  }catch(e){}
+  showToast('Cache local vidé (Firebase intact) ✓ — rechargement…');
+  setTimeout(function(){location.reload();},900);
+}
 window.addEventListener('load',function(){applyDarkMode();initFirebase();showBureauScreen();});window.addEventListener('load',function(){try{var raw=localStorage.getItem('tournee_done_v1');if(!raw)return;var saved=JSON.parse(raw);Object.keys(saved||{}).forEach(function(code){if(!TOURNEES_DATA[code])return;TOURNEES_DATA[code].infos=saved[code].infos||TOURNEES_DATA[code].infos||{vehicle:'',services:'',notes:''};});}catch(e){}});function getToolsMapCodes(){var codes=currentBureau?(BUREAU_TOURNEES[currentBureau]||[]).slice():[];if(!codes.length&&currentBureau){codes=Object.keys(TOURNEES_DATA||{}).filter(function(code){return(BUREAU_TOURNEES[currentBureau]||[]).indexOf(code)>=0;});}
 return codes.filter(function(code,idx){return code&&codes.indexOf(code)===idx;});}
 function normalizeTourneeCode(code){var raw=(code||'').trim().toUpperCase();if(/^TM\d$/.test(raw))return'TM0'+raw.slice(2);if(/^TL\d$/.test(raw))return'TL0'+raw.slice(2);return raw;}
