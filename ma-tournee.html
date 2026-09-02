@@ -146,7 +146,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
         <button onclick="setTheme('sun')" id="theme-btn-sun" style="flex:1;padding:9px 4px;border:none;border-left:1px solid var(--border);background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🔆 Plein soleil</button>
       </div>
     </div>
-    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 02/09/2026 18:26</div>
+    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 02/09/2026 18:32</div>
   </div>
 </div>
 
@@ -594,7 +594,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='02/09/2026 18:26';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='02/09/2026 18:32';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -1684,9 +1684,13 @@ TOURNEES_DATA['TM06']._lazy=false;if(!TOURNEES_DATA['TM06'].splitOrdre)TOURNEES_
     if(raw){
       var s=JSON.parse(raw);
       if(s[bureau]){
-        /* Merger : garder localStorage + ajouter les codes statiques manquants */
-        var merged=s[bureau].slice();
+        /* Merger : garder localStorage + ajouter les codes statiques manquants —
+           MAIS ne jamais conserver un code du cache qui n'existe plus dans la liste
+           statique (source de verite). Sans ce filtre, un code supprime du fichier
+           restait indefiniment "ressuscite" par le cache de n'importe quel appareil
+           qui l'avait deja vu une fois. */
         var stat=STATIC[bureau]||[];
+        var merged=s[bureau].filter(function(code){return stat.indexOf(code)>=0;});
         stat.forEach(function(code){
           if(merged.indexOf(code)<0) merged.push(code);
         });
@@ -1846,9 +1850,13 @@ showSyncStatus('saving');Promise.all([db.collection('app_data').doc('tournees').
       var bd=bureauDoc.data();
       var STATIC_BUREAUX={'TARASCON':['TM01','TL02','TL03','TL04','TM05','TM06','FERRAGES','TM07','TM08','TM09','TM10','TM11','TC9002','TC9003','TC9004']};
       Object.keys(bd).forEach(function(b){
-        /* Merger Firebase avec les codes statiques — ne jamais perdre un code statique */
-        var merged=(bd[b]||[]).slice();
-        (STATIC_BUREAUX[b]||[]).forEach(function(code){
+        /* Merger Firebase avec les codes statiques — ne jamais perdre un code statique,
+           mais ne jamais non plus ressusciter un code Firebase qui n'est plus dans la
+           liste statique (source de verite), sinon un code supprime du fichier reviendrait
+           indefiniment via ce cache Firebase. */
+        var statCodes=STATIC_BUREAUX[b]||[];
+        var merged=(bd[b]||[]).filter(function(code){return statCodes.indexOf(code)>=0;});
+        statCodes.forEach(function(code){
           if(merged.indexOf(code)<0) merged.push(code);
         });
         BUREAU_TOURNEES[b]=merged;
