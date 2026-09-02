@@ -146,7 +146,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
         <button onclick="setTheme('sun')" id="theme-btn-sun" style="flex:1;padding:9px 4px;border:none;border-left:1px solid var(--border);background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🔆 Plein soleil</button>
       </div>
     </div>
-    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 02/09/2026 00:05</div>
+    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 02/09/2026 16:23</div>
   </div>
 </div>
 
@@ -190,7 +190,16 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <button onclick="selectPartie('A')" id="btn-partie-a" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;display:none">Partie A</button>
       <button onclick="selectPartie('B')" id="btn-partie-b" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;display:none">Partie B</button>
       <button onclick="togglePresseSelection()" id="btn-presse-select" style="padding:8px 12px;border:1.5px solid #6b46c1;border-radius:8px;background:var(--bg);color:#6b46c1;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap">📰 Presses<span id="presse-count-badge" style="background:#6b46c1;color:#fff;border-radius:10px;padding:1px 6px;font-size:10px"></span></button>
+      <button onclick="document.getElementById('colis-scan-input').click()" id="btn-scan-colis" style="padding:8px 12px;border:1.5px solid #c9781f;border-radius:8px;background:var(--bg);color:#c9781f;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap">📷 Scanner colis</button>
+      <input type="file" accept="image/*" capture="environment" id="colis-scan-input" style="display:none" onchange="handleColisScanSelected(this)">
     </div>
+  </div>
+</div>
+
+<!-- ===== OVERLAY SCAN COLIS ===== -->
+<div id="colis-scan-overlay" style="position:fixed;inset:0;z-index:9999998;background:rgba(0,0,0,0.75);display:none;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--surface);border-radius:16px;padding:20px;max-width:420px;width:100%;max-height:85vh;overflow-y:auto">
+    <div id="colis-scan-content"></div>
   </div>
 </div>
 
@@ -582,7 +591,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='02/09/2026 00:05';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='02/09/2026 16:23';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -4214,6 +4223,201 @@ function updatePresseButtonState(){
   btn.style.background=allActive?'#6b46c1':'var(--bg)';
   btn.style.color=allActive?'#fff':'#6b46c1';
 }
+/* ===== SCAN DE COLIS (OCR) ===== */
+var _tesseractLoaded=false;
+function loadTesseractLib(callback){
+  if(_tesseractLoaded||typeof Tesseract!=='undefined'){callback();return;}
+  var script=document.createElement('script');
+  script.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+  script.onload=function(){_tesseractLoaded=true;callback();};
+  script.onerror=function(){showColisScanError('Impossible de charger le module de lecture. Vérifiez votre connexion internet.');};
+  document.head.appendChild(script);
+}
+
+function handleColisScanSelected(input){
+  var file=input.files&&input.files[0];
+  if(!file)return;
+  input.value='';
+  var reader=new FileReader();
+  reader.onload=function(e){
+    openColisScanLoading();
+    loadTesseractLib(function(){
+      runOcrOnImage(e.target.result);
+    });
+  };
+  reader.readAsDataURL(file);
+}
+
+function openColisScanLoading(){
+  var overlay=document.getElementById('colis-scan-overlay');
+  var content=document.getElementById('colis-scan-content');
+  content.innerHTML='<div style="text-align:center;padding:30px 10px">'+
+    '<div style="font-size:32px;margin-bottom:12px">📷</div>'+
+    '<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">Lecture du colis en cours…</div>'+
+    '<div style="font-size:12px;color:var(--muted)">Ça peut prendre quelques secondes</div>'+
+    '</div>';
+  overlay.style.display='flex';
+}
+
+function showColisScanError(msg){
+  var content=document.getElementById('colis-scan-content');
+  content.innerHTML='<div style="text-align:center;padding:20px 10px">'+
+    '<div style="font-size:32px;margin-bottom:12px">⚠️</div>'+
+    '<div style="font-size:13px;color:var(--text);margin-bottom:16px">'+escHtml(msg)+'</div>'+
+    '<button onclick="closeColisScanOverlay()" style="padding:10px 20px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-weight:700;cursor:pointer">Fermer</button>'+
+    '</div>';
+}
+
+function closeColisScanOverlay(){
+  document.getElementById('colis-scan-overlay').style.display='none';
+}
+
+function runOcrOnImage(dataUrl){
+  Tesseract.recognize(dataUrl,'fra').then(function(result){
+    var text=result&&result.data&&result.data.text?result.data.text:'';
+    if(!text.trim()){
+      showColisScanError('Aucun texte détecté sur la photo. Réessayez avec un meilleur éclairage ou plus près de l\'étiquette.');
+      return;
+    }
+    var matches=matchColisText(text);
+    showColisScanResults(text,matches);
+  }).catch(function(err){
+    showColisScanError('Erreur lors de la lecture : '+(err&&err.message?err.message:'inconnue'));
+  });
+}
+
+function normalizeForMatch(s){
+  return (s||'').toString().toUpperCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^A-Z0-9\s]/g,' ')
+    .replace(/\s+/g,' ').trim();
+}
+/* Mots trop generiques (types de voie courants, mots de liaison) pour compter comme
+   un vrai signal de correspondance a eux seuls — evite les faux positifs du type
+   "RUE" qui matche n'importe quelle adresse contenant aussi "RUE" dans son nom. */
+var MATCH_STOPWORDS=['RUE','AVENUE','AV','CHEMIN','ROUTE','IMPASSE','ALLEE','PLACE',
+  'BOULEVARD','BD','LOTISSEMENT','QUARTIER','RESIDENCE','LE','LA','LES','DE','DU','DES','ET'];
+function filterMatchTokens(tokens){
+  return tokens.filter(function(t){return MATCH_STOPWORDS.indexOf(t)<0;});
+}
+
+/* Construit la liste de toutes les entrées "adressables" de la tournée courante
+   (chaque adresse simple, et chaque BAL individuelle dans un groupe) avec leurs
+   champs recherchables, pour comparaison avec le texte lu sur le colis. */
+function getAllMatchableEntries(t){
+  var entries=[];
+  (t.adresses||[]).forEach(function(a){
+    var allBals=buildBalList(a);
+    allBals.forEach(function(b){
+      var key=a.ordre+'-'+b.balIdx;
+      var label=(a.num?a.num+' ':'')+a.rue+(b.balIdx>0?' · BAL '+(b.balIdx+1):'');
+      var nom=b.balIdx===0?(a.nom||''):(b.nom||'');
+      var entreprise=b.balIdx===0?(a.entreprise||''):(b.entreprise||b.nom_entreprise||'');
+      entries.push({
+        key:key,ordre:a.ordre,balIdx:b.balIdx,label:label,
+        nom:nom,entreprise:entreprise,rue:a.rue||'',num:a.num||'',
+        lieuDit:b.lieu_dit||a.groupLieuDit||'',cpVille:a.cp_ville||''
+      });
+    });
+  });
+  return entries;
+}
+
+function scoreEntryAgainstText(entry,normTextTokens){
+  var fields=[
+    {text:entry.nom,weight:4},
+    {text:entry.entreprise,weight:4},
+    {text:entry.lieuDit,weight:2},
+    {text:entry.rue,weight:2},
+    {text:entry.num,weight:3},
+  ];
+  var score=0;
+  fields.forEach(function(f){
+    var normField=normalizeForMatch(f.text);
+    if(!normField)return;
+    var fieldTokens=filterMatchTokens(normField.split(' ').filter(function(t){return t.length>=2;}));
+    if(!fieldTokens.length)return;
+    var allFound=fieldTokens.every(function(ft){return normTextTokens.indexOf(ft)>=0;});
+    if(allFound){
+      score+=f.weight*fieldTokens.length;
+    } else {
+      fieldTokens.forEach(function(ft){
+        if(normTextTokens.indexOf(ft)>=0)score+=f.weight*0.5;
+      });
+    }
+  });
+  return score;
+}
+
+function matchColisText(ocrText){
+  var t=getTourneeData(currentTourneeCode);
+  var entries=getAllMatchableEntries(t);
+  var normText=normalizeForMatch(ocrText);
+  var normTextTokens=filterMatchTokens(normText.split(' ').filter(function(t){return t.length>=2;}));
+  var scored=entries.map(function(e){
+    return {entry:e,score:scoreEntryAgainstText(e,normTextTokens)};
+  }).filter(function(r){return r.score>0;});
+  scored.sort(function(a,b){return b.score-a.score;});
+  return scored.slice(0,5);
+}
+
+function showColisScanResults(ocrText,matches){
+  var content=document.getElementById('colis-scan-content');
+  if(!matches.length){
+    content.innerHTML='<div style="text-align:center;padding:10px">'+
+      '<div style="font-size:32px;margin-bottom:12px">🤷</div>'+
+      '<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px">Aucune correspondance trouvée</div>'+
+      '<div style="font-size:11px;color:var(--muted);background:var(--bg);border-radius:8px;padding:10px;margin-bottom:16px;text-align:left;white-space:pre-wrap;max-height:120px;overflow-y:auto">'+escHtml(ocrText.trim().substring(0,300))+'</div>'+
+      '<button onclick="closeColisScanOverlay()" style="padding:10px 20px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-weight:700;cursor:pointer">Fermer</button>'+
+      '</div>';
+    return;
+  }
+  var top=matches[0];
+  var isConfident=matches.length===1||top.score>=matches[1].score*1.5;
+  var html='';
+  if(isConfident){
+    html+='<div style="text-align:center;margin-bottom:14px">'+
+      '<div style="font-size:28px;margin-bottom:8px">📦</div>'+
+      '<div style="font-size:12px;color:var(--muted);margin-bottom:4px">On dirait qu\'il s\'agit de :</div>'+
+      '</div>'+
+      '<div style="background:var(--accent-light);border:2px solid var(--accent);border-radius:12px;padding:14px;margin-bottom:14px">'+
+        '<div style="font-weight:700;font-size:15px;color:var(--text)">'+escHtml(top.entry.label)+'</div>'+
+        (top.entry.nom?'<div style="font-size:13px;color:var(--text);margin-top:2px">'+escHtml(top.entry.nom)+'</div>':'')+
+      '</div>'+
+      '<button onclick="confirmColisMatch(\''+top.entry.key+'\')" style="width:100%;padding:13px;border-radius:12px;border:none;background:var(--accent);color:#fff;font-weight:700;font-size:14px;cursor:pointer;margin-bottom:8px">✓ Confirmer et cocher Colis</button>';
+    if(matches.length>1){
+      html+='<div style="font-size:11px;color:var(--muted);text-align:center;margin:10px 0 6px">Pas la bonne adresse ?</div>';
+    }
+  } else {
+    html+='<div style="text-align:center;margin-bottom:12px">'+
+      '<div style="font-size:28px;margin-bottom:8px">🤔</div>'+
+      '<div style="font-size:13px;color:var(--text);font-weight:700">Plusieurs adresses possibles</div>'+
+      '<div style="font-size:11px;color:var(--muted)">Laquelle est la bonne ?</div>'+
+      '</div>';
+  }
+  var listStart=isConfident?1:0;
+  for(var i=listStart;i<matches.length;i++){
+    var m=matches[i];
+    html+='<button onclick="confirmColisMatch(\''+m.entry.key+'\')" style="width:100%;text-align:left;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);margin-bottom:6px;cursor:pointer">'+
+      '<div style="font-weight:700;font-size:13px;color:var(--text)">'+escHtml(m.entry.label)+'</div>'+
+      (m.entry.nom?'<div style="font-size:12px;color:var(--muted)">'+escHtml(m.entry.nom)+'</div>':'')+
+      '</button>';
+  }
+  html+='<button onclick="closeColisScanOverlay()" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--muted);font-weight:600;cursor:pointer;margin-top:6px">Annuler</button>';
+  content.innerHTML=html;
+}
+
+function confirmColisMatch(key){
+  selectedStops[key]=true;
+  if(!stopTypes[key])stopTypes[key]={courrier:false,colis:false,recommande:false,presse:false};
+  stopTypes[key].colis=true;
+  updateStartBar();
+  renderTList();
+  updatePresseButtonState();
+  closeColisScanOverlay();
+  showToast('Colis coché ✓');
+}
+
 function defaultTypesForTournee(code){
   /* Courrier seul par defaut, meme sur les tournees mixtes (TM) :
      le colis n'est pas systematique a chaque arret, il se coche au cas par cas. */
