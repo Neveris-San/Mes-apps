@@ -146,7 +146,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
         <button onclick="setTheme('sun')" id="theme-btn-sun" style="flex:1;padding:9px 4px;border:none;border-left:1px solid var(--border);background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🔆 Plein soleil</button>
       </div>
     </div>
-    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 02/09/2026 16:33</div>
+    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 02/09/2026 16:42</div>
   </div>
 </div>
 
@@ -591,7 +591,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='02/09/2026 16:33';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='02/09/2026 16:42';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -3839,7 +3839,7 @@ function openNavScreen(){navPaused=false;navPausedTourneeCode=null;resetChrono()
       sel.forEach(function(b){var bn=b.nom||b.entreprise||'';if(bn&&selDistinctNames.indexOf(bn)<0)selDistinctNames.push(bn);});
       var selectedNom=selDistinctNames.length===1?selDistinctNames[0]:(selDistinctNames.length>1?selDistinctNames[0]+' +'+(selDistinctNames.length-1):'');
       navStops.push({key:String(a.ordre),ordre:a.ordre,num:a.num,rue:a.rue,nom:selectedNom||a.nom||a.entreprise||a.complement||((a.num?a.num+' ':'')+a.rue),clientNom:a.nom||'',entreprise:a.entreprise||'',lieu_dit:a.lieu_dit||'',complement:a.complement||'',cp_ville:a.cp_ville||'',tel:a.tel||'',note:a.note||'',lat:a.lat||null,lng:a.lng||null,types:aggTypes,done:allBals.every(function(b){return!!t.done[a.ordre+'-'+b.balIdx];})});});if(!navStops.length){showToast('Sélectionnez au moins un arrêt');return;}
-navCurrentStop=null;navFollowGPS=true;navListVisible=false;slideOverlayIn('screen-nav');var ov=document.getElementById('nav-overview');if(ov)ov.style.display='flex';var cp=document.getElementById('nav-compact-panel');if(cp)cp.style.display='none';renderNavOverview();setTimeout(function(){if(!navMapInstance){navMapInstance=L.map('nav-map',{zoomControl:false,attributionControl:false,dragging:false,touchZoom:false,scrollWheelZoom:false,doubleClickZoom:false,boxZoom:false,keyboard:false});navMapInstance.setView([43.5297,5.4474],14);L.control.zoom({position:'bottomright'}).addTo(navMapInstance);setTileLayer('nav','plan');navMapInstance.on('dragstart',function(){setNavFollow(false);});}
+navCurrentStop=null;navFollowGPS=true;navListVisible=false;navPanelManuallySet=false;slideOverlayIn('screen-nav');var ov=document.getElementById('nav-overview');if(ov)ov.style.display='flex';var cp=document.getElementById('nav-compact-panel');if(cp)cp.style.display='none';renderNavOverview();setTimeout(function(){if(!navMapInstance){navMapInstance=L.map('nav-map',{zoomControl:false,attributionControl:false,dragging:false,touchZoom:false,scrollWheelZoom:false,doubleClickZoom:false,boxZoom:false,keyboard:false});navMapInstance.setView([43.5297,5.4474],14);L.control.zoom({position:'bottomright'}).addTo(navMapInstance);setTileLayer('nav','plan');navMapInstance.on('dragstart',function(){setNavFollow(false);});}
 navMapInstance.invalidateSize();initNavMap();var pts=navStops.filter(function(s){return s.lat&&s.lng;});if(pts.length>0){var bounds=L.latLngBounds(pts.map(function(s){return[s.lat,s.lng];}));navMapInstance.fitBounds(bounds,{padding:[50,50],maxZoom:15,animate:false});}},300);}
 function openNavScreen2(){openNavScreen();}
 var navPaused=false;var navPausedTourneeCode=null;
@@ -3952,10 +3952,12 @@ function setNavFollow(active){
 }
 function toggleNavFollow(){setNavFollow(!navFollowGPS);if(navFollowGPS)navCenterOnMe();}
 function navCenterOnMe(){setNavFollow(true);if(navUserMarker&&navMapInstance)navMapInstance.panTo(navUserMarker.getLatLng());else{var c=navGetCurrentStop();if(c&&c.lat&&navMapInstance)navMapInstance.panTo([c.lat,c.lng]);}}
+var navPanelManuallySet=false;
 function toggleNavPanel(){
   var panel=document.getElementById('nav-compact-panel');
   var extra=document.getElementById('nav-panel-extra');
   if(!panel||!extra)return;
+  navPanelManuallySet=true;
   var isExpanded=panel.style.maxHeight!=='15vh'&&panel.style.maxHeight!=='';
   if(isExpanded){
     panel.style.maxHeight='15vh';
@@ -3999,15 +4001,20 @@ if(curr.note&&noteEl&&noteTxt){
   noteTxt.textContent=curr.note;
   noteEl.style.display='block';
 } else if(noteEl){noteEl.style.display='none';}
-/* Ouvrir auto le panneau seulement s'il y a un tél ou une note (pas juste le nom, toujours présent) */
-var panel=document.getElementById('nav-compact-panel');
-var extra=document.getElementById('nav-panel-extra');
-if(curr.tel||curr.note){
-  if(panel){panel.style.maxHeight='50vh';}
-  if(extra){extra.style.display='block';}
-} else {
-  if(panel){panel.style.maxHeight='15vh';}
-  if(extra){extra.style.display='none';}
+/* Ouvrir auto le panneau seulement s'il y a un tél ou une note (pas juste le nom, toujours présent) —
+   mais seulement tant que l'utilisateur n'a pas lui-meme ouvert/ferme le volet a la main :
+   une fois qu'il l'a fait, son choix reste respecte pour tous les arrets suivants, jusqu'a
+   ce qu'il le referme lui-meme (au lieu d'etre ecrase a chaque validation de livraison). */
+if(!navPanelManuallySet){
+  var panel=document.getElementById('nav-compact-panel');
+  var extra=document.getElementById('nav-panel-extra');
+  if(curr.tel||curr.note){
+    if(panel){panel.style.maxHeight='50vh';}
+    if(extra){extra.style.display='block';}
+  } else {
+    if(panel){panel.style.maxHeight='15vh';}
+    if(extra){extra.style.display='none';}
+  }
 }
 var typeIconsHost=document.getElementById('nav-current-type-icons');
 if(typeIconsHost){
