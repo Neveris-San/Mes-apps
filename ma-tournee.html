@@ -146,7 +146,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
         <button onclick="setTheme('sun')" id="theme-btn-sun" style="flex:1;padding:9px 4px;border:none;border-left:1px solid var(--border);background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🔆 Plein soleil</button>
       </div>
     </div>
-    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 02/09/2026 16:42</div>
+    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 02/09/2026 16:48</div>
   </div>
 </div>
 
@@ -469,10 +469,13 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
         <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px">📝 NOTE</div>
         <div id="nav-note-text" style="font-size:13px;color:var(--text);line-height:1.5;white-space:pre-wrap"></div>
       </div>
-      <button onclick="shareMyPosition()" style="width:100%;margin-top:8px;padding:10px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        Partager ma position
-      </button>
+      <div style="display:flex;gap:6px;margin-top:8px;align-items:center">
+        <div id="nav-extra-type-toggles" style="display:flex;gap:4px;flex-shrink:0"></div>
+        <button onclick="shareMyPosition()" style="flex:1;padding:10px 8px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;min-width:0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" style="flex-shrink:0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span style="overflow:hidden;text-overflow:ellipsis">Partager position</span>
+        </button>
+      </div>
     </div>
     <div style="margin-top:6px">
       <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">
@@ -591,7 +594,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='02/09/2026 16:42';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='02/09/2026 16:48';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -3953,6 +3956,41 @@ function setNavFollow(active){
 function toggleNavFollow(){setNavFollow(!navFollowGPS);if(navFollowGPS)navCenterOnMe();}
 function navCenterOnMe(){setNavFollow(true);if(navUserMarker&&navMapInstance)navMapInstance.panTo(navUserMarker.getLatLng());else{var c=navGetCurrentStop();if(c&&c.lat&&navMapInstance)navMapInstance.panTo([c.lat,c.lng]);}}
 var navPanelManuallySet=false;
+/* 4 indicateurs Courrier/Colis/Reco/Presse dans le volet etendu de navigation,
+   allumes si le type s'applique a l'arret courant, eteints sinon, et cliquables
+   pour basculer directement sans quitter l'ecran de navigation. */
+function renderNavTypeToggles(curr){
+  var host=document.getElementById('nav-extra-type-toggles');
+  if(!host)return;
+  var types=curr.types||{};
+  host.innerHTML=['courrier','colis','recommande','presse'].map(function(tp){
+    var def=TYPE_PILL_DEFS[tp];
+    var active=!!types[tp];
+    return '<button onclick="toggleNavStopType(\''+tp+'\')" title="'+def.label+'" style="width:36px;height:36px;border-radius:10px;border:1.5px solid '+(active?def.color:'var(--border)')+';background:'+(active?def.color:'var(--bg)')+';color:'+(active?'#fff':'var(--muted)')+';font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center">'+def.icon+'</button>';
+  }).join('');
+}
+function toggleNavStopType(tp){
+  var curr=navGetCurrentStop();
+  if(!curr)return;
+  toggleGroupTypeDirect(curr.ordre,tp);
+  /* Resynchroniser curr.types (mis en cache sur l'arret de navigation) avec le
+     nouvel etat reel des BAL, puisque renderNavCompact lit cette valeur directement. */
+  var t=getTourneeData(currentTourneeCode);
+  var a=t.adresses.find(function(x){return x.ordre===curr.ordre;});
+  if(a){
+    var allBals=buildBalList(a);
+    var newTypes={courrier:false,colis:false,recommande:false,presse:false};
+    allBals.forEach(function(b){
+      var st=stopTypes[curr.ordre+'-'+b.balIdx]||{};
+      if(st.courrier)newTypes.courrier=true;
+      if(st.colis)newTypes.colis=true;
+      if(st.recommande)newTypes.recommande=true;
+      if(st.presse)newTypes.presse=true;
+    });
+    curr.types=newTypes;
+  }
+  renderNavCompact();
+}
 function toggleNavPanel(){
   var panel=document.getElementById('nav-compact-panel');
   var extra=document.getElementById('nav-panel-extra');
@@ -4016,6 +4054,7 @@ if(!navPanelManuallySet){
     if(extra){extra.style.display='none';}
   }
 }
+renderNavTypeToggles(curr);
 var typeIconsHost=document.getElementById('nav-current-type-icons');
 if(typeIconsHost){
   var typesActive=Object.keys(curr.types||{}).filter(function(tp){return curr.types[tp];});
