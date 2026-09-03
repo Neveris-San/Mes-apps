@@ -146,7 +146,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
         <button onclick="setTheme('sun')" id="theme-btn-sun" style="flex:1;padding:9px 4px;border:none;border-left:1px solid var(--border);background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🔆 Plein soleil</button>
       </div>
     </div>
-    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 02/09/2026 18:48</div>
+    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 03/09/2026 21:07</div>
   </div>
 </div>
 
@@ -248,6 +248,10 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
     <!-- Ligne 2 : recherche -->
     <div style="padding:0 12px 6px">
       <input id="edit-tlist-search" oninput="renderEditList()" placeholder="🔍 Rechercher..." style="width:100%;border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-size:13px;font-family:inherit;color:var(--text);background:var(--bg);box-sizing:border-box"/>
+    </div>
+    <div id="reorder-sel-badge" style="display:none;align-items:center;gap:8px;margin:0 12px 8px;padding:8px 12px;background:#e8f5ec;border:1.5px solid #1a7a3a;border-radius:10px">
+      <span style="flex:1;font-size:11px;font-weight:600;color:#1a7a3a"></span>
+      <button onclick="clearReorderSelection()" style="background:none;border:none;color:#1a7a3a;font-size:11px;font-weight:700;text-decoration:underline;cursor:pointer;white-space:nowrap">Annuler</button>
     </div>
     <!-- Ligne 3 : boutons actions -->
     <div style="display:flex;gap:6px;padding:0 12px 10px">
@@ -594,7 +598,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='02/09/2026 18:48';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='03/09/2026 21:07';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -4520,7 +4524,7 @@ function selectPartie(part){
   showToast('Partie '+part+' sélectionnée ✓');
 }
 function toggleSelectAll(){var t=getTourneeData(currentTourneeCode);var allBals=[];t.adresses.forEach(function(a){buildBalList(a).forEach(function(b){allBals.push(a.ordre+'-'+b.balIdx);});});var allSel=allBals.every(function(k){return selectedStops[k];});if(allSel){selectedStops={};allBals.forEach(function(k){if(stopTypes[k])delete stopTypes[k];});}else allBals.forEach(function(k){selectedStops[k]=true;});updateStartBar();renderTList();updatePresseButtonState();}
-function toggleReorderMode(){reorderMode=!reorderMode;var btn=document.getElementById('btn-reorder');if(btn){btn.style.background=reorderMode?'var(--accent)':'var(--bg)';btn.style.borderColor=reorderMode?'var(--accent)':'var(--border)';btn.style.color=reorderMode?'#fff':'var(--muted)';var lbl=btn.querySelector('span');if(lbl)lbl.textContent=reorderMode?'Terminer':'Ordonner';}
+function toggleReorderMode(){reorderMode=!reorderMode;reorderSelected=[];var btn=document.getElementById('btn-reorder');if(btn){btn.style.background=reorderMode?'var(--accent)':'var(--bg)';btn.style.borderColor=reorderMode?'var(--accent)':'var(--border)';btn.style.color=reorderMode?'#fff':'var(--muted)';var lbl=btn.querySelector('span');if(lbl)lbl.textContent=reorderMode?'Terminer':'Ordonner';}
 var body=document.getElementById('edit-tlist-items');if(body)body.classList.toggle('reorder-mode',reorderMode);var search=document.getElementById('edit-tlist-search');if(search){search.disabled=reorderMode;search.placeholder=reorderMode?'Désactivé en mode réorganisation':'🔍 Rechercher une adresse...';if(reorderMode)search.value='';}
 if(reorderMode&&editGroupByStreet){editGroupByStreet=false;var ebtn=document.getElementById('edit-btn-street');if(ebtn){ebtn.style.background='var(--bg)';ebtn.style.borderColor='var(--border)';ebtn.style.color='var(--muted)';}}
 renderEditList();}
@@ -4581,7 +4585,7 @@ function onDragStart(e){dragSrcOrdre=parseInt(this.dataset.ordre);this.classList
 function onDragEnd(e){this.classList.remove('dragging');document.querySelectorAll('.drag-over').forEach(function(el){el.classList.remove('drag-over')});dragSrcOrdre=null;}
 function onDragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move';if(dragSrcOrdre===null)return;document.querySelectorAll('.drag-over').forEach(function(el){el.classList.remove('drag-over')});this.classList.add('drag-over');}
 function onDragLeave(e){this.classList.remove('drag-over');}
-function onDrop(e){e.preventDefault();var tgt=parseInt(this.dataset.ordre);if(dragSrcOrdre!==null&&dragSrcOrdre!==tgt)reorderItem(dragSrcOrdre,tgt);this.classList.remove('drag-over');}
+function onDrop(e){e.preventDefault();var tgt=parseInt(this.dataset.ordre);if(dragSrcOrdre!==null&&dragSrcOrdre!==tgt){if(reorderSelected.length>=2&&reorderSelected.indexOf(dragSrcOrdre)>=0){reorderMultipleItems(reorderSelected,tgt);}else{reorderItem(dragSrcOrdre,tgt);}}this.classList.remove('drag-over');}
 
 /* Touch drag & drop */
 var touchDragOrdre=null,touchDragEl=null,touchClone=null,touchStartY=0;
@@ -4589,6 +4593,9 @@ function onTouchStart(e){
   var el=e.currentTarget;
   /* Démarrer le drag seulement si on est en mode réorganisation */
   if(!reorderMode) return;
+  /* Ne pas demarrer un drag si le contact commence sur la case de selection multiple —
+     laisser le tap normal (avec son propre stopPropagation) s'en occuper. */
+  if(e.target.closest('.reorder-select-checkbox')) return;
   touchDragOrdre=parseInt(el.dataset.ordre);
   touchDragEl=el;
   touchStartY=e.touches[0].clientY;
@@ -4631,7 +4638,13 @@ function onTouchEnd(e){
   }
   if(target){
     var tgt=parseInt(target.dataset.ordre);
-    if(tgt&&tgt!==touchDragOrdre) reorderItem(touchDragOrdre,tgt);
+    if(tgt&&tgt!==touchDragOrdre){
+      if(reorderSelected.length>=2&&reorderSelected.indexOf(touchDragOrdre)>=0){
+        reorderMultipleItems(reorderSelected,tgt);
+      } else {
+        reorderItem(touchDragOrdre,tgt);
+      }
+    }
     else showToast('Déposez sur un autre arrêt');
   }
   touchDragOrdre=null;touchDragEl=null;
@@ -4666,6 +4679,59 @@ function remapOrdreKeyedState(t,oldOrdreMap){
       }
     }
   }
+}
+function toggleReorderSelect(ordre){
+  var idx=reorderSelected.indexOf(ordre);
+  if(idx>=0)reorderSelected.splice(idx,1);else reorderSelected.push(ordre);
+  renderEditList();
+  updateReorderSelBadge();
+}
+function updateReorderSelBadge(){
+  var badge=document.getElementById('reorder-sel-badge');
+  if(!badge)return;
+  var n=reorderSelected.length;
+  if(n>=2){
+    badge.style.display='flex';
+    badge.querySelector('span').textContent=n+' arrêts sélectionnés — glissez-en un pour déplacer le groupe';
+  } else {
+    badge.style.display='none';
+  }
+}
+function clearReorderSelection(){
+  reorderSelected=[];
+  renderEditList();
+  updateReorderSelBadge();
+}
+/* Deplace PLUSIEURS adresses d'un coup vers un emplacement cible, en conservant
+   leur ordre relatif actuel entre elles (pas l'ordre dans lequel elles ont ete
+   cochees, mais leur position actuelle dans la liste). */
+function reorderMultipleItems(selectedOrdres,targetOrdre){
+  if(selectedOrdres.indexOf(targetOrdre)>=0)return; /* deposer sur un element du groupe lui-meme : ignorer */
+  pushUndo(editScreenCode,'Réorganisation multiple');
+  var t=getTourneeData(editScreenCode);
+  /* Extraire les adresses selectionnees, dans leur ORDRE ACTUEL (pas l'ordre de selection) */
+  var selectedSet={};selectedOrdres.forEach(function(o){selectedSet[o]=true;});
+  var movedItems=t.adresses.filter(function(a){return selectedSet[a.ordre];});
+  movedItems.sort(function(a,b){return a.ordre-b.ordre;});
+  var remaining=t.adresses.filter(function(a){return!selectedSet[a.ordre];});
+  var targetIdx=remaining.findIndex(function(a){return a.ordre===targetOrdre;});
+  if(targetIdx<0)return;
+  /* Deplacement vers l'avant (cible situee apres le groupe a l'origine) : inserer APRES
+     la cible. Deplacement vers l'arriere : inserer AVANT — meme logique intuitive que
+     le deplacement d'un seul arret. */
+  var movingForward=movedItems[0].ordre<targetOrdre;
+  var insertIdx=movingForward?targetIdx+1:targetIdx;
+  var newAdresses=remaining.slice(0,insertIdx).concat(movedItems).concat(remaining.slice(insertIdx));
+  var oldOrdreMapM={};t.adresses.forEach(function(a,i){oldOrdreMapM[a.ordre]=i+1;});
+  newAdresses.forEach(function(a,i){a.ordre=i+1;});
+  t.adresses=newAdresses;
+  remapOrdreKeyedState(t,oldOrdreMapM);
+  t._restructured=true;
+  saveTourneeData();
+  reorderSelected=[];
+  renderEditList();
+  updateReorderSelBadge();
+  showToast(movedItems.length+' arrêts déplacés ensemble ✓');
 }
 function reorderItem(srcOrdre,targetOrdre){
   pushUndo(editScreenCode,'Réorganisation');
@@ -4772,7 +4838,7 @@ run.items.map(function(a){var addrLine=formatStreetAddress(a.num,a.rue);var eNom
 var pin=e.target.closest('[data-pinordre]');if(pin){e.stopPropagation();openPinMap(editScreenCode,parseInt(pin.dataset.pinordre));return;}
 var edt=e.target.closest('[data-editordre]');if(edt){e.stopPropagation();openAesPanel(parseInt(edt.dataset.editordre),parseInt(edt.dataset.editbal||0));return;}};return;}
 var items=t.adresses.slice();if(q)items=items.filter(function(a){var base=((a.num||'')+' '+(a.rue||'')+' '+(a.nom||'')+' '+(a.complement||'')+' '+(a.entreprise||'')+' '+(a.tel||'')).toLowerCase();var bm=(a.boites||[]).some(function(b){return((b.nom||'')+' '+(b.complement||'')+' '+(b.entreprise||'')+' '+(b.nom_entreprise||'')).toLowerCase().includes(q);});return base.includes(q)||bm;});if(es==='alpha')items.sort(function(a,b){var na=(a.nom||a.entreprise||a.lieu_dit||'').toUpperCase();var nb=(b.nom||b.entreprise||b.lieu_dit||'').toUpperCase();return na.localeCompare(nb,'fr')||((a.ordre||0)-(b.ordre||0));});else items.sort(function(a,b){return(a.ordre||0)-(b.ordre||0);});if(!items.length){container.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">'+(q?'Aucun résultat':'Aucune adresse')+'</div>';return;}
-var DRAG='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="7" r="1"/><circle cx="15" cy="7" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="17" r="1"/><circle cx="15" cy="17" r="1"/></svg>';var pinBtn=function(a){var hp=!!(a.lat&&a.lng);return'<button style="background:'+(hp?'#e8f5e9':'var(--bg)')+';border:1.5px solid '+(hp?'#2d7a3a':'var(--border)')+';color:'+(hp?'#2d7a3a':'var(--muted)')+';border-radius:6px;padding:4px 7px;font-size:11px;cursor:pointer;flex-shrink:0" data-pinordre="'+a.ordre+'">'+(hp?'✓':'📍')+'</button>';};var edtBtn=function(a,balIdx){var bi=balIdx!==undefined?balIdx:0;return'<button style="background:var(--bg);border:1.5px solid var(--border);color:var(--muted);border-radius:6px;padding:4px 7px;font-size:11px;cursor:pointer;flex-shrink:0" data-editordre="'+a.ordre+'" data-editbal="'+bi+'">✏️</button>';};var delBtn=function(a){return'<button style="background:#fff0f0;border:1.5px solid #d43030;color:#d43030;border-radius:6px;padding:4px 7px;font-size:11px;cursor:pointer;flex-shrink:0" data-delordre="'+a.ordre+'">🗑</button>';};container.innerHTML=items.map(function(a,i){var dispOrder=es==='distrib'?(a.ordre||i+1):(i+1);var nbBal=1+(a.boites?a.boites.length:0);var useAccordeon=(nbBal>1);var dragAttrs=reorderMode?'draggable="true" data-ordre="'+a.ordre+'"':'data-ordre="'+a.ordre+'"';var addrLine=formatStreetAddress(a.num,a.rue);var isMrgSel=mergeSelected.indexOf(a.ordre)>=0;var isMoveSel=moveSelected.indexOf(a.ordre)>=0;var rNom=a.nom||'';
+var DRAG='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="7" r="1"/><circle cx="15" cy="7" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="17" r="1"/><circle cx="15" cy="17" r="1"/></svg>';var pinBtn=function(a){var hp=!!(a.lat&&a.lng);return'<button style="background:'+(hp?'#e8f5e9':'var(--bg)')+';border:1.5px solid '+(hp?'#2d7a3a':'var(--border)')+';color:'+(hp?'#2d7a3a':'var(--muted)')+';border-radius:6px;padding:4px 7px;font-size:11px;cursor:pointer;flex-shrink:0" data-pinordre="'+a.ordre+'">'+(hp?'✓':'📍')+'</button>';};var edtBtn=function(a,balIdx){var bi=balIdx!==undefined?balIdx:0;return'<button style="background:var(--bg);border:1.5px solid var(--border);color:var(--muted);border-radius:6px;padding:4px 7px;font-size:11px;cursor:pointer;flex-shrink:0" data-editordre="'+a.ordre+'" data-editbal="'+bi+'">✏️</button>';};var delBtn=function(a){return'<button style="background:#fff0f0;border:1.5px solid #d43030;color:#d43030;border-radius:6px;padding:4px 7px;font-size:11px;cursor:pointer;flex-shrink:0" data-delordre="'+a.ordre+'">🗑</button>';};container.innerHTML=items.map(function(a,i){var dispOrder=es==='distrib'?(a.ordre||i+1):(i+1);var nbBal=1+(a.boites?a.boites.length:0);var useAccordeon=(nbBal>1);var dragAttrs=reorderMode?'draggable="true" data-ordre="'+a.ordre+'"':'data-ordre="'+a.ordre+'"';var addrLine=formatStreetAddress(a.num,a.rue);var isMrgSel=mergeSelected.indexOf(a.ordre)>=0;var isMoveSel=moveSelected.indexOf(a.ordre)>=0;var isReorderSel=reorderSelected.indexOf(a.ordre)>=0;var rNom=a.nom||'';
 /* Pour un groupe multi-BAL, prioriser le lieu-dit dedie au groupe, avec le meme
    repli sur agregation des BAL que dans l'ecran Distribution */
 var rLieu=a.lieu_dit||'';
@@ -4786,16 +4852,16 @@ if(useAccordeon){
   }
 }
 var rEntr=a.entreprise||'';var name=rNom||rLieu||rEntr||a.complement||'';var subParts=[];if(useAccordeon){if(a.cp_ville)subParts.push('<span class="edit-meta-cp">'+escHtml(a.cp_ville)+'</span>');subParts.push('<span class="edit-meta-cp">'+nbBal+' BAL</span>');if(rLieu)subParts.push('<span class="edit-meta-lieu">'+escHtml(rLieu)+'</span>');if(rEntr)subParts.push('<span class="edit-meta-entr">'+escHtml(rEntr)+'</span>');}else{if(a.cp_ville)subParts.push('<span class="edit-meta-cp">'+escHtml(a.cp_ville)+'</span>');if(rNom)subParts.push('<span class="edit-meta-nom">'+escHtml(rNom)+'</span>');if(rLieu)subParts.push('<span class="edit-meta-lieu">'+escHtml(rLieu)+'</span>');if(rEntr)subParts.push('<span class="edit-meta-entr">'+escHtml(rEntr)+'</span>');}
-if(mergeMode){return'<div style="display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;margin-bottom:6px;border:2px solid '+(isMrgSel?'#e87820':'var(--border)')+';background:'+(isMrgSel?'#fff3e8':'var(--surface)')+';cursor:pointer" onclick="toggleMergeSelect('+a.ordre+')" '+dragAttrs+'>'+'<div style="width:22px;height:22px;border-radius:50%;border:2px solid '+(isMrgSel?'#e87820':'var(--border)')+';background:'+(isMrgSel?'#e87820':'var(--bg)')+';display:flex;align-items:center;justify-content:center;flex-shrink:0">'+
+if(mergeMode){return'<div style="display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;margin-bottom:6px;border:2px solid '+(isMrgSel?'#e87820':'var(--border)')+';background:'+(isMrgSel?'#fff3e8':'var(--surface)')+';cursor:pointer" onclick="toggleMergeSelect('+a.ordre+')">'+'<div style="width:22px;height:22px;border-radius:50%;border:2px solid '+(isMrgSel?'#e87820':'var(--border)')+';background:'+(isMrgSel?'#e87820':'var(--bg)')+';display:flex;align-items:center;justify-content:center;flex-shrink:0">'+
 (isMrgSel?'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':'')+'</div>'+'<div style="width:26px;height:26px;border-radius:50%;background:'+(isMrgSel?'#e87820':'var(--accent)')+';color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">'+dispOrder+'</div>'+'<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--text)">'+escHtml(addrLine)+'</div>'+(subParts.length?'<div style="font-size:11px;display:flex;flex-wrap:wrap;align-items:center;gap:2px;margin-top:1px">'+subParts.join('<span class="edit-meta-cp"> · </span>')+'</div>':'')+'</div></div>';}
 if(moveMode){return'<div style="display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;margin-bottom:6px;border:2px solid '+(isMoveSel?'#6b46c1':'var(--border)')+';background:'+(isMoveSel?'#f3edfd':'var(--surface)')+';cursor:pointer" onclick="toggleMoveSelect('+a.ordre+')">'+'<div style="width:22px;height:22px;border-radius:50%;border:2px solid '+(isMoveSel?'#6b46c1':'var(--border)')+';background:'+(isMoveSel?'#6b46c1':'var(--bg)')+';display:flex;align-items:center;justify-content:center;flex-shrink:0">'+
 (isMoveSel?'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':'')+'</div>'+'<div style="width:26px;height:26px;border-radius:50%;background:'+(isMoveSel?'#6b46c1':'var(--accent)')+';color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">'+dispOrder+'</div>'+'<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--text)">'+escHtml(addrLine)+'</div>'+(subParts.length?'<div style="font-size:11px;display:flex;flex-wrap:wrap;align-items:center;gap:2px;margin-top:1px">'+subParts.join('<span class="edit-meta-cp"> · </span>')+'</div>':'')+'</div></div>';}
-var pinBtn=function(a){var hp=!!(a.lat&&a.lng);return'<button style="background:'+(hp?'#e8f5e9':'var(--bg)')+';border:1.5px solid '+(hp?'#2d7a3a':'var(--border)')+';color:'+(hp?'#2d7a3a':'var(--muted)')+';border-radius:6px;padding:4px 7px;font-size:11px;cursor:pointer;flex-shrink:0" data-pinordre="'+a.ordre+'">'+(hp?'✓':'📍')+'</button>';};var edtBtn=function(a,balIdx){var bi=balIdx!==undefined?balIdx:0;return'<button style="background:var(--bg);border:1.5px solid var(--border);color:var(--muted);border-radius:6px;padding:4px 7px;font-size:11px;cursor:pointer;flex-shrink:0" data-editordre="'+a.ordre+'" data-editbal="'+bi+'">✏️</button>';};var delBtn=function(a){return'<button style="background:#fff0f0;border:1.5px solid #d43030;color:#d43030;border-radius:6px;padding:4px 7px;font-size:11px;cursor:pointer;flex-shrink:0" data-delordre="'+a.ordre+'">🗑</button>';};if(!useAccordeon){return'<div style="display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;margin-bottom:6px;border:1px solid var(--border);background:var(--surface)" '+dragAttrs+'>'+
-(reorderMode?'<span style="color:var(--muted);flex-shrink:0">'+DRAG+'</span>':'')+'<div style="width:26px;height:26px;border-radius:50%;background:'+editColor+';color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">'+dispOrder+'</div>'+'<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--text)">'+escHtml(addrLine)+'</div>'+(subParts.length?'<div style="font-size:11px;color:var(--muted)">'+subParts.join(' · ')+'</div>':'')+'</div>'+
+var pinBtn=function(a){var hp=!!(a.lat&&a.lng);return'<button style="background:'+(hp?'#e8f5e9':'var(--bg)')+';border:1.5px solid '+(hp?'#2d7a3a':'var(--border)')+';color:'+(hp?'#2d7a3a':'var(--muted)')+';border-radius:6px;padding:4px 7px;font-size:11px;cursor:pointer;flex-shrink:0" data-pinordre="'+a.ordre+'">'+(hp?'✓':'📍')+'</button>';};var edtBtn=function(a,balIdx){var bi=balIdx!==undefined?balIdx:0;return'<button style="background:var(--bg);border:1.5px solid var(--border);color:var(--muted);border-radius:6px;padding:4px 7px;font-size:11px;cursor:pointer;flex-shrink:0" data-editordre="'+a.ordre+'" data-editbal="'+bi+'">✏️</button>';};var delBtn=function(a){return'<button style="background:#fff0f0;border:1.5px solid #d43030;color:#d43030;border-radius:6px;padding:4px 7px;font-size:11px;cursor:pointer;flex-shrink:0" data-delordre="'+a.ordre+'">🗑</button>';};if(!useAccordeon){return'<div style="display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;margin-bottom:6px;border:'+(reorderMode&&isReorderSel?'2px solid #1a7a3a':'1px solid var(--border)')+';background:'+(reorderMode&&isReorderSel?'#e8f5ec':'var(--surface)')+'" '+dragAttrs+'>'+
+(reorderMode?'<span style="color:var(--muted);flex-shrink:0">'+DRAG+'</span><div class="reorder-select-checkbox" draggable="false" onclick="event.stopPropagation();toggleReorderSelect('+a.ordre+')" style="width:24px;height:24px;border-radius:50%;border:2px solid '+(isReorderSel?'#1a7a3a':'var(--border)')+';background:'+(isReorderSel?'#1a7a3a':'var(--bg)')+';display:flex;align-items:center;justify-content:center;flex-shrink:0">'+(isReorderSel?'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':'')+'</div>':'')+'<div style="width:26px;height:26px;border-radius:50%;background:'+editColor+';color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">'+dispOrder+'</div>'+'<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--text)">'+escHtml(addrLine)+'</div>'+(subParts.length?'<div style="font-size:11px;color:var(--muted)">'+subParts.join(' · ')+'</div>':'')+'</div>'+
 (reorderMode?'':pinBtn(a)+edtBtn(a)+delBtn(a))+'</div>';}
 var isOpen=editOpenGroups[a.ordre]||false;var allBals=buildBalList(a);var balsHtml=allBals.map(function(b){var bName=b.balIdx===0?(b.nom||b.entreprise||'BAL principale'):(b.nom||(b.nom_entreprise||b.entreprise)||(b.complement||('BAL '+(b.balIdx+1))));var bLieuEdit=b.lieu_dit||'';return'<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-top:1px solid var(--border);background:var(--bg)"'+(!reorderMode?' data-editordre="'+a.ordre+'" data-editbal="'+b.balIdx+'"':'')+'>'+'<div style="width:20px;height:20px;border-radius:50%;background:#6278a0;color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">'+(b.balIdx+1)+'</div>'+'<div style="flex:1;min-width:0"><div style="font-size:12px;color:var(--text)">'+escHtml(bName)+'</div>'+(bLieuEdit?'<div class="edit-meta-lieu" style="font-size:11px">'+escHtml(bLieuEdit)+'</div>':'')+'</div>'+
-(reorderMode?'':edtBtn(a,b.balIdx))+'</div>';}).join('');return'<div style="border:1px solid var(--border);border-radius:10px;margin-bottom:6px;overflow:hidden" id="egrp-'+a.ordre+'" '+dragAttrs+'>'+'<div style="display:flex;align-items:center;gap:10px;padding:11px 12px;cursor:pointer;background:var(--surface)" data-togglegrp="'+a.ordre+'">'+
-(reorderMode?'<span style="color:var(--muted);flex-shrink:0">'+DRAG+'</span>':'')+'<div style="width:26px;height:26px;border-radius:50%;background:'+editColor+';color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">'+dispOrder+'</div>'+'<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--text)">'+escHtml(addrLine)+'</div><div style="font-size:11px;color:var(--muted)">'+subParts.join(' · ')+'</div></div>'+
+(reorderMode?'':edtBtn(a,b.balIdx))+'</div>';}).join('');return'<div style="border:'+(reorderMode&&isReorderSel?'2px solid #1a7a3a':'1px solid var(--border)')+';border-radius:10px;margin-bottom:6px;overflow:hidden;background:'+(reorderMode&&isReorderSel?'#e8f5ec':'transparent')+'" id="egrp-'+a.ordre+'" '+dragAttrs+'>'+'<div style="display:flex;align-items:center;gap:10px;padding:11px 12px;cursor:pointer;background:'+(reorderMode&&isReorderSel?'transparent':'var(--surface)')+'" data-togglegrp="'+a.ordre+'">'+
+(reorderMode?'<span style="color:var(--muted);flex-shrink:0">'+DRAG+'</span><div class="reorder-select-checkbox" draggable="false" onclick="event.stopPropagation();toggleReorderSelect('+a.ordre+')" style="width:24px;height:24px;border-radius:50%;border:2px solid '+(isReorderSel?'#1a7a3a':'var(--border)')+';background:'+(isReorderSel?'#1a7a3a':'var(--bg)')+';display:flex;align-items:center;justify-content:center;flex-shrink:0">'+(isReorderSel?'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':'')+'</div>':'')+'<div style="width:26px;height:26px;border-radius:50%;background:'+editColor+';color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">'+dispOrder+'</div>'+'<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--text)">'+escHtml(addrLine)+'</div><div style="font-size:11px;color:var(--muted)">'+subParts.join(' · ')+'</div></div>'+
 (reorderMode?'':pinBtn(a)+'<button onclick="event.stopPropagation();openAesPanel('+a.ordre+',-1)" style="background:var(--bg);border:1.5px solid var(--border);color:var(--muted);border-radius:6px;padding:4px 7px;font-size:11px;cursor:pointer;flex-shrink:0" title="Modifier numéro/rue du groupe">✏️</button>'+delBtn(a))+'<svg style="transition:transform 0.2s;transform:rotate('+(isOpen?90:0)+'deg);flex-shrink:0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>'+'</div>'+'<div data-grpbody="'+a.ordre+'" style="display:'+(isOpen?'block':'none')+'">'+balsHtml+'</div>'+'</div>';}).join('');container.onclick=function(e){if(mergeMode||moveMode)return;var del=e.target.closest('[data-delordre]');if(del){e.stopPropagation();deleteAdresse(parseInt(del.dataset.delordre));return;}
 var pin=e.target.closest('[data-pinordre]');if(pin){e.stopPropagation();openPinMap(editScreenCode,parseInt(pin.dataset.pinordre));return;}
 var edt=e.target.closest('[data-editordre]');if(edt){e.stopPropagation();openAesPanel(parseInt(edt.dataset.editordre),parseInt(edt.dataset.editbal||0));return;}
