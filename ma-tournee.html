@@ -171,7 +171,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
       <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
 
-      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 04/09/2026 16:39</div>
+      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 04/09/2026 16:47</div>
     </div>
   </div>
 </div>
@@ -624,7 +624,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='04/09/2026 16:39';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='04/09/2026 16:47';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -1790,6 +1790,7 @@ function toggleHomeView(){
   homeViewMode=homeViewMode==='list'?'grid':'list';
   try{localStorage.setItem('home_view_mode',homeViewMode);}catch(e){}
   applyHomeViewMode();
+  fetchHomePresence(applyHomePresenceTags);
 }
 function applyHomeViewMode(){
   var listEl=document.getElementById('home-tournee-list');
@@ -1821,6 +1822,49 @@ function toggleHomeDrawer(){
     }
   }
 }
+/* Recupere en une seule lecture la presence de tout le monde sur toutes les
+   tournees, pour afficher "Libre"/"Occupee · Nom" a cote de chacune sur l'accueil.
+   N'affiche jamais "Occupee" pour SA PROPRE session (on sait qu'on l'utilise soi-meme). */
+function fetchHomePresence(callback){
+  if(!db){callback({});return;}
+  db.collection('app_data').doc('sessions').get().then(function(doc){
+    var result={};
+    if(doc.exists){
+      var data=doc.data();
+      Object.keys(data).forEach(function(code){
+        var entry=data[code];
+        if(entry&&entry.profile&&(Date.now()-entry.ts)<120000){
+          if(!currentProfile||entry.profile!==currentProfile.name){
+            result[code]=entry.profile;
+          }
+        }
+      });
+    }
+    callback(result);
+  }).catch(function(){callback({});});
+}
+function applyHomePresenceTags(presenceMap){
+  TOURNEE_CODES.forEach(function(code){
+    var busyName=presenceMap[code];
+    var rowTag=document.getElementById('home-tag-'+code);
+    if(rowTag){
+      if(busyName){
+        rowTag.textContent='Occupée · '+busyName;
+        rowTag.style.background='rgba(217,67,47,0.15)';
+        rowTag.style.color='#ff6b52';
+      } else {
+        rowTag.textContent='Libre';
+        rowTag.style.background='rgba(46,160,67,0.15)';
+        rowTag.style.color='#3fc463';
+      }
+    }
+    var tile=document.getElementById('home-tile-'+code);
+    if(tile){
+      var dot=tile.querySelector('.home-tile-presence-dot');
+      if(dot)dot.style.background=busyName?'#ff6b52':'#3fc463';
+    }
+  });
+}
 function buildHomeTourneeCards(){
   var listEl=document.getElementById('home-tournee-list');
   var gridEl=document.getElementById('home-tournee-grid');
@@ -1831,17 +1875,18 @@ function buildHomeTourneeCards(){
     var row=document.createElement('div');
     row.id='home-row-'+code;
     row.style.cssText='display:flex;align-items:center;gap:12px;padding:13px 4px;cursor:pointer;border-bottom:1px solid var(--border)';
-    row.innerHTML='<div style="width:9px;height:9px;border-radius:50%;background:'+color+';flex-shrink:0"></div>'+'<div style="flex:1;font-size:14.5px;font-weight:600;color:var(--text)">'+code+'</div>'+'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>';
+    row.innerHTML='<div style="width:9px;height:9px;border-radius:50%;background:'+color+';flex-shrink:0"></div>'+'<div style="flex:1;font-size:14.5px;font-weight:600;color:var(--text)">'+code+'</div>'+'<span id="home-tag-'+code+'" style="font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:20px;flex-shrink:0;white-space:nowrap"></span>'+'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>';
     row.onclick=function(){homeCardClick(code);};
     listEl.appendChild(row);
     var tile=document.createElement('div');
     tile.id='home-tile-'+code;
-    tile.style.cssText='aspect-ratio:1.05;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;cursor:pointer;background:'+color;
-    tile.textContent=code;
+    tile.style.cssText='aspect-ratio:1.05;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;cursor:pointer;background:'+color+';position:relative';
+    tile.innerHTML=code+'<div class="home-tile-presence-dot" style="position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:transparent;border:1.5px solid rgba(255,255,255,0.5)"></div>';
     tile.onclick=function(){homeCardClick(code);};
     gridEl.appendChild(tile);
   });
   applyHomeViewMode();
+  fetchHomePresence(applyHomePresenceTags);
 }
 var firebaseConfig={apiKey:"AIzaSyCJRHL5MhawTwXPDwk-ZBWgk9hZ5bSABIA",authDomain:"ma-tournee.firebaseapp.com",projectId:"ma-tournee",storageBucket:"ma-tournee.firebasestorage.app",messagingSenderId:"290874680683",appId:"1:290874680683:web:73aa7477ea84614f43d82e"};var fbApp=null,db=null,fbSyncTimeout=null,fbSyncStatus='idle';function initFirebase(){try{fbApp=firebase.initializeApp(firebaseConfig);db=firebase.firestore();showSyncStatus('connected');}catch(e){db=null;}}
 function showSyncStatus(s){fbSyncStatus=s;var el=document.getElementById('sync-status-badge');if(el){var labels={connected:{text:'☁️ Connecté',color:'#27a355'},saving:{text:'⏳ Sync...',color:'#c49b00'},saved:{text:'✓ Synchronisé',color:'#27a355'},error:{text:'⚠️ Hors ligne',color:'#d05040'},idle:{text:'☁️',color:'#6278a0'}};var st=labels[s]||labels.idle;el.textContent=st.text;el.style.color=st.color;}
