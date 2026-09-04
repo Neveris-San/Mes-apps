@@ -111,7 +111,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
     </div>
   </div>
   
-  <div style="flex:1;overflow-y:auto;padding:10px 12px;-webkit-overflow-scrolling:touch">
+  <div style="flex:1;overflow-y:auto;padding:10px 12px;-webkit-overflow-scrolling:touch;position:relative">
     <div id="resume-nav-banner" onclick="resumeNavigation()" style="display:none;align-items:center;gap:12px;background:#fff3e0;border:1.5px solid #ff9800;border-radius:12px;padding:12px 14px;margin-bottom:10px;cursor:pointer">
       <div style="font-size:22px;flex-shrink:0">⏸️</div>
       <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:#7a4a00">Tournée en pause</div><div id="resume-nav-sub" style="font-size:11px;color:#a06000">—</div></div>
@@ -129,24 +129,50 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       </div>
       <div id="weather-rain" style="font-size:11px;color:var(--accent);font-weight:600;text-align:right;flex-shrink:0"></div>
     </div>
-    <div id="home-tournee-cards" style="display:flex;flex-direction:column;gap:8px"></div>
-  </div>
-  <div style="padding:12px 14px;border-top:1px solid var(--border);background:var(--surface);flex-shrink:0;padding-bottom:max(12px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px">
-    <div style="display:flex;gap:8px">
-      <button onclick="showBureauScreen()" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:9px 6px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🏢 Changer bureau</button>
-      <button onclick="confirmResetLivraisons()" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:9px 6px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🔄 Réinitialiser</button>
-    </div>
-    <button onclick="showBackupInfo()" style="display:none;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
-    <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
-    <div style="display:flex;flex-direction:column;gap:6px">
-      <span style="font-size:11px;color:var(--muted);font-weight:600">Apparence</span>
-      <div style="display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden">
-        <button onclick="setTheme('light')" id="theme-btn-light" style="flex:1;padding:9px 4px;border:none;background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">☀️ Clair</button>
-        <button onclick="setTheme('dark')" id="theme-btn-dark" style="flex:1;padding:9px 4px;border:none;border-left:1px solid var(--border);background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🌙 Sombre</button>
-        <button onclick="setTheme('sun')" id="theme-btn-sun" style="flex:1;padding:9px 4px;border:none;border-left:1px solid var(--border);background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🔆 Plein soleil</button>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:0 2px">
+      <span style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.3px">TOURNÉES</span>
+      <div style="display:flex;align-items:center;gap:4px">
+        <button onclick="toggleHomeView()" id="home-view-toggle-btn" style="background:none;border:none;color:var(--muted);font-size:15px;padding:6px 8px;border-radius:8px;cursor:pointer">▦</button>
+        <button onclick="toggleHomeDrawer()" style="background:none;border:none;color:var(--muted);font-size:19px;letter-spacing:2px;padding:6px 9px;border-radius:8px;cursor:pointer">···</button>
       </div>
     </div>
-    <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5">build 03/09/2026 21:07</div>
+    <div id="home-tournee-list" style="display:flex;flex-direction:column"></div>
+    <div id="home-tournee-grid" style="display:none;grid-template-columns:repeat(3,1fr);gap:8px"></div>
+  </div>
+
+  <!-- ===== TIROIR DE REGLAGES (accueil) ===== -->
+  <div id="home-drawer-overlay" onclick="toggleHomeDrawer()" style="position:fixed;inset:0;background:rgba(0,0,0,0);pointer-events:none;transition:background 0.3s;z-index:9999996">
+    <div id="home-drawer" onclick="event.stopPropagation()" style="position:absolute;top:0;right:-82%;width:82%;max-width:340px;height:100%;background:var(--surface);padding:calc(20px + env(safe-area-inset-top)) 18px 20px;transition:right 0.32s cubic-bezier(.2,.8,.3,1);border-left:1px solid var(--border);overflow-y:auto;box-sizing:border-box">
+      <div style="display:flex;align-items:center;gap:10px;padding-bottom:16px;margin-bottom:12px;border-bottom:1px solid var(--border)">
+        <div id="home-drawer-avatar" style="width:42px;height:42px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;overflow:hidden;flex-shrink:0"></div>
+        <div style="min-width:0">
+          <div id="home-drawer-profile-name" style="font-size:15px;font-weight:700;color:var(--text)">—</div>
+          <div id="home-drawer-bureau" style="font-size:11px;color:var(--muted);margin-top:1px">—</div>
+        </div>
+      </div>
+
+      <div style="font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:0.3px;margin-bottom:6px">TOURNÉE</div>
+      <button onclick="toggleHomeDrawer();showBureauScreen()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">🏢 Changer de bureau</button>
+      <button onclick="toggleHomeDrawer();confirmResetLivraisons()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">🔄 Réinitialiser les livraisons</button>
+
+      <div style="font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:0.3px;margin:16px 0 6px">COMPTE</div>
+      <button onclick="toggleHomeDrawer();openProfileSelectScreen(true)" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">👤 Changer de profil</button>
+      <button onclick="toggleHomeDrawer();openProfileManage()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">🛠️ Gérer les profils</button>
+      <button onclick="toggleHomeDrawer();exportRawData()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">📤 Exporter mes données</button>
+      <button onclick="if(confirm('Vider le cache local de ce navigateur ? Firebase ne sera pas touché, seulement ce qui est stocké sur cet appareil.')){toggleHomeDrawer();clearLocalCacheOnly();}" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">🧹 Vider le cache local</button>
+
+      <div style="font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:0.3px;margin:16px 0 6px">APPARENCE</div>
+      <div style="display:flex;gap:6px;margin-top:2px">
+        <button onclick="setTheme('light')" id="theme-btn-light" style="flex:1;padding:9px 4px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer">☀️ Clair</button>
+        <button onclick="setTheme('dark')" id="theme-btn-dark" style="flex:1;padding:9px 4px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer">🌙 Sombre</button>
+        <button onclick="setTheme('sun')" id="theme-btn-sun" style="flex:1;padding:9px 4px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer">🔆 Plein soleil</button>
+      </div>
+
+      <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
+      <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
+
+      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 04/09/2026 16:39</div>
+    </div>
   </div>
 </div>
 
@@ -598,7 +624,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='03/09/2026 21:07';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='04/09/2026 16:39';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -1759,7 +1785,64 @@ function showBureauScreen(){var list=document.getElementById('bureau-list');if(l
 (isSelected?'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':'')+'</button>';}).join('');list.onclick=function(e){var btn=e.target.closest('[data-bureau]');if(btn)selectBureau(btn.dataset.bureau);};}
 var s=document.getElementById('screen-bureau');s.style.display='flex';var c=document.getElementById('btn-confirm-bureau');if(c)c.disabled=!(selectedBureauTemp||currentBureau);}
 function hideBureauScreen(){var s=document.getElementById('screen-bureau');s.style.display='none';s.classList.add('hidden');document.getElementById('screen-home').style.display='flex';}
-function buildHomeTourneeCards(){var container=document.getElementById('home-tournee-cards');if(!container)return;container.innerHTML='';var modeColor=homeMode==='edit'?'var(--accent)':'var(--green)';TOURNEE_CODES.forEach(function(code){var badge=code.startsWith('TL')?'TL':code.startsWith('TC')?'TC':code==='RENFORT'?'RF':'TM';var color=getTourneeColor(code);var div=document.createElement('div');div.id='home-card-'+code;div.style.cssText='display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;border:1px solid var(--border);border-left:4px solid '+modeColor+';background:var(--surface);cursor:pointer;margin-bottom:2px';div.innerHTML='<div style="width:36px;height:36px;border-radius:50%;background:'+color+';color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">'+badge+'</div>'+'<div style="flex:1;min-width:0">'+'<div style="font-size:14px;font-weight:700;color:var(--text)">'+code+'</div>'+'<div id="home-desc-'+code+'" style="font-size:11px;color:var(--muted)"></div>'+'</div>'+'<div id="home-prog-'+code+'" style="font-size:12px;font-weight:700;color:var(--muted)">—</div>'+'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>';div.onclick=function(){homeCardClick(code);};container.appendChild(div);});}
+var homeViewMode=(function(){try{return localStorage.getItem('home_view_mode')||'list';}catch(e){return 'list';}})();
+function toggleHomeView(){
+  homeViewMode=homeViewMode==='list'?'grid':'list';
+  try{localStorage.setItem('home_view_mode',homeViewMode);}catch(e){}
+  applyHomeViewMode();
+}
+function applyHomeViewMode(){
+  var listEl=document.getElementById('home-tournee-list');
+  var gridEl=document.getElementById('home-tournee-grid');
+  var btn=document.getElementById('home-view-toggle-btn');
+  if(listEl)listEl.style.display=homeViewMode==='grid'?'none':'flex';
+  if(gridEl)gridEl.style.display=homeViewMode==='grid'?'grid':'none';
+  if(btn)btn.textContent=homeViewMode==='grid'?'☰':'▦';
+}
+function toggleHomeDrawer(){
+  var overlay=document.getElementById('home-drawer-overlay');
+  var drawer=document.getElementById('home-drawer');
+  if(!overlay||!drawer)return;
+  var isOpen=drawer.style.right==='0px'||drawer.style.right==='0%';
+  overlay.style.background=isOpen?'rgba(0,0,0,0)':'rgba(0,0,0,0.5)';
+  overlay.style.pointerEvents=isOpen?'none':'auto';
+  drawer.style.right=isOpen?'-82%':'0';
+  if(!isOpen){
+    var av=document.getElementById('home-drawer-avatar');
+    var nm=document.getElementById('home-drawer-profile-name');
+    var bu=document.getElementById('home-drawer-bureau');
+    if(nm)nm.textContent=currentProfile&&currentProfile.name?currentProfile.name:'—';
+    if(bu)bu.textContent=currentBureau?currentBureau.replace(/-/g,' '):'—';
+    if(av){
+      var profiles=typeof getProfilesForBureau==='function'?getProfilesForBureau():[];
+      var mine=currentProfile?profiles.find(function(p){return p.name===currentProfile.name;}):null;
+      if(mine&&mine.photo){av.innerHTML='<img src="'+mine.photo+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';}
+      else{av.textContent=currentProfile&&currentProfile.name?currentProfile.name.charAt(0).toUpperCase():'?';}
+    }
+  }
+}
+function buildHomeTourneeCards(){
+  var listEl=document.getElementById('home-tournee-list');
+  var gridEl=document.getElementById('home-tournee-grid');
+  if(!listEl||!gridEl)return;
+  listEl.innerHTML='';gridEl.innerHTML='';
+  TOURNEE_CODES.forEach(function(code){
+    var color=getTourneeColor(code);
+    var row=document.createElement('div');
+    row.id='home-row-'+code;
+    row.style.cssText='display:flex;align-items:center;gap:12px;padding:13px 4px;cursor:pointer;border-bottom:1px solid var(--border)';
+    row.innerHTML='<div style="width:9px;height:9px;border-radius:50%;background:'+color+';flex-shrink:0"></div>'+'<div style="flex:1;font-size:14.5px;font-weight:600;color:var(--text)">'+code+'</div>'+'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>';
+    row.onclick=function(){homeCardClick(code);};
+    listEl.appendChild(row);
+    var tile=document.createElement('div');
+    tile.id='home-tile-'+code;
+    tile.style.cssText='aspect-ratio:1.05;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;cursor:pointer;background:'+color;
+    tile.textContent=code;
+    tile.onclick=function(){homeCardClick(code);};
+    gridEl.appendChild(tile);
+  });
+  applyHomeViewMode();
+}
 var firebaseConfig={apiKey:"AIzaSyCJRHL5MhawTwXPDwk-ZBWgk9hZ5bSABIA",authDomain:"ma-tournee.firebaseapp.com",projectId:"ma-tournee",storageBucket:"ma-tournee.firebasestorage.app",messagingSenderId:"290874680683",appId:"1:290874680683:web:73aa7477ea84614f43d82e"};var fbApp=null,db=null,fbSyncTimeout=null,fbSyncStatus='idle';function initFirebase(){try{fbApp=firebase.initializeApp(firebaseConfig);db=firebase.firestore();showSyncStatus('connected');}catch(e){db=null;}}
 function showSyncStatus(s){fbSyncStatus=s;var el=document.getElementById('sync-status-badge');if(el){var labels={connected:{text:'☁️ Connecté',color:'#27a355'},saving:{text:'⏳ Sync...',color:'#c49b00'},saved:{text:'✓ Synchronisé',color:'#27a355'},error:{text:'⚠️ Hors ligne',color:'#d05040'},idle:{text:'☁️',color:'#6278a0'}};var st=labels[s]||labels.idle;el.textContent=st.text;el.style.color=st.color;}
   if(s==='error'){showFirebaseBlockedWarning();}
@@ -3129,7 +3212,7 @@ function renderResumeNavBanner(){
     banner.style.display='none';
   }
 }
-function showHome(){document.getElementById('screen-home').style.display='flex';updateHomeCards();loadWeather();renderPartieBadge();renderResumeNavBanner();renderSessionBadge();var sub=document.getElementById('home-bureau-sub');if(sub&&currentBureau){var labels={'ARLES':'Arles','CHATEAURENARD':'Châteaurenard','NOVES':'Noves','SAINT-MARTIN-DE-CRAU':'Saint-Martin-de-Crau','SAINT-REMY-DE-PROVENCE':'Saint-Rémy-de-Provence','SALON-DE-PROVENCE':'Salon-de-Provence','SENAS':'Sénas','TARASCON':'Tarascon'};sub.textContent='Bureau de '+(labels[currentBureau]||currentBureau);}}
+function showHome(){document.getElementById('screen-home').style.display='flex';buildHomeTourneeCards();loadWeather();renderPartieBadge();renderResumeNavBanner();renderSessionBadge();var sub=document.getElementById('home-bureau-sub');if(sub&&currentBureau){var labels={'ARLES':'Arles','CHATEAURENARD':'Châteaurenard','NOVES':'Noves','SAINT-MARTIN-DE-CRAU':'Saint-Martin-de-Crau','SAINT-REMY-DE-PROVENCE':'Saint-Rémy-de-Provence','SALON-DE-PROVENCE':'Salon-de-Provence','SENAS':'Sénas','TARASCON':'Tarascon'};sub.textContent='Bureau de '+(labels[currentBureau]||currentBureau);}}
 /* [code mort supprime: renderInfosTab (premiere declaration, ecrasee plus loin dans le fichier)] */
 var toolsMapInstance=null;var toolsMapLayer=null;var toolsMapActive=null;function initToolsMap(){var container=document.getElementById('tab-map-container');var bar=document.getElementById('tools-map-bar');var mapEl=document.getElementById('tools-map');if(!mapEl)return;var barH=bar?bar.offsetHeight:80;var h=window.innerHeight-120-barH;mapEl.style.height=Math.max(250,h)+'px';var btnWrap=document.getElementById('tools-map-buttons');if(btnWrap&&!btnWrap.hasChildNodes()){var codes=getBureauTournees(currentBureau);btnWrap.innerHTML=codes.map(function(code){var clr=getTourneeColor(code);return'<button data-tmcode="'+code+'" style="padding:5px 10px;border-radius:20px;border:1.5px solid '+clr+';background:#fff;color:'+clr+';font-size:11px;font-weight:700;cursor:pointer">'+code+'</button>';}).join('');btnWrap.onclick=function(e){var b=e.target.closest('[data-tmcode]');if(b)selectToolsMapTournee(b.getAttribute('data-tmcode'));};}
 if(!toolsMapInstance){toolsMapInstance=L.map('tools-map',{zoomControl:true,attributionControl:false,preferCanvas:true});toolsMapInstance.setView(getBureauCenter(),12);setTileLayer('tools',mapLayers['tools']||'plan');toolsMapLayer=L.layerGroup().addTo(toolsMapInstance);}
