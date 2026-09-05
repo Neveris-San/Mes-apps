@@ -171,7 +171,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
       <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
 
-      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 04/09/2026 16:59</div>
+      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 05/09/2026 09:07</div>
     </div>
   </div>
 </div>
@@ -545,6 +545,33 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
+<!-- ===== SAISIE MOT DE PASSE ADMIN ===== -->
+<div id="admin-pwd-overlay" style="position:fixed;inset:0;z-index:9999999;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--surface);border-radius:16px;padding:20px;width:100%;max-width:340px;box-sizing:border-box">
+    <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px">🔒 Mot de passe requis</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:14px">Profil administrateur : <span id="admin-pwd-name" style="font-weight:700;color:var(--text)"></span></div>
+    <input id="admin-pwd-input" type="password" placeholder="Mot de passe" autocomplete="off" onkeydown="handleAdminPwdKeydown(event)" style="width:100%;box-sizing:border-box;padding:11px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;margin-bottom:6px">
+    <div id="admin-pwd-error" style="display:none;color:var(--red);font-size:12px;font-weight:600;margin-bottom:8px">Mot de passe incorrect</div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button onclick="closeAdminPasswordPrompt()" style="flex:1;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer">Annuler</button>
+      <button onclick="submitAdminPassword()" style="flex:2;padding:12px;background:var(--accent);border:none;border-radius:10px;font-size:14px;font-weight:700;color:#fff;cursor:pointer">Se connecter</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODIFIER MOT DE PASSE ADMIN ===== -->
+<div id="admin-pwd-change-overlay" style="position:fixed;inset:0;z-index:9999999;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--surface);border-radius:16px;padding:20px;width:100%;max-width:340px;box-sizing:border-box">
+    <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px">🔒 Nouveau mot de passe</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:14px">Pour : <span id="admin-pwd-change-name" style="font-weight:700;color:var(--text)"></span></div>
+    <input id="admin-pwd-change-input" type="text" placeholder="Nouveau mot de passe" autocomplete="off" style="width:100%;box-sizing:border-box;padding:11px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;margin-bottom:12px">
+    <div style="display:flex;gap:10px">
+      <button onclick="closeAdminPasswordChange()" style="flex:1;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer">Annuler</button>
+      <button onclick="saveAdminPasswordChange()" style="flex:2;padding:12px;background:var(--accent);border:none;border-radius:10px;font-size:14px;font-weight:700;color:#fff;cursor:pointer">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===== GESTION DES PROFILS (photos, renommage) ===== -->
   <div id="profile-manage-overlay" style="position:fixed;inset:0;z-index:9999998;background:var(--bg);display:none;flex-direction:column">
     <div style="background:var(--surface);border-bottom:1px solid var(--border);padding:12px 14px;padding-top:max(12px,env(safe-area-inset-top));display:flex;align-items:center;gap:10px;flex-shrink:0">
@@ -624,7 +651,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='04/09/2026 16:59';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='05/09/2026 09:07';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -2312,6 +2339,7 @@ function addGpsTrackPoint(lat,lng){var n=gpsTrackPoints.length;if(n>0){var prev=
 function updateTourneeDistance(code){var distEl=document.getElementById('tlist-dist-km');if(!distEl)return;var t=getTourneeData(code);var points=(t.adresses||[]).filter(function(a){return a.lat&&a.lng;}).sort(function(a,b){return(a.ordre||0)-(b.ordre||0);});if(points.length<2){distEl.textContent='';return;}
 var totalKm=0;for(var i=1;i<points.length;i++)totalKm+=haversineKm(points[i-1].lat,points[i-1].lng,points[i].lat,points[i].lng);distEl.textContent='· '+(totalKm>=1?totalKm.toFixed(1)+'km':Math.round(totalKm*1000)+'m');var wpts=points.map(function(a){return{lat:a.lat,lng:a.lng};});var CHUNK=49,chunks=[],i=0;for(;i<wpts.length;i+=CHUNK)chunks.push(wpts.slice(i,Math.min(i+CHUNK+1,wpts.length)));var totalOsrm=0,done=0;chunks.forEach(function(chunk){var coords=chunk.map(function(w){return w.lng+','+w.lat;}).join(';');fetch('https://router.project-osrm.org/route/v1/driving/'+coords+'?overview=false&snapping=any').then(function(r){return r.json();}).then(function(data){if(data.routes&&data.routes[0])totalOsrm+=data.routes[0].distance/1000;done++;if(done===chunks.length&&distEl)distEl.textContent='· '+(totalOsrm>=1?totalOsrm.toFixed(1)+'km':Math.round(totalOsrm*1000)+'m');}).catch(function(){done++;});});}
 var mergeMode=false,mergeSelected=[];function toggleMoveMode(){
+  if(!moveMode&&blockIfFacteur())return;
   moveMode=!moveMode;moveSelected=[];
   var bar=document.getElementById('edit-move-bar'),btn=document.getElementById('btn-move'),lbl=document.getElementById('btn-move-label');
   if(bar)bar.style.display=moveMode?'flex':'none';
@@ -2415,7 +2443,7 @@ function confirmMoveToTournee(targetCode){
   showToast(moved.length+' arrêt'+(moved.length>1?'s':'')+' déplacé'+(moved.length>1?'s':'')+' vers '+targetCode+' ✓');
 }
 
-function toggleMergeMode(){mergeMode=!mergeMode;mergeSelected=[];var bar=document.getElementById('edit-merge-bar'),btn=document.getElementById('btn-merge'),lbl=document.getElementById('btn-merge-label');if(bar)bar.style.display=mergeMode?'flex':'none';if(btn){btn.style.background=mergeMode?'#e87820':'#fff3e8';btn.style.borderColor='#e87820';btn.style.color=mergeMode?'#fff':'#e87820';}
+function toggleMergeMode(){if(!mergeMode&&blockIfFacteur())return;mergeMode=!mergeMode;mergeSelected=[];var bar=document.getElementById('edit-merge-bar'),btn=document.getElementById('btn-merge'),lbl=document.getElementById('btn-merge-label');if(bar)bar.style.display=mergeMode?'flex':'none';if(btn){btn.style.background=mergeMode?'#e87820':'#fff3e8';btn.style.borderColor='#e87820';btn.style.color=mergeMode?'#fff':'#e87820';}
 if(lbl)lbl.textContent=mergeMode?'Annuler':'Regrouper';if(moveMode)cancelMoveMode();updateMergeBar();renderEditList();}
 function cancelMergeMode(){mergeMode=false;mergeSelected=[];var bar=document.getElementById('edit-merge-bar'),btn=document.getElementById('btn-merge'),lbl=document.getElementById('btn-merge-label');if(bar)bar.style.display='none';if(btn){btn.style.background='#fff3e8';btn.style.color='#e87820';}
 if(lbl)lbl.textContent='Regrouper';renderEditList();}
@@ -2716,9 +2744,31 @@ function renderExistingProfilesList(){
     }).join('');
 }
 
+var ADMIN_DEFAULT_PASSWORD='MonmdpTournee16+';
+function isAdminName(name){return (name||'').trim().toLowerCase()==='severin';}
+function isFacteurSession(){return !(currentProfile&&isAdminName(currentProfile.name));}
+function blockIfFacteur(){if(isFacteurSession()){showToast('Réservé à l\'administrateur');return true;}return false;}
+function applyRoleRestrictionsToEditScreen(){
+  var locked=isFacteurSession();
+  var bar=document.getElementById('edit-bottom-bar');
+  if(!bar)return;
+  var newBtn=bar.querySelector('button[onclick="openNewAddrPanel()"]');
+  var mergeBtn=document.getElementById('btn-merge');
+  var moveBtn=document.getElementById('btn-move');
+  var reorderBtn=document.getElementById('btn-reorder');
+  [newBtn,mergeBtn,moveBtn,reorderBtn].forEach(function(btn){
+    if(!btn)return;
+    btn.disabled=locked;
+    btn.style.opacity=locked?'0.4':'1';
+    btn.style.cursor=locked?'not-allowed':'pointer';
+  });
+}
 function normalizeProfile(p){
-  if(typeof p==='string')return{name:p,photo:null};
-  return{name:p.name||'',photo:p.photo||null};
+  if(typeof p==='string')p={name:p,photo:null};
+  var role=isAdminName(p.name)?'admin':'facteur';
+  var password=p.password||'';
+  if(role==='admin'&&!password)password=ADMIN_DEFAULT_PASSWORD;
+  return{name:p.name||'',photo:p.photo||null,role:role,password:password};
 }
 function getProfilesForBureau(){
   var raw=_allBureauProfiles[currentBureau]||[];
@@ -2733,7 +2783,48 @@ function saveProfilesForBureau(list){
   }
 }
 function selectExistingProfile(name){
+  var p=getProfilesForBureau().find(function(x){return x.name===name;});
+  if(p&&p.role==='admin'){
+    openAdminPasswordPrompt(name);
+    return;
+  }
   setCurrentProfile(name);
+}
+var _pendingAdminName=null;
+function openAdminPasswordPrompt(name){
+  _pendingAdminName=name;
+  var ov=document.getElementById('admin-pwd-overlay');
+  if(!ov)return;
+  var input=document.getElementById('admin-pwd-input');
+  if(input)input.value='';
+  var err=document.getElementById('admin-pwd-error');
+  if(err)err.style.display='none';
+  var lbl=document.getElementById('admin-pwd-name');
+  if(lbl)lbl.textContent=name;
+  ov.style.display='flex';
+  setTimeout(function(){if(input)input.focus();},100);
+}
+function closeAdminPasswordPrompt(){
+  var ov=document.getElementById('admin-pwd-overlay');
+  if(ov)ov.style.display='none';
+  _pendingAdminName=null;
+}
+function submitAdminPassword(){
+  if(!_pendingAdminName)return;
+  var input=document.getElementById('admin-pwd-input');
+  var entered=input?input.value:'';
+  var p=getProfilesForBureau().find(function(x){return x.name===_pendingAdminName;});
+  if(p&&entered===p.password){
+    var name=_pendingAdminName;
+    closeAdminPasswordPrompt();
+    setCurrentProfile(name);
+  }else{
+    var err=document.getElementById('admin-pwd-error');
+    if(err)err.style.display='block';
+  }
+}
+function handleAdminPwdKeydown(evt){
+  if(evt.key==='Enter')submitAdminPassword();
 }
 
 function createNewProfile(){
@@ -2792,17 +2883,31 @@ function renderProfileManageList(){
     list.innerHTML='<div style="text-align:center;padding:30px 10px;color:var(--muted);font-size:13px">Aucun profil pour l\'instant. Crée-en un depuis l\'écran de sélection.</div>';
     return;
   }
+  var viewerIsAdmin=currentProfile&&isAdminName(currentProfile.name);
   list.innerHTML=profiles.map(function(p,idx){
     var avatarInner=p.photo
       ? '<img src="'+p.photo+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">'
       : escHtml(p.name.charAt(0).toUpperCase());
+    var roleTag=p.role==='admin'
+      ? '<span style="font-size:9px;font-weight:700;color:#e87820;background:#fff3e8;padding:2px 6px;border-radius:6px;white-space:nowrap">ADMIN</span>'
+      : '<span style="font-size:9px;font-weight:700;color:var(--muted);background:var(--bg);padding:2px 6px;border-radius:6px;white-space:nowrap">FACTEUR</span>';
+    var lockBtn=(p.role==='admin'&&viewerIsAdmin)
+      ? '<button onclick="openAdminPasswordChange(\''+p.name.replace(/'/g,"\\'")+'\')" style="background:var(--accent-light);border:none;color:var(--accent);border-radius:8px;padding:8px 10px;font-size:12px;cursor:pointer;flex-shrink:0">🔒</button>'
+      : '';
+    var canEdit=viewerIsAdmin||p.role!=='admin';
+    var nameInput=canEdit
+      ? '<input value="'+escHtml(p.name)+'" onchange="renameProfileTo(\''+p.name.replace(/'/g,"\\'")+'\',this.value)" style="flex:1;padding:8px 10px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;font-weight:600">'
+      : '<div style="flex:1;padding:8px 10px;font-size:14px;font-weight:600;color:var(--text)">'+escHtml(p.name)+'</div>';
+    var delBtn=canEdit
+      ? '<button onclick="deleteProfileFromList(\''+p.name.replace(/'/g,"\\'")+'\')" style="background:#fdecea;border:none;color:var(--red);border-radius:8px;padding:8px 10px;font-size:12px;cursor:pointer;flex-shrink:0">✕</button>'
+      : '';
     return '<div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:8px">'+
       '<div onclick="openProfilePhotoPicker(\''+p.name.replace(/'/g,"\\'")+'\')" style="position:relative;width:48px;height:48px;flex-shrink:0;cursor:pointer">'+
         '<div style="width:48px;height:48px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;overflow:hidden">'+avatarInner+'</div>'+
         '<div style="position:absolute;bottom:-2px;right:-2px;width:20px;height:20px;border-radius:50%;background:var(--yellow);border:2px solid var(--surface);display:flex;align-items:center;justify-content:center;font-size:10px">📷</div>'+
       '</div>'+
-      '<input value="'+escHtml(p.name)+'" onchange="renameProfileTo(\''+p.name.replace(/'/g,"\\'")+'\',this.value)" style="flex:1;padding:8px 10px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;font-weight:600">'+
-      '<button onclick="deleteProfileFromList(\''+p.name.replace(/'/g,"\\'")+'\')" style="background:#fdecea;border:none;color:var(--red);border-radius:8px;padding:8px 10px;font-size:12px;cursor:pointer;flex-shrink:0">✕</button>'+
+      '<div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:0">'+roleTag+nameInput+'</div>'+
+      lockBtn+delBtn+
     '</div>';
   }).join('');
 }
@@ -2839,6 +2944,9 @@ function renameProfileTo(oldName,newName){
   var list=getProfilesForBureau();
   var entry=list.find(function(p){return p.name===oldName;});
   if(!entry)return;
+  if(entry.role==='admin'&&!(currentProfile&&isAdminName(currentProfile.name))){
+    showToast('Réservé à l\'administrateur');renderProfileManageList();return;
+  }
   entry.name=newName;
   saveProfilesForBureau(list);
   /* Si c'est le profil actif, mettre a jour aussi la reference locale */
@@ -2850,7 +2958,41 @@ function renameProfileTo(oldName,newName){
   renderProfileManageList();
   renderSessionBadge();
 }
+var _pendingPwdChangeName=null;
+function openAdminPasswordChange(name){
+  if(!(currentProfile&&isAdminName(currentProfile.name))){showToast('Réservé à l\'administrateur');return;}
+  _pendingPwdChangeName=name;
+  var ov=document.getElementById('admin-pwd-change-overlay');
+  if(!ov)return;
+  var lbl=document.getElementById('admin-pwd-change-name');
+  if(lbl)lbl.textContent=name;
+  var input=document.getElementById('admin-pwd-change-input');
+  if(input)input.value='';
+  ov.style.display='flex';
+}
+function closeAdminPasswordChange(){
+  var ov=document.getElementById('admin-pwd-change-overlay');
+  if(ov)ov.style.display='none';
+  _pendingPwdChangeName=null;
+}
+function saveAdminPasswordChange(){
+  if(!_pendingPwdChangeName)return;
+  var input=document.getElementById('admin-pwd-change-input');
+  var newPwd=input?input.value.trim():'';
+  if(!newPwd){showToast('Indique un mot de passe');return;}
+  var list=getProfilesForBureau();
+  var entry=list.find(function(p){return p.name===_pendingPwdChangeName;});
+  if(!entry){closeAdminPasswordChange();return;}
+  entry.password=newPwd;
+  saveProfilesForBureau(list);
+  closeAdminPasswordChange();
+  showToast('Mot de passe mis à jour ✓');
+}
 function deleteProfileFromList(name){
+  var target=getProfilesForBureau().find(function(p){return p.name===name;});
+  if(target&&target.role==='admin'&&!(currentProfile&&isAdminName(currentProfile.name))){
+    showToast('Réservé à l\'administrateur');return;
+  }
   if(!confirm('Supprimer le profil "'+name+'" ?'))return;
   var list=getProfilesForBureau().filter(function(p){return p.name!==name;});
   saveProfilesForBureau(list);
@@ -3672,7 +3814,7 @@ function exportTourneeExcel(code){
   }
 }
 
-function openNewAddrPanel(){if(!editScreenCode){showToast('Ouvrez une tournée d\'abord');return;}
+function openNewAddrPanel(){if(blockIfFacteur())return;if(!editScreenCode){showToast('Ouvrez une tournée d\'abord');return;}
 var t=getTourneeData(editScreenCode);var sel=document.getElementById('na-position');if(sel){sel.innerHTML='<option value="0">En début de tournée</option>';(t.adresses||[]).forEach(function(a){var lbl=(a.num?a.num+' ':'')+a.rue+(a.nom?' — '+a.nom:'');sel.innerHTML+='<option value="'+a.ordre+'">Après : '+escHtml(lbl.substring(0,50))+'</option>';});if(t.adresses.length>0)sel.value=t.adresses[t.adresses.length-1].ordre;}
 ['na-num','na-rue','na-complement','na-cpville','na-nom','na-entr','na-tel'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});document.getElementById('new-addr-modal').style.display='flex';}
 function closeNewAddrPanel(){document.getElementById('new-addr-modal').style.display='none';}
@@ -3784,13 +3926,13 @@ function openEditScreen(code){editScreenCode=code;checkPresenceAndWarn(code);
   }catch(e){}reorderMode=false;editGroupByStreet=false;editOpenGroups={};var titleEl=document.getElementById('edit-screen-title');if(titleEl){titleEl.textContent=code;titleEl.style.color=getTourneeColor(code);}
 var searchEl=document.getElementById('edit-tlist-search');if(searchEl)searchEl.value='';var bd=document.getElementById('edit-sort-distrib');var ba=document.getElementById('edit-sort-alpha');if(bd){bd.style.background='var(--accent)';bd.style.color='#fff';}
 if(ba){ba.style.background='var(--bg)';ba.style.color='var(--muted)';}
-editSort='distrib';var se=document.getElementById('screen-edit');se.classList.add('open');navigateToScreen('screen-home','screen-edit','forward');renderEditList();var ebb=document.getElementById('edit-bottom-bar');if(ebb)ebb.style.display='block';}
+editSort='distrib';var se=document.getElementById('screen-edit');se.classList.add('open');navigateToScreen('screen-home','screen-edit','forward');renderEditList();var ebb=document.getElementById('edit-bottom-bar');if(ebb)ebb.style.display='block';applyRoleRestrictionsToEditScreen();}
 function closeEditScreen(){var ebb=document.getElementById('edit-bottom-bar');if(ebb)ebb.style.display='none';var se2=document.getElementById('screen-edit');se2.classList.remove('open');navigateToScreen('screen-edit','screen-home','back');editScreenCode=null;stopPresenceForCurrentCode();if(mergeMode)cancelMergeMode();if(moveMode)cancelMoveMode();}
 function setEditSort(s){var bd=document.getElementById('edit-sort-distrib');var ba=document.getElementById('edit-sort-alpha');if(bd){bd.style.background=s==='distrib'?'var(--accent)':'var(--bg)';bd.style.color=s==='distrib'?'#fff':'var(--muted)';}
 if(ba){ba.style.background=s==='alpha'?'var(--accent)':'var(--bg)';ba.style.color=s==='alpha'?'#fff':'var(--muted)';}
 editSort=s;renderEditList();}
-var editSort='distrib';function openAesPanel(ordre,balIdx){aesCurrentOrdre=ordre;aesCurrentBalIdx=balIdx;var t=getTourneeData(editScreenCode);var a=t.adresses.find(function(x){return x.ordre===ordre});if(!a)return;var isGroupHeader=balIdx===-1;var isMainBal=balIdx===0||isGroupHeader;var bal=(balIdx>=0)?(balIdx===0?{nom:a.nom||'',tel:a.tel||'',entreprise:a.entreprise||'',complement:a.complement||'',num:a.num||'',hasPresse:!!a.hasPresse,presseNom:a.presseNom||''}:(a.boites&&a.boites[balIdx-1]?{nom:a.boites[balIdx-1].nom||'',tel:a.boites[balIdx-1].tel||'',entreprise:a.boites[balIdx-1].nom_entreprise||a.boites[balIdx-1].entreprise||'',complement:a.boites[balIdx-1].complement||'',num:a.num||'',hasPresse:!!a.boites[balIdx-1].hasPresse,presseNom:a.boites[balIdx-1].presseNom||'',lieuDit:a.boites[balIdx-1].lieu_dit||''}:{nom:'',tel:'',entreprise:'',complement:'',num:a.num||'',hasPresse:false,presseNom:'',lieuDit:''})):{nom:a.nom||'',tel:a.tel||'',entreprise:a.entreprise||'',complement:a.complement||'',num:a.num||'',hasPresse:!!a.hasPresse,presseNom:a.presseNom||''};var title=(a.num?a.num+' ':'')+a.rue+(balIdx>0?' · BAL '+(balIdx+1):'')+(isGroupHeader?' · Groupe':'');document.getElementById('aes-title').textContent=title;var html='';html+='<div class="aes-section"><div class="aes-section-label">Adresse</div>';html+='<div class="aes-field"><div class="aes-field-label">Numéro de voie</div>';html+='<input class="aes-input'+(a.num?' filled':'')+'\" id="aes-num" value="'+escHtml(a.num||'')+'" placeholder="Ex: 12, 12bis..." '+(isMainBal?'':'readonly style="opacity:0.6"')+'></div>';html+='<div class="aes-field"><div class="aes-field-label">Rue</div>';html+='<input class="aes-input filled" id="aes-rue" value="'+escHtml(a.rue||'')+'" placeholder="Nom de la rue"></div>';html+='<div class="aes-field"><div class="aes-field-label">Code postal + Ville</div>';html+='<input class="aes-input'+(a.cp_ville?' filled':'')+'\" id="aes-cpville" value="'+escHtml(a.cp_ville||'')+'" placeholder="Ex: 13150 Tarascon"></div>';if(isGroupHeader){var displayedGroupLieuDit=resolveGroupLieuDitDisplay(a);html+='<div class="aes-field"><div class="aes-field-label">Lieu-dit du groupe (bâtiment, résidence…) — affiché pour tous les arrêts</div>';html+='<input class="aes-input'+(displayedGroupLieuDit?' filled':'')+'\" id="aes-group-lieudit" value="'+escHtml(displayedGroupLieuDit)+'" placeholder="Ex: Bâtiment A, Résidence les Oliviers..."></div>';}
-if(isMainBal&&!isGroupHeader){var balIdx0LieuDit=a.lieu_dit||a.complement||'';html+='<div class="aes-field"><div class="aes-field-label">Lieu-dit de cet arrêt (ex: appartement, étage…)</div>';html+='<input class="aes-input'+(balIdx0LieuDit?' filled':'')+'\" id="aes-complement" value="'+escHtml(balIdx0LieuDit)+'" placeholder="Ex: Appartement 38, 2e étage..."></div>';}
+var editSort='distrib';function openAesPanel(ordre,balIdx){aesCurrentOrdre=ordre;aesCurrentBalIdx=balIdx;var t=getTourneeData(editScreenCode);var a=t.adresses.find(function(x){return x.ordre===ordre});if(!a)return;var isFacteur=!(currentProfile&&isAdminName(currentProfile.name));var aesLockAttr=isFacteur?'disabled style="opacity:0.5;cursor:not-allowed"':'';var isGroupHeader=balIdx===-1;var isMainBal=balIdx===0||isGroupHeader;var bal=(balIdx>=0)?(balIdx===0?{nom:a.nom||'',tel:a.tel||'',entreprise:a.entreprise||'',complement:a.complement||'',num:a.num||'',hasPresse:!!a.hasPresse,presseNom:a.presseNom||''}:(a.boites&&a.boites[balIdx-1]?{nom:a.boites[balIdx-1].nom||'',tel:a.boites[balIdx-1].tel||'',entreprise:a.boites[balIdx-1].nom_entreprise||a.boites[balIdx-1].entreprise||'',complement:a.boites[balIdx-1].complement||'',num:a.num||'',hasPresse:!!a.boites[balIdx-1].hasPresse,presseNom:a.boites[balIdx-1].presseNom||'',lieuDit:a.boites[balIdx-1].lieu_dit||''}:{nom:'',tel:'',entreprise:'',complement:'',num:a.num||'',hasPresse:false,presseNom:'',lieuDit:''})):{nom:a.nom||'',tel:a.tel||'',entreprise:a.entreprise||'',complement:a.complement||'',num:a.num||'',hasPresse:!!a.hasPresse,presseNom:a.presseNom||''};var title=(a.num?a.num+' ':'')+a.rue+(balIdx>0?' · BAL '+(balIdx+1):'')+(isGroupHeader?' · Groupe':'');document.getElementById('aes-title').textContent=title;var html='';html+='<div class="aes-section"><div class="aes-section-label">Adresse</div>';html+='<div class="aes-field"><div class="aes-field-label">Numéro de voie</div>';html+='<input class="aes-input'+(a.num?' filled':'')+'\" id="aes-num" value="'+escHtml(a.num||'')+'" placeholder="Ex: 12, 12bis..." '+(isFacteur?aesLockAttr:(isMainBal?'':'readonly style="opacity:0.6"'))+'></div>';html+='<div class="aes-field"><div class="aes-field-label">Rue</div>';html+='<input class="aes-input filled" id="aes-rue" value="'+escHtml(a.rue||'')+'" placeholder="Nom de la rue" '+aesLockAttr+'></div>';html+='<div class="aes-field"><div class="aes-field-label">Code postal + Ville</div>';html+='<input class="aes-input'+(a.cp_ville?' filled':'')+'\" id="aes-cpville" value="'+escHtml(a.cp_ville||'')+'" placeholder="Ex: 13150 Tarascon" '+aesLockAttr+'></div>';if(isGroupHeader){var displayedGroupLieuDit=resolveGroupLieuDitDisplay(a);html+='<div class="aes-field"><div class="aes-field-label">Lieu-dit du groupe (bâtiment, résidence…) — affiché pour tous les arrêts</div>';html+='<input class="aes-input'+(displayedGroupLieuDit?' filled':'')+'\" id="aes-group-lieudit" value="'+escHtml(displayedGroupLieuDit)+'" placeholder="Ex: Bâtiment A, Résidence les Oliviers..." '+aesLockAttr+'></div>';}
+if(isMainBal&&!isGroupHeader){var balIdx0LieuDit=a.lieu_dit||a.complement||'';html+='<div class="aes-field"><div class="aes-field-label">Lieu-dit de cet arrêt (ex: appartement, étage…)</div>';html+='<input class="aes-input'+(balIdx0LieuDit?' filled':'')+'\" id="aes-complement" value="'+escHtml(balIdx0LieuDit)+'" placeholder="Ex: Appartement 38, 2e étage..." '+aesLockAttr+'></div>';}
 html+='</div>';
 if(!isGroupHeader){
 html+='<div class="aes-section"><div class="aes-section-label">Destinataire'+(balIdx>0?' — BAL '+(balIdx+1):'')+'</div>';html+='<div class="aes-field"><div class="aes-field-label">Nom / Prénom</div>';html+='<input class="aes-input'+(bal.nom?' filled':'')+'\" id="aes-nom" value="'+escHtml(bal.nom)+'" placeholder="Ex: DUPONT Jean"></div>';html+='<div class="aes-field"><div class="aes-field-label">Nom d\'entreprise</div>';html+='<input class="aes-input'+(bal.entreprise?' filled':'')+'\" id="aes-entr" value="'+escHtml(bal.entreprise)+'" placeholder="Ex: SARL Dupont..."></div>';html+='<div class="aes-field"><div class="aes-field-label">Numéro de téléphone</div>';html+='<input class="aes-input'+(bal.tel?' filled':'')+'\" id="aes-tel" type="tel" value="'+escHtml(bal.tel)+'" placeholder="Ex: 06 12 34 56 78"></div>';
@@ -3798,8 +3940,8 @@ html+='<label style="display:flex;align-items:center;gap:10px;padding:12px;borde
 html+='<div id="aes-presse-nom-wrap" style="display:'+(bal.hasPresse?'flex':'none')+';align-items:center;gap:8px;margin-top:6px"><span style="font-size:18px;flex-shrink:0">📰</span><input class="aes-input'+(bal.presseNom?' filled':'')+'\" id="aes-presse-nom" style="flex:1" value="'+escHtml(bal.presseNom)+'" placeholder="Ex: La Provence, Midi Libre, Paris Match..."></div>';
 html+='</div>';
 if(balIdx>0){
-  html+='<div class="aes-field"><div class="aes-field-label">Lieu-dit de cet arrêt (ex: appartement, étage…)</div>';html+='<input class="aes-input'+(bal.lieuDit?' filled':'')+'\" id="aes-bal-lieudit" value="'+escHtml(bal.lieuDit)+'" placeholder="Ex: Appartement 38, 2e étage..."></div>';
-  html+='<button type="button" onclick="removeBoiteFromView('+a.ordre+','+(balIdx-1)+')" style="width:100%;padding:10px;border-radius:10px;border:1.5px solid #d43030;background:#fff0f0;color:#d43030;font-size:13px;font-weight:700;cursor:pointer;margin-top:4px">🗑 Supprimer cette BAL</button>';
+  html+='<div class="aes-field"><div class="aes-field-label">Lieu-dit de cet arrêt (ex: appartement, étage…)</div>';html+='<input class="aes-input'+(bal.lieuDit?' filled':'')+'\" id="aes-bal-lieudit" value="'+escHtml(bal.lieuDit)+'" placeholder="Ex: Appartement 38, 2e étage..." '+aesLockAttr+'></div>';
+  html+='<button type="button" '+(isFacteur?'disabled':'')+' onclick="removeBoiteFromView('+a.ordre+','+(balIdx-1)+')" style="width:100%;padding:10px;border-radius:10px;border:1.5px solid #d43030;background:#fff0f0;color:#d43030;font-size:13px;font-weight:700;cursor:'+(isFacteur?'not-allowed':'pointer')+';margin-top:4px;opacity:'+(isFacteur?'0.5':'1')+'">🗑 Supprimer cette BAL</button>';
 }
 } else {
 html+='<div style="padding:10px 4px;font-size:12px;color:var(--muted)">Pour modifier le nom d\'un destinataire, ouvrez le groupe et modifiez la BAL correspondante.</div>';
@@ -3852,18 +3994,19 @@ if(showGroupSections){
   html+='<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="width:24px;height:24px;border-radius:50%;background:#6278a0;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">1</div><div style="flex:1;font-size:13px;color:var(--text)">BAL principale'+(a.nom?' — '+escHtml(a.nom):'')+'</div></div>';
   (a.boites||[]).forEach(function(b,bi){
     var label=b.nom||b.entreprise||b.complement||('BAL '+(bi+2));
-    html+='<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="width:24px;height:24px;border-radius:50%;background:#6278a0;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">'+(bi+2)+'</div><div style="flex:1;font-size:13px;color:var(--text)">'+escHtml(label)+'</div><button type="button" onclick="removeBoite('+a.ordre+','+bi+')" style="background:#fff0f0;border:1px solid #d43030;color:#d43030;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0">Supprimer</button></div>';
+    html+='<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="width:24px;height:24px;border-radius:50%;background:#6278a0;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">'+(bi+2)+'</div><div style="flex:1;font-size:13px;color:var(--text)">'+escHtml(label)+'</div><button type="button" '+(isFacteur?'disabled':'')+' onclick="removeBoite('+a.ordre+','+bi+')" style="background:#fff0f0;border:1px solid #d43030;color:#d43030;border-radius:6px;padding:4px 8px;font-size:11px;cursor:'+(isFacteur?'not-allowed':'pointer')+';flex-shrink:0;opacity:'+(isFacteur?'0.5':'1')+'">Supprimer</button></div>';
   });
-  html+='<button type="button" onclick="addBoite('+a.ordre+')" style="width:100%;margin-top:10px;padding:9px;border-radius:10px;border:1.5px dashed var(--accent);background:none;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer">+ Ajouter une BAL</button>';
+  html+='<button type="button" '+(isFacteur?'disabled':'')+' onclick="addBoite('+a.ordre+')" style="width:100%;margin-top:10px;padding:9px;border-radius:10px;border:1.5px dashed var(--accent);background:none;color:var(--accent);font-size:12px;font-weight:700;cursor:'+(isFacteur?'not-allowed':'pointer')+';opacity:'+(isFacteur?'0.5':'1')+'">+ Ajouter une BAL</button>';
   html+='</div>';
   html+='<div class="aes-section"><div class="aes-section-label">Découpage tournée</div>';
   html+='<div style="font-size:12px;color:var(--muted);margin-bottom:8px">Définit où se termine la Partie A (le reste devient la Partie B). Arrêt actuel : #'+a.ordre+(curSplit?(' · Fin de Partie A actuellement définie à l\'arrêt #'+curSplit):' · Aucune séparation définie')+'</div>';
-  html+='<button type="button" onclick="setSplitHere('+a.ordre+')" style="width:100%;padding:11px;border-radius:10px;border:1.5px solid '+(isSplitHere?'#0d8a4f':'var(--accent)')+';background:'+(isSplitHere?'#e6f7ee':'var(--accent-light)')+';color:'+(isSplitHere?'#0d8a4f':'var(--accent)')+';font-size:13px;font-weight:700;cursor:pointer">'+(isSplitHere?'✓ Fin de Partie A ici':'📍 Marquer fin de Partie A ici')+'</button>';
-  if(curSplit){html+='<button type="button" onclick="clearSplit()" style="width:100%;margin-top:8px;padding:9px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer">Supprimer la séparation</button>';}
+  html+='<button type="button" '+(isFacteur?'disabled':'')+' onclick="setSplitHere('+a.ordre+')" style="width:100%;padding:11px;border-radius:10px;border:1.5px solid '+(isSplitHere?'#0d8a4f':'var(--accent)')+';background:'+(isSplitHere?'#e6f7ee':'var(--accent-light)')+';color:'+(isSplitHere?'#0d8a4f':'var(--accent)')+';font-size:13px;font-weight:700;cursor:'+(isFacteur?'not-allowed':'pointer')+';opacity:'+(isFacteur?'0.5':'1')+'">'+(isSplitHere?'✓ Fin de Partie A ici':'📍 Marquer fin de Partie A ici')+'</button>';
+  if(curSplit){html+='<button type="button" '+(isFacteur?'disabled':'')+' onclick="clearSplit()" style="width:100%;margin-top:8px;padding:9px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer">Supprimer la séparation</button>';}
   html+='</div>';
 }
 document.getElementById('aes-body').innerHTML=html;var ao=document.getElementById('aes-overlay');ao.style.display='flex';ao.classList.add('open');}
 function addBoite(ordre){
+  if(blockIfFacteur())return;
   pushUndo(editScreenCode,'Ajout BAL');
   var t=getTourneeData(editScreenCode);
   var a=t.adresses.find(function(x){return x.ordre===ordre;});
@@ -3882,6 +4025,7 @@ function addBoite(ordre){
   openAesPanel(aesCurrentOrdre,wasSingle?-1:aesCurrentBalIdx);
 }
 function removeBoite(ordre,boiteIdx){
+  if(blockIfFacteur())return;
   pushUndo(editScreenCode,'Suppression BAL');
   var t=getTourneeData(editScreenCode);
   var a=t.adresses.find(function(x){return x.ordre===ordre;});
@@ -3897,6 +4041,7 @@ function removeBoite(ordre,boiteIdx){
   openAesPanel(aesCurrentOrdre,aesCurrentBalIdx);
 }
 function removeBoiteFromView(ordre,boiteIdx){
+  if(blockIfFacteur())return;
   pushUndo(editScreenCode,'Suppression BAL');
   var t=getTourneeData(editScreenCode);
   var a=t.adresses.find(function(x){return x.ordre===ordre;});
@@ -3950,6 +4095,7 @@ function deleteNoteHistoryEntry(ordre,balIdx,idx){
   openAesPanel(aesCurrentOrdre,aesCurrentBalIdx);
 }
 function setSplitHere(ordre){
+  if(blockIfFacteur())return;
   pushUndo(editScreenCode,'Découpage tournée');
   var t=getTourneeData(editScreenCode);
   t.splitOrdre=ordre;
@@ -3958,6 +4104,7 @@ function setSplitHere(ordre){
   openAesPanel(aesCurrentOrdre,aesCurrentBalIdx);
 }
 function clearSplit(){
+  if(blockIfFacteur())return;
   var t=getTourneeData(editScreenCode);
   delete t.splitOrdre;
   saveTourneeData();
@@ -4664,7 +4811,7 @@ function selectPartie(part){
   showToast('Partie '+part+' sélectionnée ✓');
 }
 function toggleSelectAll(){var t=getTourneeData(currentTourneeCode);var allBals=[];t.adresses.forEach(function(a){buildBalList(a).forEach(function(b){allBals.push(a.ordre+'-'+b.balIdx);});});var allSel=allBals.every(function(k){return selectedStops[k];});if(allSel){selectedStops={};allBals.forEach(function(k){if(stopTypes[k])delete stopTypes[k];});}else allBals.forEach(function(k){selectedStops[k]=true;});updateStartBar();renderTList();updatePresseButtonState();}
-function toggleReorderMode(){reorderMode=!reorderMode;reorderSelected=[];var btn=document.getElementById('btn-reorder');if(btn){btn.style.background=reorderMode?'var(--accent)':'var(--bg)';btn.style.borderColor=reorderMode?'var(--accent)':'var(--border)';btn.style.color=reorderMode?'#fff':'var(--muted)';var lbl=btn.querySelector('span');if(lbl)lbl.textContent=reorderMode?'Terminer':'Ordonner';}
+function toggleReorderMode(){if(!reorderMode&&blockIfFacteur())return;reorderMode=!reorderMode;reorderSelected=[];var btn=document.getElementById('btn-reorder');if(btn){btn.style.background=reorderMode?'var(--accent)':'var(--bg)';btn.style.borderColor=reorderMode?'var(--accent)':'var(--border)';btn.style.color=reorderMode?'#fff':'var(--muted)';var lbl=btn.querySelector('span');if(lbl)lbl.textContent=reorderMode?'Terminer':'Ordonner';}
 var body=document.getElementById('edit-tlist-items');if(body)body.classList.toggle('reorder-mode',reorderMode);var search=document.getElementById('edit-tlist-search');if(search){search.disabled=reorderMode;search.placeholder=reorderMode?'Désactivé en mode réorganisation':'🔍 Rechercher une adresse...';if(reorderMode)search.value='';}
 if(reorderMode&&editGroupByStreet){editGroupByStreet=false;var ebtn=document.getElementById('edit-btn-street');if(ebtn){ebtn.style.background='var(--bg)';ebtn.style.borderColor='var(--border)';ebtn.style.color='var(--muted)';}}
 renderEditList();}
