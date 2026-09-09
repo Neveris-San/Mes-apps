@@ -168,6 +168,11 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <button onclick="toggleHomeDrawer();exportRawData()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">📤 Exporter mes données</button>
       <button onclick="if(confirm('Vider le cache local de ce navigateur ? Firebase ne sera pas touché, seulement ce qui est stocké sur cet appareil.')){toggleHomeDrawer();clearLocalCacheOnly();}" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">🧹 Vider le cache local</button>
 
+      <div id="drawer-admin-section" style="display:none">
+        <div style="font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:0.3px;margin:16px 0 6px">ADMIN</div>
+        <button onclick="toggleHomeDrawer();openTrackingScreen()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">📍 Suivi tournées</button>
+      </div>
+
       <div style="font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:0.3px;margin:16px 0 6px">AIDE</div>
       <button onclick="toggleHomeDrawer();openTutorialScreen()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">📘 Tutoriel</button>
 
@@ -181,7 +186,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
       <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
 
-      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 09/09/2026 17:09</div>
+      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 09/09/2026 17:24</div>
     </div>
   </div>
 </div>
@@ -504,6 +509,18 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
+<!-- ===== SUIVI TOURNEES (ADMIN) ===== -->
+<div id="screen-tracking" style="position:fixed;inset:0;z-index:99999;background:var(--bg);display:none;flex-direction:column;overflow:hidden">
+  <div style="background:var(--surface);border-bottom:1px solid var(--border);padding:10px 14px;padding-top:max(10px,env(safe-area-inset-top));display:flex;align-items:center;gap:10px;flex-shrink:0">
+    <button onclick="closeTrackingScreen()" style="background:var(--bg);border:1.5px solid var(--border);color:var(--text);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div style="color:var(--text);flex:1"><div style="font-size:15px;font-weight:700">📍 Suivi tournées</div><div id="tracking-subtitle" style="font-size:11px;color:var(--muted)">Chargement…</div></div>
+    <button onclick="refreshTrackingMap()" style="background:var(--bg);border:1.5px solid var(--border);color:var(--text);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer">↻</button>
+  </div>
+  <div id="tracking-map" style="flex:1;position:relative"></div>
+</div>
+
 <!-- ===== PLACEMENT CARTE ===== -->
 <div id="screen-pinmap" style="position:fixed;inset:0;z-index:99000;background:var(--bg);display:none;flex-direction:column;overflow:hidden">
   <div style="background:var(--surface);border-bottom:1px solid var(--border);padding:10px 14px;padding-top:max(10px,env(safe-area-inset-top));display:flex;align-items:center;gap:10px;flex-shrink:0">
@@ -752,7 +769,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='09/09/2026 17:09';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='09/09/2026 17:24';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -2379,11 +2396,72 @@ function toggleHomeDrawer(){
       if(mine&&mine.photo){av.innerHTML='<img src="'+mine.photo+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';}
       else{av.textContent=currentProfile&&currentProfile.name?currentProfile.name.charAt(0).toUpperCase():'?';}
     }
+    var adminSec=document.getElementById('drawer-admin-section');
+    if(adminSec)adminSec.style.display=(currentProfile&&isAdminName(currentProfile.name))?'block':'none';
   }
 }
 /* Recupere en une seule lecture la presence de tout le monde sur toutes les
    tournees, pour afficher "Libre"/"Occupee · Nom" a cote de chacune sur l'accueil.
    N'affiche jamais "Occupee" pour SA PROPRE session (on sait qu'on l'utilise soi-meme). */
+var trackingMapInstance=null;
+var trackingMarkers=[];
+var trackingRefreshInterval=null;
+function openTrackingScreen(){
+  if(blockIfFacteur())return;
+  var ebb=document.getElementById('edit-bottom-bar');if(ebb)ebb.style.display='none';
+  navigateToScreen('screen-home','screen-tracking','forward');
+  setTimeout(function(){
+    if(!trackingMapInstance){
+      trackingMapInstance=L.map('tracking-map',{zoomControl:false,preferCanvas:true}).setView([43.5297,5.4474],14);
+      L.control.zoom({position:'topright'}).addTo(trackingMapInstance);
+      L.tileLayer(TILES.plan.url,TILES.plan.opts).addTo(trackingMapInstance);
+    } else {
+      trackingMapInstance.invalidateSize();
+    }
+    refreshTrackingMap();
+    if(trackingRefreshInterval)clearInterval(trackingRefreshInterval);
+    trackingRefreshInterval=setInterval(refreshTrackingMap,15000);
+  },150);
+}
+function closeTrackingScreen(){
+  if(trackingRefreshInterval){clearInterval(trackingRefreshInterval);trackingRefreshInterval=null;}
+  var ebb=document.getElementById('edit-bottom-bar');if(ebb&&editScreenCode)ebb.style.display='block';
+  navigateToScreen('screen-tracking','screen-home','back');
+}
+function refreshTrackingMap(){
+  fetchAllActivePresencesWithLocation(function(list){
+    var sub=document.getElementById('tracking-subtitle');
+    if(sub)sub.textContent=list.length?(list.length+' personne'+(list.length>1?'s':'')+' en tournée'):'Personne en tournée actuellement';
+    if(!trackingMapInstance)return;
+    trackingMarkers.forEach(function(m){trackingMapInstance.removeLayer(m);});
+    trackingMarkers=[];
+    var bounds=[];
+    list.forEach(function(p){
+      var mins=Math.round((Date.now()-p.ts)/60000);
+      var marker=L.marker([p.lat,p.lng]).addTo(trackingMapInstance);
+      marker.bindPopup('<b>'+escHtml(p.profile)+'</b><br>Tournée '+escHtml(p.code)+'<br><span style="color:#888;font-size:11px">'+(mins<1?'à l\'instant':'il y a '+mins+' min')+'</span>');
+      trackingMarkers.push(marker);
+      bounds.push([p.lat,p.lng]);
+    });
+    if(bounds.length)trackingMapInstance.fitBounds(bounds,{padding:[40,40],maxZoom:16});
+  });
+}
+function fetchAllActivePresencesWithLocation(callback){
+  if(!db){callback([]);return;}
+  db.collection('app_data').doc('sessions').get().then(function(doc){
+    var result=[];
+    if(doc.exists){
+      var data=doc.data();
+      Object.keys(data).forEach(function(code){
+        var entry=data[code];
+        if(entry&&entry.profile&&(Date.now()-entry.ts)<120000&&entry.lat!=null&&entry.lng!=null){
+          result.push({code:code,profile:entry.profile,lat:entry.lat,lng:entry.lng,ts:entry.ts});
+        }
+      });
+    }
+    callback(result);
+  }).catch(function(){callback([]);});
+}
 function fetchHomePresence(callback){
   if(!db){callback({});return;}
   db.collection('app_data').doc('sessions').get().then(function(doc){
@@ -3561,14 +3639,31 @@ function startPresenceHeartbeatLoop(){
 
 function sendPresenceHeartbeat(code){
   if(!db||!currentProfile)return;
-  var payload={};
-  payload[code]={profile:currentProfile.name,ts:Date.now()};
-  db.collection('app_data').doc('sessions').set(payload,{merge:true}).catch(function(){});
+  function writePayload(lat,lng){
+    var entry={profile:currentProfile.name,ts:Date.now()};
+    if(lat!=null&&lng!=null){entry.lat=lat;entry.lng=lng;}
+    var payload={};
+    payload[code]=entry;
+    db.collection('app_data').doc('sessions').set(payload,{merge:true}).catch(function(){});
+  }
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(
+      function(pos){writePayload(pos.coords.latitude,pos.coords.longitude);},
+      function(){writePayload(null,null);},
+      {maximumAge:60000,timeout:8000,enableHighAccuracy:false}
+    );
+  } else {
+    writePayload(null,null);
+  }
 }
 
 function checkPresenceAndWarn(code){
   _presenceActiveCode=code;
   if(!db||!currentProfile)return;
+  if(navigator.geolocation&&!sessionStorage.getItem('loc_notice_shown')){
+    sessionStorage.setItem('loc_notice_shown','1');
+    showToast('📍 Ta position est partagée avec l\'administrateur pendant la tournée');
+  }
   /* Lire l'etat AVANT d'envoyer son propre heartbeat, sinon on ecrase la trace
      de l'autre personne avant meme de l'avoir vue */
   db.collection('app_data').doc('sessions').get().then(function(doc){
