@@ -139,12 +139,12 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:0 2px">
       <span style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.3px">TOURNÉES</span>
       <div style="display:flex;align-items:center;gap:4px">
-        <button onclick="toggleHomeView()" id="home-view-toggle-btn" style="background:none;border:none;color:var(--muted);font-size:15px;padding:6px 8px;border-radius:8px;cursor:pointer">▦</button>
-        <button onclick="toggleHomeDrawer()" style="background:none;border:none;color:var(--muted);font-size:19px;letter-spacing:2px;padding:6px 9px;border-radius:8px;cursor:pointer">···</button>
+        <button onclick="toggleHomeView()" id="home-view-toggle-btn" style="height:32px;padding:0 12px;border-radius:16px;background:var(--accent-light);color:var(--accent);border:none;font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px;cursor:pointer">▦ Grille</button>
+        <button onclick="toggleHomeDrawer()" style="height:32px;padding:0 14px;border-radius:16px;background:var(--accent);color:#fff;border:none;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:6px;cursor:pointer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>Menu</button>
       </div>
     </div>
     <div id="home-tournee-list" style="display:flex;flex-direction:column"></div>
-    <div id="home-tournee-grid" style="display:none;grid-template-columns:repeat(3,1fr);gap:8px"></div>
+    <div id="home-tournee-grid" style="display:none;grid-template-columns:repeat(auto-fill,minmax(84px,84px));gap:8px;justify-content:start"></div>
   </div>
 
   <!-- ===== TIROIR DE REGLAGES (accueil) ===== -->
@@ -186,7 +186,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
       <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
 
-      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 09/09/2026 17:37</div>
+      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 09/09/2026 18:49</div>
     </div>
   </div>
 </div>
@@ -769,7 +769,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='09/09/2026 17:37';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='09/09/2026 18:49';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -2374,7 +2374,7 @@ function applyHomeViewMode(){
   var btn=document.getElementById('home-view-toggle-btn');
   if(listEl)listEl.style.display=homeViewMode==='grid'?'none':'flex';
   if(gridEl)gridEl.style.display=homeViewMode==='grid'?'grid':'none';
-  if(btn)btn.textContent=homeViewMode==='grid'?'☰':'▦';
+  if(btn)btn.textContent=homeViewMode==='grid'?'☰ Liste':'▦ Grille';
 }
 function toggleHomeDrawer(){
   var overlay=document.getElementById('home-drawer-overlay');
@@ -2520,8 +2520,8 @@ function buildHomeTourneeCards(){
     listEl.appendChild(row);
     var tile=document.createElement('div');
     tile.id='home-tile-'+code;
-    tile.style.cssText='aspect-ratio:1.05;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:13px;font-weight:800;color:#fff;cursor:pointer;background:'+color+';position:relative;padding:4px';
-    tile.innerHTML='<div>'+code+'</div>'+'<div id="home-tile-name-'+code+'" style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%"></div>'+'<div class="home-tile-presence-dot" style="position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:transparent;border:1.5px solid rgba(255,255,255,0.5)"></div>';
+    tile.style.cssText='aspect-ratio:1.05;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11.5px;font-weight:800;color:#fff;cursor:pointer;background:'+color+';position:relative;padding:3px';
+    tile.innerHTML='<div>'+code+'</div>'+'<div id="home-tile-name-'+code+'" style="font-size:8px;font-weight:600;color:rgba(255,255,255,0.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%"></div>'+'<div class="home-tile-presence-dot" style="position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:transparent;border:1.5px solid rgba(255,255,255,0.5)"></div>';
     tile.onclick=function(){homeCardClick(code);};
     gridEl.appendChild(tile);
   });
