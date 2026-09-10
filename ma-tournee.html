@@ -171,6 +171,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <div id="drawer-admin-section" style="display:none">
         <div style="font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:0.3px;margin:16px 0 6px">ADMIN</div>
         <button onclick="toggleHomeDrawer();openTrackingScreen()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">📍 Suivi tournées</button>
+        <button onclick="toggleHomeDrawer();exportDailyReport()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">📊 Rapport quotidien</button>
       </div>
 
       <div style="font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:0.3px;margin:16px 0 6px">AIDE</div>
@@ -186,7 +187,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
       <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
 
-      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 09/09/2026 18:49</div>
+      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 10/09/2026 19:46</div>
     </div>
   </div>
 </div>
@@ -769,7 +770,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='09/09/2026 18:49';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='10/09/2026 19:46';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -4458,6 +4459,50 @@ function exportTourneeExcel(code){
   }
 }
 
+function exportDailyReport(){
+  if(blockIfFacteur())return;
+  var codes=(currentBureau&&BUREAU_TOURNEES[currentBureau])?BUREAU_TOURNEES[currentBureau]:TOURNEE_CODES;
+  var rows=[['Tournée','Facteur','Arrêts livrés','Total arrêts','Début','Fin']];
+  var fmtTime=function(ts){var d=new Date(ts);return d.getHours()+'h'+String(d.getMinutes()).padStart(2,'0');};
+  codes.forEach(function(code){
+    var t=getTourneeData(code);
+    if(!t||!t.adresses||!t.adresses.length)return;
+    var totalStops=0;
+    t.adresses.forEach(function(a){totalStops+=buildBalList(a).length;});
+    var byProfile={};
+    Object.keys(t.done||{}).forEach(function(k){
+      var entry=t.done[k];
+      var name=(entry&&typeof entry==='object'&&entry.by)?entry.by:'(non attribué)';
+      var ts=(entry&&typeof entry==='object'&&entry.ts)?entry.ts:null;
+      if(!byProfile[name])byProfile[name]={count:0,minTs:null,maxTs:null};
+      byProfile[name].count++;
+      if(ts){
+        if(byProfile[name].minTs===null||ts<byProfile[name].minTs)byProfile[name].minTs=ts;
+        if(byProfile[name].maxTs===null||ts>byProfile[name].maxTs)byProfile[name].maxTs=ts;
+      }
+    });
+    if(!Object.keys(byProfile).length)return;
+    Object.keys(byProfile).forEach(function(name){
+      var info=byProfile[name];
+      rows.push([code,name,info.count,totalStops,info.minTs?fmtTime(info.minTs):'',info.maxTs?fmtTime(info.maxTs):'']);
+    });
+  });
+  if(rows.length===1){showToast('Aucune livraison enregistrée pour le moment');return;}
+  try{
+    var XLSX=window.XLSX;
+    if(!XLSX) throw new Error('SheetJS non disponible');
+    var ws=XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols']=[{wch:12},{wch:16},{wch:14},{wch:12},{wch:8},{wch:8}];
+    var wb=XLSX.utils.book_new();
+    var dateStr=new Date().toLocaleDateString('fr-FR').replace(/\//g,'-');
+    XLSX.utils.book_append_sheet(wb,ws,'Rapport');
+    XLSX.writeFile(wb,'Rapport_journalier_'+dateStr+'.xlsx');
+    showToast('Rapport téléchargé ✓');
+  }catch(e){
+    showToast('Erreur export : '+e.message);
+    console.error(e);
+  }
+}
 function openNewAddrPanel(){if(blockIfFacteur())return;if(!editScreenCode){showToast('Ouvrez une tournée d\'abord');return;}
 var t=getTourneeData(editScreenCode);var sel=document.getElementById('na-position');if(sel){sel.innerHTML='<option value="0">En début de tournée</option>';(t.adresses||[]).forEach(function(a){var lbl=(a.num?a.num+' ':'')+a.rue+(a.nom?' — '+a.nom:'');sel.innerHTML+='<option value="'+a.ordre+'">Après : '+escHtml(lbl.substring(0,50))+'</option>';});if(t.adresses.length>0)sel.value=t.adresses[t.adresses.length-1].ordre;}
 ['na-num','na-rue','na-complement','na-cpville','na-nom','na-entr','na-tel'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});document.getElementById('new-addr-modal').style.display='flex';}
@@ -4575,7 +4620,8 @@ function closeEditScreen(){var ebb=document.getElementById('edit-bottom-bar');if
 function setEditSort(s){var bd=document.getElementById('edit-sort-distrib');var ba=document.getElementById('edit-sort-alpha');if(bd){bd.style.background=s==='distrib'?'var(--accent)':'var(--bg)';bd.style.color=s==='distrib'?'#fff':'var(--muted)';}
 if(ba){ba.style.background=s==='alpha'?'var(--accent)':'var(--bg)';ba.style.color=s==='alpha'?'#fff':'var(--muted)';}
 editSort=s;renderEditList();}
-var editSort='distrib';function openAesPanel(ordre,balIdx){aesCurrentOrdre=ordre;aesCurrentBalIdx=balIdx;var t=getTourneeData(editScreenCode);var a=t.adresses.find(function(x){return x.ordre===ordre});if(!a)return;var isFacteur=!(currentProfile&&isAdminName(currentProfile.name));var aesLockAttr=isFacteur?'disabled style="opacity:0.5;cursor:not-allowed"':'';var isGroupHeader=balIdx===-1;var isMainBal=balIdx===0||isGroupHeader;var bal=(balIdx>=0)?(balIdx===0?{nom:a.nom||'',tel:a.tel||'',entreprise:a.entreprise||'',complement:a.complement||'',num:a.num||'',hasPresse:!!a.hasPresse,presseNom:a.presseNom||''}:(a.boites&&a.boites[balIdx-1]?{nom:a.boites[balIdx-1].nom||'',tel:a.boites[balIdx-1].tel||'',entreprise:a.boites[balIdx-1].nom_entreprise||a.boites[balIdx-1].entreprise||'',complement:a.boites[balIdx-1].complement||'',num:a.num||'',hasPresse:!!a.boites[balIdx-1].hasPresse,presseNom:a.boites[balIdx-1].presseNom||'',lieuDit:a.boites[balIdx-1].lieu_dit||''}:{nom:'',tel:'',entreprise:'',complement:'',num:a.num||'',hasPresse:false,presseNom:'',lieuDit:''})):{nom:a.nom||'',tel:a.tel||'',entreprise:a.entreprise||'',complement:a.complement||'',num:a.num||'',hasPresse:!!a.hasPresse,presseNom:a.presseNom||''};var title=(a.num?a.num+' ':'')+a.rue+(balIdx>0?' · BAL '+(balIdx+1):'')+(isGroupHeader?' · Groupe':'');document.getElementById('aes-title').textContent=title;var html='';html+='<div class="aes-section"><div class="aes-section-label">Adresse</div>';html+='<div class="aes-field"><div class="aes-field-label">Numéro de voie</div>';html+='<input class="aes-input'+(a.num?' filled':'')+'\" id="aes-num" value="'+escHtml(a.num||'')+'" placeholder="Ex: 12, 12bis..." '+(isFacteur?aesLockAttr:(isMainBal?'':'readonly style="opacity:0.6"'))+'></div>';html+='<div class="aes-field"><div class="aes-field-label">Rue</div>';html+='<input class="aes-input filled" id="aes-rue" value="'+escHtml(a.rue||'')+'" placeholder="Nom de la rue" '+aesLockAttr+'></div>';html+='<div class="aes-field"><div class="aes-field-label">Code postal + Ville</div>';html+='<input class="aes-input'+(a.cp_ville?' filled':'')+'\" id="aes-cpville" value="'+escHtml(a.cp_ville||'')+'" placeholder="Ex: 13150 Tarascon" '+aesLockAttr+'></div>';if(isGroupHeader){var displayedGroupLieuDit=resolveGroupLieuDitDisplay(a);html+='<div class="aes-field"><div class="aes-field-label">Lieu-dit du groupe (bâtiment, résidence…) — affiché pour tous les arrêts</div>';html+='<input class="aes-input'+(displayedGroupLieuDit?' filled':'')+'\" id="aes-group-lieudit" value="'+escHtml(displayedGroupLieuDit)+'" placeholder="Ex: Bâtiment A, Résidence les Oliviers..." '+aesLockAttr+'></div>';}
+var editSort='distrib';function openAesPanel(ordre,balIdx){aesCurrentOrdre=ordre;aesCurrentBalIdx=balIdx;var t=getTourneeData(editScreenCode);var a=t.adresses.find(function(x){return x.ordre===ordre});if(!a)return;var isFacteur=!(currentProfile&&isAdminName(currentProfile.name));var aesLockAttr=isFacteur?'disabled style="opacity:0.5;cursor:not-allowed"':'';var isGroupHeader=balIdx===-1;var isMainBal=balIdx===0||isGroupHeader;var bal=(balIdx>=0)?(balIdx===0?{nom:a.nom||'',tel:a.tel||'',entreprise:a.entreprise||'',complement:a.complement||'',num:a.num||'',hasPresse:!!a.hasPresse,presseNom:a.presseNom||''}:(a.boites&&a.boites[balIdx-1]?{nom:a.boites[balIdx-1].nom||'',tel:a.boites[balIdx-1].tel||'',entreprise:a.boites[balIdx-1].nom_entreprise||a.boites[balIdx-1].entreprise||'',complement:a.boites[balIdx-1].complement||'',num:a.num||'',hasPresse:!!a.boites[balIdx-1].hasPresse,presseNom:a.boites[balIdx-1].presseNom||'',lieuDit:a.boites[balIdx-1].lieu_dit||''}:{nom:'',tel:'',entreprise:'',complement:'',num:a.num||'',hasPresse:false,presseNom:'',lieuDit:''})):{nom:a.nom||'',tel:a.tel||'',entreprise:a.entreprise||'',complement:a.complement||'',num:a.num||'',hasPresse:!!a.hasPresse,presseNom:a.presseNom||''};var title=(a.num?a.num+' ':'')+a.rue+(balIdx>0?' · BAL '+(balIdx+1):'')+(isGroupHeader?' · Groupe':'');document.getElementById('aes-title').textContent=title;var html='';html+='<div class="aes-section"><div class="aes-section-label">Adresse</div>';html+='<div class="aes-field"><div class="aes-field-label">Numéro de voie</div>';html+='<input class="aes-input'+(a.num?' filled':'')+'\" id="aes-num" value="'+escHtml(a.num||'')+'" placeholder="Ex: 12, 12bis..." '+(isFacteur?aesLockAttr:(isMainBal?'':'readonly style="opacity:0.6"'))+'></div>';html+='<div class="aes-field"><div class="aes-field-label">Rue</div>';html+='<input class="aes-input filled" id="aes-rue" value="'+escHtml(a.rue||'')+'" placeholder="Nom de la rue" '+aesLockAttr+'></div>';html+='<div class="aes-field"><div class="aes-field-label">Code postal + Ville</div>';html+='<input class="aes-input'+(a.cp_ville?' filled':'')+'\" id="aes-cpville" value="'+escHtml(a.cp_ville||'')+'" placeholder="Ex: 13150 Tarascon" '+aesLockAttr+'></div>';
+html+='<div class="aes-field"><div class="aes-field-label">🔑 Code d\'accès (digicode / interphone)</div>';html+='<input class="aes-input'+(a.codeacces?' filled':'')+'\" id="aes-codeacces" value="'+escHtml(a.codeacces||'')+'" placeholder="Ex: 12B45, Interphone Dupont..."></div>';if(isGroupHeader){var displayedGroupLieuDit=resolveGroupLieuDitDisplay(a);html+='<div class="aes-field"><div class="aes-field-label">Lieu-dit du groupe (bâtiment, résidence…) — affiché pour tous les arrêts</div>';html+='<input class="aes-input'+(displayedGroupLieuDit?' filled':'')+'\" id="aes-group-lieudit" value="'+escHtml(displayedGroupLieuDit)+'" placeholder="Ex: Bâtiment A, Résidence les Oliviers..." '+aesLockAttr+'></div>';}
 if(isMainBal&&!isGroupHeader){var balIdx0LieuDit=a.lieu_dit||a.complement||'';html+='<div class="aes-field"><div class="aes-field-label">Lieu-dit de cet arrêt (ex: appartement, étage…)</div>';html+='<input class="aes-input'+(balIdx0LieuDit?' filled':'')+'\" id="aes-complement" value="'+escHtml(balIdx0LieuDit)+'" placeholder="Ex: Appartement 38, 2e étage..." '+aesLockAttr+'></div>';}
 html+='</div>';
 if(!isGroupHeader){
@@ -4755,7 +4801,7 @@ function clearSplit(){
   showToast('Séparation supprimée');
   openAesPanel(aesCurrentOrdre,aesCurrentBalIdx);
 }
-function saveAesPanel(){if(aesCurrentOrdre===null)return;pushUndo(editScreenCode,'Modification adresse');var t=getTourneeData(editScreenCode);var a=t.adresses.find(function(x){return x.ordre===aesCurrentOrdre});if(!a)return;var nom=document.getElementById('aes-nom')?document.getElementById('aes-nom').value.trim():'';var entr=document.getElementById('aes-entr')?document.getElementById('aes-entr').value.trim():'';var tel=document.getElementById('aes-tel')?document.getElementById('aes-tel').value.trim():'';var num=document.getElementById('aes-num').value.trim();var compl=document.getElementById('aes-complement')?document.getElementById('aes-complement').value.trim():null;var cpville=document.getElementById('aes-cpville')?document.getElementById('aes-cpville').value.trim():null;var rue=document.getElementById('aes-rue')?document.getElementById('aes-rue').value.trim():null;if(aesCurrentBalIdx===-1){if(!a._edited)a._edited={};
+function saveAesPanel(){if(aesCurrentOrdre===null)return;pushUndo(editScreenCode,'Modification adresse');var t=getTourneeData(editScreenCode);var a=t.adresses.find(function(x){return x.ordre===aesCurrentOrdre});if(!a)return;var nom=document.getElementById('aes-nom')?document.getElementById('aes-nom').value.trim():'';var entr=document.getElementById('aes-entr')?document.getElementById('aes-entr').value.trim():'';var tel=document.getElementById('aes-tel')?document.getElementById('aes-tel').value.trim():'';var num=document.getElementById('aes-num').value.trim();var compl=document.getElementById('aes-complement')?document.getElementById('aes-complement').value.trim():null;var cpville=document.getElementById('aes-cpville')?document.getElementById('aes-cpville').value.trim():null;var rue=document.getElementById('aes-rue')?document.getElementById('aes-rue').value.trim():null;var codeacces=document.getElementById('aes-codeacces')?document.getElementById('aes-codeacces').value.trim():null;if(codeacces!==null)a.codeacces=codeacces;if(aesCurrentBalIdx===-1){if(!a._edited)a._edited={};
   var groupLieuDitEl=document.getElementById('aes-group-lieudit');
   if(groupLieuDitEl){a.groupLieuDit=groupLieuDitEl.value.trim();a._edited.groupLieuDit=true;}
   var noteElG=document.getElementById('aes-note');if(noteElG&&noteElG.value.trim()){addNoteToHistory(a,noteElG.value);a._edited.note=true;a._edited.noteHistory=true;}if(rue){a.rue=rue.toUpperCase();a._edited.rue=true;}a.num=num;a._edited.num=true;if(cpville){a.cp_ville=cpville;a._edited.cp_ville=true;}if(compl!==null){
@@ -4794,7 +4840,7 @@ function confirmPinPlacement(){if(!pinMapCode||!pinMapOrdre)return;var t=getTour
 function closePinMap(saved){var spm=document.getElementById('screen-pinmap');spm.classList.remove('open');slideOverlayOut('screen-pinmap',function(){if(pinMapInstance)pinMapInstance.invalidateSize();});}
 var navMapInstance=null,navUserMarker=null,navStopMarkers={},navCurrentStop=null,navStops=[];var navFollowGPS=true,navWatchId=null,navListVisible=false,stopMeta={};var navStartTime=null,navChronoInterval=null;var navRouteLayer=null;function navGetCurrentStop(){if(navCurrentStop)return navStops.find(function(s){return s.key===navCurrentStop&&!s.done})||null;return navStops.find(function(s){return!s.done})||null;}
 function navGetFirstPending(){var s=navGetCurrentStop();return s?s.key:null;}
-function toggleAdresseDone(ordre,forceValue){if(!currentTourneeCode)return false;var t=getTourneeData(currentTourneeCode);var a=t.adresses.find(function(x){return x.ordre===ordre;});if(!a)return false;var keys=buildBalList(a).map(function(b){return a.ordre+'-'+b.balIdx;});var nextValue=forceValue;if(nextValue===undefined)nextValue=!keys.every(function(k){return!!t.done[k];});keys.forEach(function(k){if(nextValue)t.done[k]=true;else delete t.done[k];});saveTourneeData();updateHomeCards();return nextValue;}
+function toggleAdresseDone(ordre,forceValue){if(!currentTourneeCode)return false;var t=getTourneeData(currentTourneeCode);var a=t.adresses.find(function(x){return x.ordre===ordre;});if(!a)return false;var keys=buildBalList(a).map(function(b){return a.ordre+'-'+b.balIdx;});var nextValue=forceValue;if(nextValue===undefined)nextValue=!keys.every(function(k){return!!t.done[k];});var mark={by:(currentProfile?currentProfile.name:''),ts:Date.now()};keys.forEach(function(k){if(nextValue)t.done[k]=mark;else delete t.done[k];});saveTourneeData();updateHomeCards();return nextValue;}
 function openNavScreen(){navPaused=false;navPausedTourneeCode=null;resetChrono();var ebb=document.getElementById('edit-bottom-bar');if(ebb)ebb.style.display='none';var t=getTourneeData(currentTourneeCode);navStops=[];t.adresses.forEach(function(a){var allBals=buildBalList(a);var sel=allBals.filter(function(b){return!!selectedStops[a.ordre+'-'+b.balIdx];});if(!sel.length)return;var aggTypes={courrier:false,colis:false,recommande:false,presse:false};sel.forEach(function(b){var tp=stopTypes[a.ordre+'-'+b.balIdx]||{};if(tp.courrier)aggTypes.courrier=true;if(tp.colis)aggTypes.colis=true;if(tp.recommande)aggTypes.recommande=true;if(tp.presse)aggTypes.presse=true;});
       /* Utiliser le nom de la/les BAL reellement selectionnee(s), pas systematiquement
          celui de la BAL principale : important quand seule une BAL specifique du groupe
@@ -5742,7 +5788,7 @@ function saveTourneeData(){try{var toSave={};
     }
     toSave[code]=entry;});toSave._version=TOURNEES_DATA_VERSION;localStorage.setItem('tournee_done_v1',JSON.stringify(toSave));}catch(e){}
 try{fbSaveDebounced();}catch(e){}}
-function toggleBalDone(key){var t=getTourneeData(currentTourneeCode);t.done[key]=!t.done[key];if(!t.done[key])delete t.done[key];saveTourneeData();updateHomeCards();}
+function toggleBalDone(key){var t=getTourneeData(currentTourneeCode);t.done[key]=!t.done[key]?{by:(currentProfile?currentProfile.name:''),ts:Date.now()}:false;if(!t.done[key])delete t.done[key];saveTourneeData();updateHomeCards();}
 function selectTListItem(key){}
 function updateStartBar(){var count=Object.keys(selectedStops).length;var btn=document.getElementById('tlist-start-btn'),cntEl=document.getElementById('start-tournee-count');if(btn)btn.disabled=count===0;if(cntEl)cntEl.textContent=count;var sel=document.getElementById('tls-sel');if(sel)sel.textContent=count;}
 function toggleGroupSelect(ordre){var t=getTourneeData(currentTourneeCode);var a=t.adresses.find(function(x){return x.ordre===ordre;});if(!a)return;var allKeys=buildBalList(a).map(function(b){return a.ordre+'-'+b.balIdx;});var allSel=allKeys.every(function(k){return!!selectedStops[k];});allKeys.forEach(function(k){if(allSel)delete selectedStops[k];else selectedStops[k]=true;});var on=!allSel;var grpEl=document.getElementById('grp-'+ordre);if(grpEl){grpEl.classList.toggle('sel-stop',on);var chk=grpEl.querySelector('[data-selgroup]');if(chk)chk.classList.toggle('on',on);allKeys.forEach(function(k){var balEl=grpEl.querySelector('[data-key-sel="'+k+'"]');if(balEl){balEl.classList.toggle('sel-stop',on);var bc=balEl.querySelector('.sel-check');if(bc)bc.classList.toggle('on',on);}});}
@@ -5832,7 +5878,7 @@ return(document.body.classList.contains('dark')?STREET_PALETTE_DARK:STREET_PALET
 var SEL=function(key){var on=!!(selectedStops[key]);return'<div class="sel-check'+(on?' on':'')+'" data-selkey="'+key+'"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>';};rows.forEach(function(r){getStreetBg(r.a.rue);});function renderRow(r){var a=r.a;var addrLine=formatStreetAddress(a.num,a.rue);var sBg=getStreetBg(a.rue);if(r.type==='single'){var b=r.b,key=r.key;var isDone=!!(t.done[key]),isSel=!!(selectedStops[key]);var nom=r._displayNom||(b.balIdx===0?(a.nom||b.nom||''):(b.nom||''));var lieu=b.balIdx===0?(a.lieu_dit||b.lieu_dit||''):(b.lieu_dit||'');var entr=b.balIdx===0?(a.entreprise||b.entreprise||''):(b.entreprise||'');var name=nom||lieu||entr||b.complement||a.complement||'';stopMeta[key]={nom:name||addrLine,addr:addrLine};
       var titre1=addrLine;
       var sous1=(a.cp_ville||'')+(nom?' · '+nom:'')+(lieu?' · '+lieu:'')+(entr?' · '+entr:'');
-      var sous1Html=(a.cp_ville?escHtml(a.cp_ville):'')+(nom?' · '+escHtml(nom):'')+(lieu?' · <span style="color:#c0392b!important;font-weight:700">'+escHtml(lieu)+'</span>':'')+(entr?' · <span style="color:#1a6b1a!important;font-weight:700">'+escHtml(entr)+'</span>':'');
+      var sous1Html=(a.cp_ville?escHtml(a.cp_ville):'')+(nom?' · '+escHtml(nom):'')+(lieu?' · <span style="color:#c0392b!important;font-weight:700">'+escHtml(lieu)+'</span>':'')+(entr?' · <span style="color:#1a6b1a!important;font-weight:700">'+escHtml(entr)+'</span>':'')+(a.codeacces?' · <span style="color:#b8860b!important;font-weight:700">🔑 '+escHtml(a.codeacces)+'</span>':'')+(a.note?' · <span style="color:#b8860b!important;font-weight:700">⚠️ '+escHtml(a.note.length>45?a.note.substring(0,45)+'…':a.note)+'</span>':'');
       if(currentSort==='alpha'&&(r._displayNom||name)){
         titre1=r._displayNom||name;
         sous1Html=escHtml(addrLine)+(a.cp_ville?' · '+escHtml(a.cp_ville):'');
