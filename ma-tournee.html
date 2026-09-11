@@ -202,10 +202,17 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
         <button onclick="setTheme('sun')" id="theme-btn-sun" style="flex:1;padding:9px 4px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer">🔆 Plein soleil</button>
       </div>
 
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding:2px 0">
+        <span style="font-size:13px;color:var(--text)">🔊 Sons</span>
+        <button id="sound-toggle-btn" onclick="toggleSoundSetting()" style="width:42px;height:24px;border-radius:12px;border:none;background:var(--accent);position:relative;cursor:pointer;padding:0;flex-shrink:0">
+          <div id="sound-toggle-knob" style="position:absolute;top:2px;left:20px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left 0.15s"></div>
+        </button>
+      </div>
+
       <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
       <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
 
-      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 10/09/2026 22:06</div>
+      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 11/09/2026 17:16</div>
     </div>
   </div>
 </div>
@@ -726,6 +733,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
 
 <!-- ===== GESTION DES PROFILS (photos, renommage) ===== -->
   <div id="profile-manage-overlay" style="position:fixed;inset:0;z-index:9999998;background:var(--bg);display:none;flex-direction:column">
+    <input type="color" id="accent-color-picker" style="display:none" onchange="saveProfileAccentColor(this.value)">
     <div style="background:var(--surface);border-bottom:1px solid var(--border);padding:12px 14px;padding-top:max(12px,env(safe-area-inset-top));display:flex;align-items:center;gap:10px;flex-shrink:0">
       <button onclick="closeProfileManage()" style="background:var(--bg);border:1.5px solid var(--border);color:var(--text);border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -803,7 +811,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='10/09/2026 22:06';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='11/09/2026 17:16';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -2457,6 +2465,7 @@ function toggleHomeDrawer(){
     }
     var adminSec=document.getElementById('drawer-admin-section');
     if(adminSec)adminSec.style.display=(currentProfile&&isAdminName(currentProfile.name))?'block':'none';
+    applySoundToggleUI();
   }
 }
 /* Recupere en une seule lecture la presence de tout le monde sur toutes les
@@ -2595,9 +2604,28 @@ tile.style.cssText='aspect-ratio:1.05;border-radius:12px;display:flex;flex-direc
   fetchHomePresence(applyHomePresenceTags);
 }
 var firebaseConfig={apiKey:"AIzaSyCJRHL5MhawTwXPDwk-ZBWgk9hZ5bSABIA",authDomain:"ma-tournee.firebaseapp.com",projectId:"ma-tournee",storageBucket:"ma-tournee.firebasestorage.app",messagingSenderId:"290874680683",appId:"1:290874680683:web:73aa7477ea84614f43d82e"};var fbApp=null,db=null,fbSyncTimeout=null,fbSyncStatus='idle';function initFirebase(){try{fbApp=firebase.initializeApp(firebaseConfig);db=firebase.firestore();showSyncStatus('connected');}catch(e){db=null;}}
+var _fbErrorStreak=0;
 function showSyncStatus(s){fbSyncStatus=s;var el=document.getElementById('sync-status-badge');if(el){var labels={connected:{text:'☁️ Connecté',color:'#27a355'},saving:{text:'⏳ Sync...',color:'#c49b00'},saved:{text:'✓ Synchronisé',color:'#27a355'},error:{text:'⚠️ Hors ligne',color:'#d05040'},idle:{text:'☁️',color:'#6278a0'}};var st=labels[s]||labels.idle;el.textContent=st.text;el.style.color=st.color;}
-  if(s==='error'){showFirebaseBlockedWarning();}
-  else if(s==='saved'||s==='connected'){var w=document.getElementById('firebase-blocked-warning');if(w)w.remove();}
+  if(s==='error'){
+    _fbErrorStreak++;
+    if(_fbErrorStreak>=3){showFirebaseBlockedWarning();}
+    else{showSoftOfflineBanner();}
+  }
+  else if(s==='saved'||s==='connected'){
+    _fbErrorStreak=0;
+    _fbWarningShown=false;
+    var w=document.getElementById('firebase-blocked-warning');if(w)w.remove();
+    var sb=document.getElementById('soft-offline-banner');if(sb)sb.remove();
+  }
+}
+function showSoftOfflineBanner(){
+  if(document.getElementById('soft-offline-banner')||document.getElementById('firebase-blocked-warning'))return;
+  var banner=document.createElement('div');
+  banner.id='soft-offline-banner';
+  banner.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999998;padding:10px 14px;background:#fff4d6;color:#8a6d00;font-size:12px;font-weight:600;text-align:center;border-bottom:2px solid #f5c800;transition:opacity 0.3s';
+  banner.innerHTML='📡 Connexion en cours de rétablissement…';
+  document.body.appendChild(banner);
+  setTimeout(function(){var b=document.getElementById('soft-offline-banner');if(b){b.style.opacity='0';setTimeout(function(){if(b)b.remove();},300);}},4000);
 }
 var _fbWarningShown=false;
 function checkForNewVersion(){
@@ -2626,6 +2654,7 @@ function showNewVersionBanner(){
 function showFirebaseBlockedWarning(){
   if(_fbWarningShown)return;
   if(document.getElementById('firebase-blocked-warning'))return;
+  var sb=document.getElementById('soft-offline-banner');if(sb)sb.remove();
   _fbWarningShown=true;
   var banner=document.createElement('div');
   banner.id='firebase-blocked-warning';
@@ -3435,6 +3464,76 @@ function renderExistingProfilesList(){
 }
 
 var ADMIN_DEFAULT_PASSWORD='MonmdpTournee16+';
+var _pendingAccentProfile=null;
+function openAccentColorPicker(name){
+  _pendingAccentProfile=name;
+  var picker=document.getElementById('accent-color-picker');
+  if(!picker)return;
+  var p=getProfilesForBureau().find(function(x){return x.name===name;});
+  picker.value=(p&&p.accentColor)||'#1a4fa8';
+  picker.click();
+}
+function saveProfileAccentColor(color){
+  if(!_pendingAccentProfile)return;
+  var list=getProfilesForBureau();
+  var entry=list.find(function(p){return p.name===_pendingAccentProfile;});
+  if(!entry)return;
+  entry.accentColor=color;
+  saveProfilesForBureau(list);
+  renderProfileManageList();
+  if(currentProfile&&currentProfile.name===_pendingAccentProfile){
+    applyAccentColor(color);
+  }
+}
+function lightenColorGlobal(hex,percent){
+  hex=(hex||'#1a4fa8').replace('#','');
+  if(hex.length===3)hex=hex.split('').map(function(c){return c+c;}).join('');
+  var r=parseInt(hex.substring(0,2),16),g=parseInt(hex.substring(2,4),16),b=parseInt(hex.substring(4,6),16);
+  r=Math.round(r+(255-r)*percent);g=Math.round(g+(255-g)*percent);b=Math.round(b+(255-b)*percent);
+  return 'rgb('+r+','+g+','+b+')';
+}
+function applyAccentColor(color){
+  color=color||'#1a4fa8';
+  document.documentElement.style.setProperty('--accent',color);
+  document.documentElement.style.setProperty('--accent-light',lightenColorGlobal(color,0.85));
+}
+function playSound(type){
+  try{
+    if(localStorage.getItem('sound_enabled')==='0')return;
+    var ctx=new (window.AudioContext||window.webkitAudioContext)();
+    var o=ctx.createOscillator();
+    var g=ctx.createGain();
+    o.connect(g);g.connect(ctx.destination);
+    if(type==='alert'){
+      o.frequency.setValueAtTime(440,ctx.currentTime);
+      o.frequency.setValueAtTime(330,ctx.currentTime+0.12);
+      g.gain.setValueAtTime(0.15,ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.3);
+      o.start();o.stop(ctx.currentTime+0.3);
+    } else {
+      o.frequency.setValueAtTime(880,ctx.currentTime);
+      g.gain.setValueAtTime(0.12,ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.18);
+      o.start();o.stop(ctx.currentTime+0.18);
+    }
+  }catch(e){}
+}
+function toggleSoundSetting(){
+  var enabled=localStorage.getItem('sound_enabled')!=='0';
+  localStorage.setItem('sound_enabled',enabled?'0':'1');
+  applySoundToggleUI();
+  if(!enabled)playSound('done');
+}
+function applySoundToggleUI(){
+  var enabled=localStorage.getItem('sound_enabled')!=='0';
+  var btn=document.getElementById('sound-toggle-btn');
+  var knob=document.getElementById('sound-toggle-knob');
+  if(btn)btn.style.background=enabled?'var(--accent)':'var(--border)';
+  if(knob)knob.style.left=enabled?'20px':'2px';
+}
+function vibrate(pattern){
+  try{if(navigator.vibrate)navigator.vibrate(pattern);}catch(e){}
+}
 function isAdminName(name){var n=(name||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');return n==='severin';}
 function copyWithFeedback(text,event){
   if(!text){showToast('Rien à copier');return;}
@@ -3487,7 +3586,7 @@ function toggleTutoSection(id){
   el.style.display=open?'none':'block';
   if(chev)chev.textContent=open?'▾':'▴';
 }
-function blockIfFacteur(){if(isFacteurSession()){showToast('Réservé à l\'administrateur');return true;}return false;}
+function blockIfFacteur(){if(isFacteurSession()){vibrate(60);showToast('Réservé à l\'administrateur');return true;}return false;}
 function applyRoleRestrictionsToEditScreen(){
   var locked=isFacteurSession();
   var bar=document.getElementById('edit-bottom-bar');
@@ -3508,7 +3607,7 @@ function normalizeProfile(p){
   var role=isAdminName(p.name)?'admin':'facteur';
   var password=p.password||'';
   if(role==='admin'&&!password)password=ADMIN_DEFAULT_PASSWORD;
-  return{name:p.name||'',photo:p.photo||null,role:role,password:password};
+  return{name:p.name||'',photo:p.photo||null,role:role,password:password,accentColor:p.accentColor||''};
 }
 function getProfilesForBureau(){
   var raw=_allBureauProfiles[currentBureau]||[];
@@ -3559,6 +3658,7 @@ function submitAdminPassword(){
     closeAdminPasswordPrompt();
     setCurrentProfile(name);
   }else{
+    vibrate([40,40,40]);
     var err=document.getElementById('admin-pwd-error');
     if(err)err.style.display='block';
   }
@@ -3583,6 +3683,8 @@ function setCurrentProfile(name){
   showToast('Bonjour '+name+' ✓');
   renderSessionBadge();
   startPresenceHeartbeatLoop();
+  var mine=getProfilesForBureau().find(function(p){return p.name===name;});
+  applyAccentColor(mine&&mine.accentColor);
 }
 
 function addProfileToBureauList(name){
@@ -3631,6 +3733,7 @@ function renderProfileManageList(){
     var roleTag=p.role==='admin'
       ? '<span style="font-size:9px;font-weight:700;color:#e87820;background:#fff3e8;padding:2px 6px;border-radius:6px;white-space:nowrap">ADMIN</span>'
       : '<span style="font-size:9px;font-weight:700;color:var(--muted);background:var(--bg);padding:2px 6px;border-radius:6px;white-space:nowrap">FACTEUR</span>';
+    var colorBtn='<button onclick="openAccentColorPicker(\''+p.name.replace(/'/g,"\\'")+'\')" title="Couleur d\'accent" style="width:26px;height:26px;border-radius:50%;border:2px solid var(--border);background:'+(p.accentColor||'#1a4fa8')+';cursor:pointer;flex-shrink:0;padding:0"></button>';
     var lockBtn=(p.role==='admin'&&viewerIsAdmin)
       ? '<button onclick="openAdminPasswordChange(\''+p.name.replace(/'/g,"\\'")+'\')" style="background:var(--accent-light);border:none;color:var(--accent);border-radius:8px;padding:8px 10px;font-size:12px;cursor:pointer;flex-shrink:0">🔒</button>'
       : '';
@@ -3647,7 +3750,7 @@ function renderProfileManageList(){
         '<div style="position:absolute;bottom:-2px;right:-2px;width:20px;height:20px;border-radius:50%;background:var(--yellow);border:2px solid var(--surface);display:flex;align-items:center;justify-content:center;font-size:10px">📷</div>'+
       '</div>'+
       '<div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:0">'+roleTag+nameInput+'</div>'+
-      lockBtn+delBtn+
+      colorBtn+lockBtn+delBtn+
     '</div>';
   }).join('');
 }
@@ -3793,6 +3896,7 @@ function checkPresenceAndWarn(code){
 }
 
 function showPresenceWarning(otherName,code){
+  playSound('alert');
   var overlay=document.createElement('div');
   overlay.id='presence-warning-overlay';
   overlay.style.cssText='position:fixed;top:0;left:0;right:0;z-index:9999996;padding:12px 14px;background:#fff3e0;border-bottom:2px solid #ff9800;display:flex;align-items:center;gap:10px';
@@ -5323,7 +5427,7 @@ function playDoneAnimation(){
 }
 function markNavStopDone(key){if(!key)return;var s=navStops.find(function(x){return x.key===key;});if(!s)return;s.done=!s.done;toggleAdresseDone(s.ordre,s.done);
 var prevKey=navCurrentStop;
-if(s.done){playDoneAnimation();var next=navStops.find(function(x){return!x.done;});navCurrentStop=next?next.key:null;if(next&&next.lat&&next.lng&&navMapInstance&&!navFollowGPS)navMapInstance.panTo([next.lat,next.lng],{animate:true,duration:0.6});}
+if(s.done){playDoneAnimation();vibrate(25);playSound('done');var next=navStops.find(function(x){return!x.done;});navCurrentStop=next?next.key:null;if(next&&next.lat&&next.lng&&navMapInstance&&!navFollowGPS)navMapInstance.panTo([next.lat,next.lng],{animate:true,duration:0.6});}
 navUpdateMarker(s.key);
 if(navCurrentStop&&navCurrentStop!==s.key)navUpdateMarker(navCurrentStop);
 if(prevKey&&prevKey!==s.key&&prevKey!==navCurrentStop)navUpdateMarker(prevKey);
