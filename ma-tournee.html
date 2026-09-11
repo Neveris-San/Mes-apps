@@ -212,7 +212,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
       <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
 
-      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 11/09/2026 17:16</div>
+      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 11/09/2026 17:42</div>
     </div>
   </div>
 </div>
@@ -811,7 +811,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='11/09/2026 17:16';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='11/09/2026 17:42';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -4723,6 +4723,107 @@ function openNewAddrPanel(){if(blockIfFacteur())return;if(!editScreenCode){showT
 var t=getTourneeData(editScreenCode);var sel=document.getElementById('na-position');if(sel){sel.innerHTML='<option value="0">En début de tournée</option>';(t.adresses||[]).forEach(function(a){var lbl=(a.num?a.num+' ':'')+a.rue+(a.nom?' — '+a.nom:'');sel.innerHTML+='<option value="'+a.ordre+'">Après : '+escHtml(lbl.substring(0,50))+'</option>';});if(t.adresses.length>0)sel.value=t.adresses[t.adresses.length-1].ordre;}
 ['na-num','na-rue','na-complement','na-cpville','na-nom','na-entr','na-tel'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});document.getElementById('new-addr-modal').style.display='flex';}
 function closeNewAddrPanel(){document.getElementById('new-addr-modal').style.display='none';}
+function renfortFullStreetKey(rue){
+  return (rue||'').trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ');
+}
+var _renfortRenderedGroups=[];
+function renderRenfortStreetGroupedList(){
+  var t=getTourneeData('RENFORT');
+  var searchEl=document.getElementById('tlist-search');
+  var q=searchEl?(searchEl.value||'').toLowerCase().trim():'';
+  var container=document.getElementById('tlist-items');
+  if(!container)return;
+
+  var groups={};
+  t.adresses.forEach(function(a){
+    var key=renfortFullStreetKey(a.rue);
+    if(!groups[key])groups[key]={displayName:a.rue||'(sans rue)',addrs:[]};
+    groups[key].addrs.push(a);
+  });
+
+  var groupKeys=Object.keys(groups);
+  if(q){
+    groupKeys=groupKeys.filter(function(key){
+      var g=groups[key];
+      if(g.displayName.toLowerCase().indexOf(q)>=0)return true;
+      return g.addrs.some(function(a){
+        return (a.nom||'').toLowerCase().indexOf(q)>=0||(a.entreprise||'').toLowerCase().indexOf(q)>=0||(a.num||'').toLowerCase().indexOf(q)>=0;
+      });
+    });
+  }
+
+  if(!groupKeys.length){
+    container.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px"><div style="font-size:38px;margin-bottom:8px;opacity:0.6">'+(q?'🔍':'📭')+'</div>'+(q?'Aucun résultat':'Aucune adresse.')+'</div>';
+    updateTListStats();
+    return;
+  }
+
+  groupKeys.sort(function(ka,kb){return groups[ka].displayName.localeCompare(groups[kb].displayName,'fr');});
+  _renfortRenderedGroups=groupKeys.map(function(key){return groups[key];});
+
+  var html='';
+  _renfortRenderedGroups.forEach(function(g,gi){
+    var sortedAddrs=g.addrs.slice().sort(function(a,b){return parseNumForSort(a.num)-parseNumForSort(b.num);});
+    var groupId='renfort-grp-'+gi;
+    var allKeysInGroup=[];
+    sortedAddrs.forEach(function(a){buildBalList(a).forEach(function(b){allKeysInGroup.push(a.ordre+'-'+b.balIdx);});});
+    var selCount=allKeysInGroup.filter(function(k){return!!selectedStops[k];}).length;
+    var allSelected=selCount>0&&selCount===allKeysInGroup.length;
+
+    html+='<div class="tlist-group" style="margin-bottom:8px">';
+    html+='<div class="tlist-group-header" onclick="toggleRenfortStreetGroup(\''+groupId+'\')" style="cursor:pointer;display:flex;align-items:center;gap:10px;padding:11px 14px">';
+    html+='<div class="sel-check'+(allSelected?' on':'')+'" onclick="event.stopPropagation();toggleRenfortGroupSelectAll('+gi+')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>';
+    html+='<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escHtml(g.displayName)+'</div><div style="font-size:11px;color:var(--muted)">'+sortedAddrs.length+' adresse'+(sortedAddrs.length>1?'s':'')+(selCount>0?' · '+selCount+' sélectionnée'+(selCount>1?'s':''):'')+'</div></div>';
+    html+='<svg id="'+groupId+'-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.2" stroke-linecap="round" style="transition:transform 0.2s">'+'<polyline points="6 9 12 15 18 9"/></svg>';
+    html+='</div>';
+    html+='<div id="'+groupId+'" style="display:none;border-top:1px solid var(--border)">';
+    sortedAddrs.forEach(function(a){
+      var key=a.ordre+'-0';
+      var isSel=!!selectedStops[key];
+      var isDone=!!t.done[key];
+      var titre=(a.num?a.num+' ':'')+g.displayName;
+      var sousParts=[];
+      if(a.nom)sousParts.push(escHtml(a.nom));
+      if(a.entreprise)sousParts.push('<span style="color:#1a6b1a!important;font-weight:700;opacity:0.5">'+escHtml(a.entreprise)+'</span>');
+      if(a.lieu_dit)sousParts.push('<span style="color:#c0392b!important;font-weight:700;opacity:0.5">'+escHtml(a.lieu_dit)+'</span>');
+      if(a.codeacces)sousParts.push('<span style="color:#b8860b!important;font-weight:700;opacity:0.5">🔑 '+escHtml(a.codeacces)+'</span>');
+      html+='<div class="tlist-item" style="margin:6px 10px;border-radius:8px'+(isDone?';opacity:0.55':'')+'" data-key-sel="'+key+'" onclick="toggleRenfortAddrSelect(\''+key+'\',\''+groupId+'\')">';
+      html+='<div class="sel-check'+(isSel?' on':'')+'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>';
+      html+='<div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:700;color:var(--text)">'+escHtml(titre)+(isDone?' ✓':'')+'</div>'+(sousParts.length?'<div style="font-size:11.5px;color:var(--muted)">'+sousParts.join(' · ')+'</div>':'')+'</div>';
+      html+='</div>';
+    });
+    html+='</div></div>';
+  });
+
+  container.innerHTML=html;
+  updateTListStats();
+}
+function toggleRenfortStreetGroup(groupId){
+  var body=document.getElementById(groupId);
+  var chevron=document.getElementById(groupId+'-chevron');
+  if(!body)return;
+  var open=body.style.display==='block';
+  body.style.display=open?'none':'block';
+  if(chevron)chevron.style.transform=open?'':'rotate(180deg)';
+}
+function toggleRenfortAddrSelect(key,groupId){
+  if(selectedStops[key])delete selectedStops[key];else selectedStops[key]=true;
+  renderRenfortStreetGroupedList();
+  var body=document.getElementById(groupId);if(body)body.style.display='block';
+  var chevron=document.getElementById(groupId+'-chevron');if(chevron)chevron.style.transform='rotate(180deg)';
+}
+function toggleRenfortGroupSelectAll(gi){
+  var g=_renfortRenderedGroups[gi];
+  if(!g)return;
+  var allKeys=[];
+  g.addrs.forEach(function(a){buildBalList(a).forEach(function(b){allKeys.push(a.ordre+'-'+b.balIdx);});});
+  var allSelected=allKeys.length>0&&allKeys.every(function(k){return!!selectedStops[k];});
+  allKeys.forEach(function(k){if(allSelected)delete selectedStops[k];else selectedStops[k]=true;});
+  var groupId='renfort-grp-'+gi;
+  renderRenfortStreetGroupedList();
+  var body=document.getElementById(groupId);if(body)body.style.display='block';
+  var chevron=document.getElementById(groupId+'-chevron');if(chevron)chevron.style.transform='rotate(180deg)';
+}
 function renfortStreetId(rue){
   var cleaned=(rue||'').trim().replace(/\s*\([^)]*\)\s*$/,'').trim();
   var words=cleaned.split(/\s+/).filter(Boolean);
@@ -6201,7 +6302,7 @@ var isOpen=editOpenGroups[a.ordre]||false;var allBals=buildBalList(a);var balsHt
 var pin=e.target.closest('[data-pinordre]');if(pin){e.stopPropagation();openPinMap(editScreenCode,parseInt(pin.dataset.pinordre));return;}
 var edt=e.target.closest('[data-editordre]');if(edt){e.stopPropagation();openAesPanel(parseInt(edt.dataset.editordre),parseInt(edt.dataset.editbal||0));return;}
 var tog=e.target.closest('[data-togglegrp]');if(tog&&!reorderMode){var o=parseInt(tog.dataset.togglegrp);editOpenGroups[o]=!editOpenGroups[o];var body=container.querySelector('[data-grpbody="'+o+'"]');var arrow=tog.querySelector('svg[style]');if(body)body.style.display=editOpenGroups[o]?'block':'none';if(arrow)arrow.style.transform='rotate('+(editOpenGroups[o]?90:0)+'deg)';}};if(reorderMode)attachDragEvents();}
-function renderTList(){var tourneeColor=getTourneeColor(currentTourneeCode);if(!currentTourneeCode)return;var t=getTourneeData(currentTourneeCode);var searchEl=document.getElementById('tlist-search');var q=searchEl?(searchEl.value||'').toLowerCase().trim():'';var rows=[];t.adresses.forEach(function(a){var nbBal=1+(a.boites?a.boites.length:0);var useAccordeon=(nbBal>1);if(useAccordeon){rows.push({type:'group',a:a,key:'g-'+a.ordre});}else{buildBalList(a).forEach(function(b){rows.push({type:'single',a:a,b:b,key:a.ordre+'-'+b.balIdx});});}});if(q)rows=rows.filter(function(r){var a=r.a;var hay=((a.num||'')+' '+(a.rue||'')+' '+(a.nom||'')+' '+(a.complement||'')+' '+(a.entreprise||'')+' '+(a.cp_ville||'')).toLowerCase();if(r.b){var b=r.b;hay+=(' '+(b.nom||'')+' '+(b.complement||'')+' '+(b.entreprise||'')+' '+(b.nom_entreprise||'')).toLowerCase();}
+function renderTList(){if(currentTourneeCode==='RENFORT'){renderRenfortStreetGroupedList();return;}var tourneeColor=getTourneeColor(currentTourneeCode);if(!currentTourneeCode)return;var t=getTourneeData(currentTourneeCode);var searchEl=document.getElementById('tlist-search');var q=searchEl?(searchEl.value||'').toLowerCase().trim():'';var rows=[];t.adresses.forEach(function(a){var nbBal=1+(a.boites?a.boites.length:0);var useAccordeon=(nbBal>1);if(useAccordeon){rows.push({type:'group',a:a,key:'g-'+a.ordre});}else{buildBalList(a).forEach(function(b){rows.push({type:'single',a:a,b:b,key:a.ordre+'-'+b.balIdx});});}});if(q)rows=rows.filter(function(r){var a=r.a;var hay=((a.num||'')+' '+(a.rue||'')+' '+(a.nom||'')+' '+(a.complement||'')+' '+(a.entreprise||'')+' '+(a.cp_ville||'')).toLowerCase();if(r.b){var b=r.b;hay+=(' '+(b.nom||'')+' '+(b.complement||'')+' '+(b.entreprise||'')+' '+(b.nom_entreprise||'')).toLowerCase();}
 else{hay+=(a.boites||[]).map(function(b){return(b.nom||'')+' '+(b.complement||'')+' '+(b.entreprise||'');}).join(' ').toLowerCase();}
 return hay.includes(q);});if(currentSort==='alpha'){
   /* Éclater les adresses multi-noms en rows individuelles */
