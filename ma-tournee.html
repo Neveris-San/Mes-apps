@@ -212,7 +212,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
       <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
 
-      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 11/09/2026 17:42</div>
+      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 11/09/2026 17:51</div>
     </div>
   </div>
 </div>
@@ -811,7 +811,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='11/09/2026 17:42';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='11/09/2026 17:51';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -4758,9 +4758,10 @@ function renderRenfortStreetGroupedList(){
     return;
   }
 
-  groupKeys.sort(function(ka,kb){return groups[ka].displayName.localeCompare(groups[kb].displayName,'fr');});
+  groupKeys.sort(function(ka,kb){return renfortStreetId(groups[ka].displayName).localeCompare(renfortStreetId(groups[kb].displayName),'fr');});
   _renfortRenderedGroups=groupKeys.map(function(key){return groups[key];});
 
+  var groupColor=getTourneeColor('RENFORT');
   var html='';
   _renfortRenderedGroups.forEach(function(g,gi){
     var sortedAddrs=g.addrs.slice().sort(function(a,b){return parseNumForSort(a.num)-parseNumForSort(b.num);});
@@ -4770,8 +4771,8 @@ function renderRenfortStreetGroupedList(){
     var selCount=allKeysInGroup.filter(function(k){return!!selectedStops[k];}).length;
     var allSelected=selCount>0&&selCount===allKeysInGroup.length;
 
-    html+='<div class="tlist-group" style="margin-bottom:8px">';
-    html+='<div class="tlist-group-header" onclick="toggleRenfortStreetGroup(\''+groupId+'\')" style="cursor:pointer;display:flex;align-items:center;gap:10px;padding:11px 14px">';
+    html+='<div class="tlist-group" style="margin-bottom:8px;border-left:4px solid '+groupColor+'">';
+    html+='<div class="tlist-group-header" onclick="toggleRenfortStreetGroup(\''+groupId+'\')" style="cursor:pointer;display:flex;align-items:center;gap:10px;padding:11px 14px;background:'+lightenColorGlobal(groupColor,0.9)+'">';
     html+='<div class="sel-check'+(allSelected?' on':'')+'" onclick="event.stopPropagation();toggleRenfortGroupSelectAll('+gi+')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>';
     html+='<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escHtml(g.displayName)+'</div><div style="font-size:11px;color:var(--muted)">'+sortedAddrs.length+' adresse'+(sortedAddrs.length>1?'s':'')+(selCount>0?' · '+selCount+' sélectionnée'+(selCount>1?'s':''):'')+'</div></div>';
     html+='<svg id="'+groupId+'-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.2" stroke-linecap="round" style="transition:transform 0.2s">'+'<polyline points="6 9 12 15 18 9"/></svg>';
@@ -4787,9 +4788,12 @@ function renderRenfortStreetGroupedList(){
       if(a.entreprise)sousParts.push('<span style="color:#1a6b1a!important;font-weight:700;opacity:0.5">'+escHtml(a.entreprise)+'</span>');
       if(a.lieu_dit)sousParts.push('<span style="color:#c0392b!important;font-weight:700;opacity:0.5">'+escHtml(a.lieu_dit)+'</span>');
       if(a.codeacces)sousParts.push('<span style="color:#b8860b!important;font-weight:700;opacity:0.5">🔑 '+escHtml(a.codeacces)+'</span>');
-      html+='<div class="tlist-item" style="margin:6px 10px;border-radius:8px'+(isDone?';opacity:0.55':'')+'" data-key-sel="'+key+'" onclick="toggleRenfortAddrSelect(\''+key+'\',\''+groupId+'\')">';
+      html+='<div class="tlist-item" style="margin:6px 10px;border-radius:8px;flex-direction:column;align-items:stretch;gap:0'+(isDone?';opacity:0.55':'')+'" data-key-sel="'+key+'">';
+      html+='<div style="display:flex;align-items:center;gap:10px;width:100%" onclick="toggleRenfortAddrSelect(\''+key+'\',\''+groupId+'\')">';
       html+='<div class="sel-check'+(isSel?' on':'')+'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>';
       html+='<div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:700;color:var(--text)">'+escHtml(titre)+(isDone?' ✓':'')+'</div>'+(sousParts.length?'<div style="font-size:11.5px;color:var(--muted)">'+sousParts.join(' · ')+'</div>':'')+'</div>';
+      html+='</div>';
+      html+=renderRenfortTypePillsHtml(key,groupId);
       html+='</div>';
     });
     html+='</div></div>';
@@ -4797,6 +4801,22 @@ function renderRenfortStreetGroupedList(){
 
   container.innerHTML=html;
   updateTListStats();
+}
+function renderRenfortTypePillsHtml(key,groupId){
+  var st=stopTypes[key];
+  var html='<div style="display:flex;gap:4px;margin-top:6px;padding-left:38px" onclick="event.stopPropagation()">';
+  ['colis','recommande','presse'].forEach(function(tp){
+    var def=TYPE_PILL_DEFS[tp];
+    var active=!!(st&&st[tp]);
+    html+='<span onclick="toggleRenfortStopType(\''+key+'\',\''+tp+'\',\''+groupId+'\')" style="font-size:9px;font-weight:700;padding:3px 6px;border-radius:20px;cursor:pointer;background:'+(active?def.color:'var(--bg)')+';color:'+(active?'#fff':'var(--muted)')+';border:1px solid '+(active?def.color:'var(--border)')+';white-space:nowrap;flex:1;text-align:center">'+def.icon+' '+def.label+'</span>';
+  });
+  html+='</div>';
+  return html;
+}
+function toggleRenfortStopType(key,tp,groupId){
+  toggleStopTypeDirect(key,tp);
+  var body=document.getElementById(groupId);if(body)body.style.display='block';
+  var chevron=document.getElementById(groupId+'-chevron');if(chevron)chevron.style.transform='rotate(180deg)';
 }
 function toggleRenfortStreetGroup(groupId){
   var body=document.getElementById(groupId);
