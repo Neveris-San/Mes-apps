@@ -160,6 +160,63 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
     </div>
     <div id="home-tournee-list" style="display:flex;flex-direction:column"></div>
     <div id="home-tournee-grid" style="display:none;grid-template-columns:repeat(auto-fill,minmax(84px,84px));gap:8px;justify-content:start"></div>
+  
+
+<!-- ===== TIROIR DE REGLAGES (accueil) ===== -->
+  <div id="home-drawer-overlay" onclick="toggleHomeDrawer()" style="position:fixed;inset:0;background:rgba(0,0,0,0);backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px);pointer-events:none;transition:background 0.3s,backdrop-filter 0.3s,-webkit-backdrop-filter 0.3s;z-index:9999996">
+    <div id="home-drawer" onclick="event.stopPropagation()" style="position:absolute;top:0;right:-82%;width:82%;max-width:340px;height:100%;background:var(--surface);padding:calc(20px + env(safe-area-inset-top)) 18px 20px;transition:right 0.32s cubic-bezier(.2,.8,.3,1);border-left:1px solid var(--border);overflow-y:auto;box-sizing:border-box">
+      <div style="display:flex;align-items:center;gap:10px;padding-bottom:16px;margin-bottom:12px;border-bottom:1px solid var(--border)">
+        <div <div style="position:relative;width:42px;height:42px;flex-shrink:0">
+          <div id="home-drawer-avatar-halo" style="position:absolute;inset:-9px;border-radius:50%;background:radial-gradient(circle,var(--accent) 0%,transparent 70%);opacity:0.35;filter:blur(3px);z-index:0"></div>
+          <div id="home-drawer-avatar" style="position:relative;z-index:1;width:42px;height:42px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;overflow:hidden"></div>
+        </div>
+        <div style="min-width:0">
+          <div id="home-drawer-profile-name" style="font-size:15px;font-weight:700;color:var(--text)">—</div>
+          <div id="home-drawer-bureau" style="font-size:11px;color:var(--muted);margin-top:1px">—</div>
+        </div>
+      </div>
+
+      <div style="font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:0.3px;margin-bottom:6px">TOURNÉE</div>
+      <button onclick="toggleHomeDrawer();showBureauScreen()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">🏢 Changer de bureau</button>
+      <button onclick="toggleHomeDrawer();confirmResetLivraisons()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">🔄 Réinitialiser les livraisons</button>
+
+      <div style="font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:0.3px;margin:16px 0 6px">COMPTE</div>
+      <button onclick="toggleHomeDrawer();openProfileSelectScreen(true)" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">👤 Changer de profil</button>
+      <button onclick="toggleHomeDrawer();openProfileManage()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">🛠️ Gérer les profils</button>
+      <button onclick="toggleHomeDrawer();exportRawData()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">📤 Exporter mes données</button>
+      <button onclick="if(confirm('Vider le cache local de ce navigateur ? Firebase ne sera pas touché, seulement ce qui est stocké sur cet appareil.')){toggleHomeDrawer();clearLocalCacheOnly();}" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">🧹 Vider le cache local</button>
+
+      <div id="drawer-admin-section" style="display:none">
+        <div style="font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:0.3px;margin:16px 0 6px">ADMIN</div>
+        <button onclick="toggleHomeDrawer();openTrackingScreen()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">📍 Suivi tournées</button>
+        <button onclick="toggleHomeDrawer();exportDailyReport()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">📊 Rapport quotidien</button>
+      </div>
+
+      <div style="font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:0.3px;margin:16px 0 6px">AIDE</div>
+      <button onclick="toggleHomeDrawer();openTutorialScreen()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">📘 Tutoriel</button>
+
+      <div style="font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:0.3px;margin:16px 0 6px">APPARENCE</div>
+      <div style="display:flex;gap:6px;margin-top:2px">
+        <button onclick="setTheme('light')" id="theme-btn-light" style="flex:1;padding:9px 4px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer">☀️ Clair</button>
+        <button onclick="setTheme('dark')" id="theme-btn-dark" style="flex:1;padding:9px 4px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer">🌙 Sombre</button>
+        <button onclick="setTheme('sun')" id="theme-btn-sun" style="flex:1;padding:9px 4px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer">🔆 Plein soleil</button>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding:2px 0">
+        <span style="font-size:13px;color:var(--text)">🔊 Sons</span>
+        <button id="sound-toggle-btn" onclick="toggleSoundSetting()" style="width:42px;height:24px;border-radius:12px;border:none;background:var(--accent);position:relative;cursor:pointer;padding:0;flex-shrink:0">
+          <div id="sound-toggle-knob" style="position:absolute;top:2px;left:20px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left 0.15s"></div>
+        </button>
+      </div>
+
+      <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
+      <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
+
+      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 11/09/2026 19:32</div>
+    </div>
+  </div>
+</div>
+
   </div>
 
   
@@ -764,7 +821,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='11/09/2026 19:19';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='11/09/2026 19:32';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -4898,8 +4955,10 @@ var nbalEl=document.getElementById('na-nbal');
   var boites=[];
   for(var bi=1;bi<nbal;bi++) boites.push({nom:'',complement:'',lieu_dit:'',entreprise:'',tel:'',nom_entreprise:''});
   var _newAddrObj={ordre:0,num:num,rue:rue.toUpperCase(),nom:nom,complement:complement,entreprise:entr,cp_ville:cpville,adresse:(num?num+' ':'')+rue.toUpperCase()+', '+cpville,nbBal:nbal,boites:boites,tel:tel,note:'',lat:null,lng:null};t.adresses.splice(insertIdx,0,_newAddrObj);var oldOrdreMap4={};t.adresses.forEach(function(a,i){if(a.ordre>0)oldOrdreMap4[a.ordre]=i+1;});t.adresses.forEach(function(a,i){a.ordre=i+1;});remapOrdreKeyedState(t,oldOrdreMap4);t._restructured=true;if(editScreenCode!=='RENFORT'){if(addToRenfortIfNew(_newAddrObj))sortRenfortAddresses();}else{sortRenfortAddresses();}saveTourneeData();closeNewAddrPanel();renderEditList();showToast('Arrêt ajouté ✓');}
-(function(){var dr=document.getElementById('home-drawer-overlay');if(dr&&dr.parentElement!==document.body)document.body.appendChild(dr);})();
-window.addEventListener('load',function(){applyDarkMode();try{var raw=localStorage.getItem('tournee_done_v1');if(raw){var saved=JSON.parse(raw);TOURNEE_CODES.forEach(function(code){if(saved[code]){if(!TOURNEES_DATA[code])TOURNEES_DATA[code]={adresses:[],done:{}};TOURNEES_DATA[code].done=saved[code].done||{};var coords=saved[code].coords||{};(TOURNEES_DATA[code].adresses||[]).forEach(function(a){if(coords[a.ordre]){a.lat=coords[a.ordre].lat;a.lng=coords[a.ordre].lng;a.pinned=true;}});}});}}catch(e){}
+window.addEventListener('load',function(){
+  var dr=document.getElementById('home-drawer-overlay');
+  if(dr&&dr.parentElement!==document.body)document.body.appendChild(dr);
+  applyDarkMode();try{var raw=localStorage.getItem('tournee_done_v1');if(raw){var saved=JSON.parse(raw);TOURNEE_CODES.forEach(function(code){if(saved[code]){if(!TOURNEES_DATA[code])TOURNEES_DATA[code]={adresses:[],done:{}};TOURNEES_DATA[code].done=saved[code].done||{};var coords=saved[code].coords||{};(TOURNEES_DATA[code].adresses||[]).forEach(function(a){if(coords[a.ordre]){a.lat=coords[a.ordre].lat;a.lng=coords[a.ordre].lng;a.pinned=true;}});}});}}catch(e){}
 /* S'assurer que FERRAGES est dans BUREAU_TOURNEES après chargement localStorage */
   if(BUREAU_TOURNEES['TARASCON']&&BUREAU_TOURNEES['TARASCON'].indexOf('FERRAGES')<0){
     BUREAU_TOURNEES['TARASCON'].splice(BUREAU_TOURNEES['TARASCON'].indexOf('TM07'),0,'FERRAGES');
@@ -6620,59 +6679,6 @@ span.edit-meta-cp   { color: var(--muted) !important; }
 body.dark span.edit-meta-lieu { color: #e05040 !important; }
 body.dark span.edit-meta-entr { color: #27a355 !important; }
 </style>
-<!-- ===== TIROIR DE REGLAGES (accueil) ===== -->
-  <div id="home-drawer-overlay" onclick="toggleHomeDrawer()" style="position:fixed;inset:0;background:rgba(0,0,0,0);backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px);pointer-events:none;transition:background 0.3s,backdrop-filter 0.3s,-webkit-backdrop-filter 0.3s;z-index:9999996">
-    <div id="home-drawer" onclick="event.stopPropagation()" style="position:absolute;top:0;right:-82%;width:82%;max-width:340px;height:100%;background:var(--surface);padding:calc(20px + env(safe-area-inset-top)) 18px 20px;transition:right 0.32s cubic-bezier(.2,.8,.3,1);border-left:1px solid var(--border);overflow-y:auto;box-sizing:border-box">
-      <div style="display:flex;align-items:center;gap:10px;padding-bottom:16px;margin-bottom:12px;border-bottom:1px solid var(--border)">
-        <div <div style="position:relative;width:42px;height:42px;flex-shrink:0">
-          <div id="home-drawer-avatar-halo" style="position:absolute;inset:-9px;border-radius:50%;background:radial-gradient(circle,var(--accent) 0%,transparent 70%);opacity:0.35;filter:blur(3px);z-index:0"></div>
-          <div id="home-drawer-avatar" style="position:relative;z-index:1;width:42px;height:42px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;overflow:hidden"></div>
-        </div>
-        <div style="min-width:0">
-          <div id="home-drawer-profile-name" style="font-size:15px;font-weight:700;color:var(--text)">—</div>
-          <div id="home-drawer-bureau" style="font-size:11px;color:var(--muted);margin-top:1px">—</div>
-        </div>
-      </div>
 
-      <div style="font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:0.3px;margin-bottom:6px">TOURNÉE</div>
-      <button onclick="toggleHomeDrawer();showBureauScreen()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">🏢 Changer de bureau</button>
-      <button onclick="toggleHomeDrawer();confirmResetLivraisons()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">🔄 Réinitialiser les livraisons</button>
-
-      <div style="font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:0.3px;margin:16px 0 6px">COMPTE</div>
-      <button onclick="toggleHomeDrawer();openProfileSelectScreen(true)" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">👤 Changer de profil</button>
-      <button onclick="toggleHomeDrawer();openProfileManage()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">🛠️ Gérer les profils</button>
-      <button onclick="toggleHomeDrawer();exportRawData()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">📤 Exporter mes données</button>
-      <button onclick="if(confirm('Vider le cache local de ce navigateur ? Firebase ne sera pas touché, seulement ce qui est stocké sur cet appareil.')){toggleHomeDrawer();clearLocalCacheOnly();}" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">🧹 Vider le cache local</button>
-
-      <div id="drawer-admin-section" style="display:none">
-        <div style="font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:0.3px;margin:16px 0 6px">ADMIN</div>
-        <button onclick="toggleHomeDrawer();openTrackingScreen()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">📍 Suivi tournées</button>
-        <button onclick="toggleHomeDrawer();exportDailyReport()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">📊 Rapport quotidien</button>
-      </div>
-
-      <div style="font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:0.3px;margin:16px 0 6px">AIDE</div>
-      <button onclick="toggleHomeDrawer();openTutorialScreen()" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 6px;border-radius:8px;border:none;background:none;color:var(--text);font-size:13.5px;text-align:left;cursor:pointer">📘 Tutoriel</button>
-
-      <div style="font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:0.3px;margin:16px 0 6px">APPARENCE</div>
-      <div style="display:flex;gap:6px;margin-top:2px">
-        <button onclick="setTheme('light')" id="theme-btn-light" style="flex:1;padding:9px 4px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer">☀️ Clair</button>
-        <button onclick="setTheme('dark')" id="theme-btn-dark" style="flex:1;padding:9px 4px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer">🌙 Sombre</button>
-        <button onclick="setTheme('sun')" id="theme-btn-sun" style="flex:1;padding:9px 4px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-size:10px;font-weight:700;cursor:pointer">🔆 Plein soleil</button>
-      </div>
-
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding:2px 0">
-        <span style="font-size:13px;color:var(--text)">🔊 Sons</span>
-        <button id="sound-toggle-btn" onclick="toggleSoundSetting()" style="width:42px;height:24px;border-radius:12px;border:none;background:var(--accent);position:relative;cursor:pointer;padding:0;flex-shrink:0">
-          <div id="sound-toggle-knob" style="position:absolute;top:2px;left:20px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left 0.15s"></div>
-        </button>
-      </div>
-
-      <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
-      <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
-
-      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 11/09/2026 19:19</div>
-    </div>
-  </div>
-</div>
 </body>
 </html>
