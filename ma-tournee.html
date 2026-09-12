@@ -68,6 +68,10 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
 .sel-check{width:28px;height:28px;min-width:28px;max-width:28px;border-radius:50%;border:2px solid #5a7898;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;box-sizing:border-box}
 @keyframes selPop{0%{transform:scale(1)}40%{transform:scale(1.35)}70%{transform:scale(0.9)}100%{transform:scale(1)}}
 .sel-check.on{animation:selPop 0.3s ease}
+.home-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;color:var(--muted);padding:4px 0}
+.home-tab-ic{font-size:19px}
+.home-tab-lbl{font-size:10px;font-weight:700}
+.home-tab.active{color:var(--accent)}
 @keyframes presenceBreathe{0%,100%{opacity:1}50%{opacity:0.5}}
 .home-tile-presence-dot{animation:presenceBreathe 2.2s ease-in-out infinite}
 .tlist-bottom-panel{position:absolute;bottom:0;left:0;right:0;z-index:200;background:var(--surface);border-radius:16px 16px 0 0;box-shadow:0 -4px 20px rgba(0,0,0,0.12);display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}
@@ -126,7 +130,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
         </button>
       </div>
     </div>
-    <div style="display:flex;gap:6px">
+    <div style="display:flex;gap:6px;display:none">
       <button onclick="setHomeMode('distrib')" id="home-btn-distrib" style="flex:1;padding:8px 4px;border-radius:8px;border:none;background:var(--yellow);color:#2b2b28;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">📬 Distribution</button>
       <button onclick="setHomeMode('edit')" id="home-btn-edit" style="flex:1;padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">✏️ Modifier</button>
       <button onclick="openToolsScreen()" id="home-btn-tools" style="flex:1;padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🔧 Outils</button>
@@ -155,11 +159,25 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <span style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.3px">TOURNÉES</span>
       <div style="display:flex;align-items:center;gap:4px">
         <button onclick="toggleHomeView()" id="home-view-toggle-btn" style="height:32px;padding:0 12px;border-radius:16px;background:var(--accent-light);color:var(--accent);border:none;font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px;cursor:pointer">▦ Grille</button>
-        <button onclick="toggleHomeDrawer()" style="height:32px;padding:0 14px;border-radius:16px;background:var(--accent);color:#fff;border:none;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:6px;cursor:pointer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>Menu</button>
+        <button onclick="toggleHomeDrawer()" style="display:none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>Menu</button>
       </div>
     </div>
     <div id="home-tournee-list" style="display:flex;flex-direction:column"></div>
     <div id="home-tournee-grid" style="display:none;grid-template-columns:repeat(auto-fill,minmax(84px,84px));gap:8px;justify-content:start"></div>
+  <div id="home-bottom-tabbar" style="display:flex;border-top:1px solid var(--border);background:var(--surface);padding:8px 0 max(8px,env(safe-area-inset-bottom));flex-shrink:0">
+    <button onclick="setHomeMode('distrib')" id="home-tab-distrib" class="home-tab active">
+      <span class="home-tab-ic">📬</span><span class="home-tab-lbl">Distribution</span>
+    </button>
+    <button onclick="setHomeMode('edit')" id="home-tab-edit" class="home-tab">
+      <span class="home-tab-ic">✏️</span><span class="home-tab-lbl">Modifier</span>
+    </button>
+    <button onclick="openToolsScreen()" id="home-tab-tools" class="home-tab">
+      <span class="home-tab-ic">🔧</span><span class="home-tab-lbl">Outils</span>
+    </button>
+    <button onclick="toggleHomeDrawer()" id="home-tab-menu" class="home-tab">
+      <span class="home-tab-ic">☰</span><span class="home-tab-lbl">Menu</span>
+    </button>
+  </div>
   
 
 <!-- ===== TIROIR DE REGLAGES (accueil) ===== -->
@@ -212,7 +230,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
       <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
 
-      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 11/09/2026 19:32</div>
+      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 12/09/2026 13:47</div>
     </div>
   </div>
 </div>
@@ -821,7 +839,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='11/09/2026 19:32';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='12/09/2026 13:47';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -5025,7 +5043,8 @@ function navigateToScreen(hideId,showId,direction){
     }
   },340);
 }
-function setHomeMode(mode){homeMode=mode;var bd=document.getElementById('home-btn-distrib');var be=document.getElementById('home-btn-edit');var bt=document.getElementById('home-btn-tools');
+function setHomeMode(mode){homeMode=mode;var td=document.getElementById('home-tab-distrib');var te=document.getElementById('home-tab-edit');if(td)td.classList.toggle('active',mode==='distrib');if(te)te.classList.toggle('active',mode==='edit');
+var bd=document.getElementById('home-btn-distrib');var be=document.getElementById('home-btn-edit');var bt=document.getElementById('home-btn-tools');
 function applyBtn(el,active){if(!el)return;el.style.background=active?'var(--yellow)':'transparent';el.style.color=active?'#2b2b28':'var(--muted)';el.style.border=active?'none':'1.5px solid var(--border)';}
 applyBtn(bd,mode==='distrib');applyBtn(be,mode==='edit');applyBtn(bt,false);
 var sub=document.getElementById('home-bureau-sub');if(sub)sub.textContent=(mode==='distrib'?'Distribution · ':'Modifier · ')+(currentBureau||'');
