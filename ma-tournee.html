@@ -151,6 +151,11 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       </div>
       <div id="weather-rain" style="font-size:11px;color:var(--accent);font-weight:600;text-align:right;flex-shrink:0"></div>
     </div>
+    <div id="eod-reminder-banner" style="display:none;align-items:center;gap:10px;background:#fff4d6;border:1px solid #f5c800;border-radius:12px;padding:10px 14px;margin-bottom:10px">
+      <div style="font-size:20px;flex-shrink:0">⏰</div>
+      <div style="flex:1;min-width:0;font-size:12.5px;color:#7a5c00;font-weight:600" id="eod-reminder-text"></div>
+      <div onclick="dismissEodReminder()" style="font-size:11px;color:#7a5c00;font-weight:700;cursor:pointer;flex-shrink:0;text-decoration:underline">Fermer</div>
+    </div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:0 2px">
       <span style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.3px">TOURNÉES</span>
       <div style="display:flex;align-items:center;gap:4px">
@@ -226,7 +231,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
       <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
 
-      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 12/09/2026 21:19</div>
+      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 15/09/2026 18:26</div>
     </div>
   </div>
 </div>
@@ -274,6 +279,10 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <div style="display:flex;justify-content:flex-end;margin-top:3px">
         <span id="tlist-progress-pct" style="font-size:10.5px;font-weight:700;color:var(--green)">0%</span>
       </div>
+    </div>
+    <div id="tlist-type-counters" style="display:none;gap:8px;padding:0 12px 8px">
+      <div id="tlist-colis-badge" style="display:none;flex:1;padding:6px 10px;border-radius:10px;background:#fdf0e0;color:#c9781f;font-size:11.5px;font-weight:700;align-items:center;gap:5px">📦 <span id="tlist-colis-count">0</span> colis restant<span id="tlist-colis-s"></span></div>
+      <div id="tlist-reco-badge" style="display:none;flex:1;padding:6px 10px;border-radius:10px;background:#fdecea;color:#c0392b;font-size:11.5px;font-weight:700;align-items:center;gap:5px">✅ <span id="tlist-reco-count">0</span> reco. restant<span id="tlist-reco-s"></span></div>
     </div>
     <!-- Ligne 2 : recherche + tri -->
     <div style="display:flex;align-items:center;gap:6px;padding:0 12px 6px">
@@ -840,7 +849,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='12/09/2026 21:19';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='15/09/2026 18:26';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -3562,6 +3571,54 @@ function applySoundToggleUI(){
   if(btn)btn.style.background=enabled?'var(--accent)':'var(--border)';
   if(knob)knob.style.left=enabled?'20px':'2px';
 }
+function checkEndOfDayReminder(){
+  var banner=document.getElementById('eod-reminder-banner');
+  if(!banner)return;
+  var now=new Date();
+  var todayKey=toLocalDateStr(now);
+  var dismissed=false;
+  try{dismissed=localStorage.getItem('eod_reminder_dismissed')===todayKey;}catch(e){}
+  if(dismissed||now.getHours()<19){banner.style.display='none';return;}
+  var codes=(currentBureau&&BUREAU_TOURNEES[currentBureau])?BUREAU_TOURNEES[currentBureau]:[];
+  var unfinished=[];
+  codes.forEach(function(code){
+    if(code==='RENFORT')return;
+    var t=getTourneeData(code);
+    if(!t||!t.adresses||!t.adresses.length)return;
+    var total=0,done=0,touchedToday=false;
+    t.adresses.forEach(function(a){
+      buildBalList(a).forEach(function(b){
+        var key=a.ordre+'-'+b.balIdx;
+        total++;
+        var d=t.done[key];
+        if(d){
+          done++;
+          if(typeof d==='object'&&d.ts&&toLocalDateStr(new Date(d.ts))===todayKey)touchedToday=true;
+        }
+      });
+    });
+    if(touchedToday&&done<total)unfinished.push(code);
+  });
+  if(unfinished.length){
+    banner.style.display='flex';
+    var txt=document.getElementById('eod-reminder-text');
+    if(txt)txt.textContent='Tournée'+(unfinished.length>1?'s':'')+' pas encore terminée'+(unfinished.length>1?'s':'')+' : '+unfinished.join(', ');
+  } else {
+    banner.style.display='none';
+  }
+}
+function dismissEodReminder(){
+  try{localStorage.setItem('eod_reminder_dismissed',toLocalDateStr(new Date()));}catch(e){}
+  var banner=document.getElementById('eod-reminder-banner');
+  if(banner)banner.style.display='none';
+}
+function isTempNoteActive(a){
+  if(!a.tempNote)return false;
+  if(!a.tempNoteExpiry)return true;
+  var today=new Date();today.setHours(0,0,0,0);
+  var expiry=new Date(a.tempNoteExpiry+'T23:59:59');
+  return today<=expiry;
+}
 function vibrate(pattern){
   try{if(navigator.vibrate)navigator.vibrate(pattern);}catch(e){}
 }
@@ -4314,7 +4371,7 @@ function renderResumeNavBanner(){
     banner.style.display='none';
   }
 }
-function showHome(){document.getElementById('screen-home').style.display='flex';buildHomeTourneeCards();loadWeather();renderPartieBadge();renderResumeNavBanner();renderSessionBadge();var sub=document.getElementById('home-bureau-sub');if(sub&&currentBureau){var labels={'ARLES':'Arles','CHATEAURENARD':'Châteaurenard','NOVES':'Noves','SAINT-MARTIN-DE-CRAU':'Saint-Martin-de-Crau','SAINT-REMY-DE-PROVENCE':'Saint-Rémy-de-Provence','SALON-DE-PROVENCE':'Salon-de-Provence','SENAS':'Sénas','TARASCON':'Tarascon'};sub.textContent='Bureau de '+(labels[currentBureau]||currentBureau);}}
+function showHome(){document.getElementById('screen-home').style.display='flex';buildHomeTourneeCards();loadWeather();renderPartieBadge();checkEndOfDayReminder();renderResumeNavBanner();renderSessionBadge();var sub=document.getElementById('home-bureau-sub');if(sub&&currentBureau){var labels={'ARLES':'Arles','CHATEAURENARD':'Châteaurenard','NOVES':'Noves','SAINT-MARTIN-DE-CRAU':'Saint-Martin-de-Crau','SAINT-REMY-DE-PROVENCE':'Saint-Rémy-de-Provence','SALON-DE-PROVENCE':'Salon-de-Provence','SENAS':'Sénas','TARASCON':'Tarascon'};sub.textContent='Bureau de '+(labels[currentBureau]||currentBureau);}}
 /* [code mort supprime: renderInfosTab (premiere declaration, ecrasee plus loin dans le fichier)] */
 var toolsMapInstance=null;var toolsMapLayer=null;var toolsMapActive=null;function initToolsMap(){var container=document.getElementById('tab-map-container');var bar=document.getElementById('tools-map-bar');var mapEl=document.getElementById('tools-map');if(!mapEl)return;var barH=bar?bar.offsetHeight:80;var h=window.innerHeight-120-barH;mapEl.style.height=Math.max(250,h)+'px';
 if(toolsMapBureau!==currentBureau){
@@ -5111,6 +5168,9 @@ html+='<div style="padding:10px 4px;font-size:12px;color:var(--muted)">Pour modi
   html+='<div class="aes-field"><div class="aes-field-label" style="display:flex;align-items:center;justify-content:space-between"><span>Ajouter une note</span><button type="button" onclick="toggleVoiceNote(\'aes-note\')" id="voice-btn-aes-note" style="background:var(--accent-light);border:none;color:var(--accent);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:4px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>Dicter</button></div>';
   html+='<textarea class="aes-input" id="aes-note" rows="3" placeholder="Ex: Chien dans le jardin, peut déposer en boîte aux lettres, code portail 1234..." style="min-height:75px;resize:vertical;width:100%;box-sizing:border-box"></textarea>';
   html+='</div>';
+  html+='<div class="aes-field" style="margin-top:10px"><div class="aes-field-label">⏳ Consigne temporaire (avec date de fin)</div>';
+  html+='<input class="aes-input'+(a.tempNote?' filled':'')+'\" id="aes-tempnote" value="'+escHtml(a.tempNote||'')+'" placeholder="Ex: Absent jusqu\'au 20, boîte pleine...">';
+  html+='<input type="date" id="aes-tempnote-date" value="'+escHtml(a.tempNoteExpiry||'')+'" style="margin-top:6px;border:1px solid var(--border);border-radius:8px;padding:9px 10px;font-size:13px;font-family:inherit;color:var(--text);background:var(--bg);width:100%;box-sizing:border-box"></div>';
   if(pnNoteHistory.length){
     html+='<div style="margin-top:6px">';
     pnNoteHistory.forEach(function(entry,idx){
@@ -5253,7 +5313,7 @@ function clearSplit(){
   showToast('Séparation supprimée');
   openAesPanel(aesCurrentOrdre,aesCurrentBalIdx);
 }
-function saveAesPanel(){if(aesCurrentOrdre===null)return;pushUndo(editScreenCode,'Modification adresse');var t=getTourneeData(editScreenCode);var a=t.adresses.find(function(x){return x.ordre===aesCurrentOrdre});if(!a)return;var nom=document.getElementById('aes-nom')?document.getElementById('aes-nom').value.trim():'';var entr=document.getElementById('aes-entr')?document.getElementById('aes-entr').value.trim():'';var tel=document.getElementById('aes-tel')?document.getElementById('aes-tel').value.trim():'';var num=document.getElementById('aes-num').value.trim();var compl=document.getElementById('aes-complement')?document.getElementById('aes-complement').value.trim():null;var cpville=document.getElementById('aes-cpville')?document.getElementById('aes-cpville').value.trim():null;var rue=document.getElementById('aes-rue')?document.getElementById('aes-rue').value.trim():null;var codeacces=document.getElementById('aes-codeacces')?document.getElementById('aes-codeacces').value.trim():null;if(codeacces!==null)a.codeacces=codeacces;if(aesCurrentBalIdx===-1){if(!a._edited)a._edited={};
+function saveAesPanel(){if(aesCurrentOrdre===null)return;pushUndo(editScreenCode,'Modification adresse');var t=getTourneeData(editScreenCode);var a=t.adresses.find(function(x){return x.ordre===aesCurrentOrdre});if(!a)return;var tempNoteEl=document.getElementById('aes-tempnote');if(tempNoteEl)a.tempNote=tempNoteEl.value.trim();var tempNoteDateEl=document.getElementById('aes-tempnote-date');if(tempNoteDateEl)a.tempNoteExpiry=tempNoteDateEl.value;var nom=document.getElementById('aes-nom')?document.getElementById('aes-nom').value.trim():'';var entr=document.getElementById('aes-entr')?document.getElementById('aes-entr').value.trim():'';var tel=document.getElementById('aes-tel')?document.getElementById('aes-tel').value.trim():'';var num=document.getElementById('aes-num').value.trim();var compl=document.getElementById('aes-complement')?document.getElementById('aes-complement').value.trim():null;var cpville=document.getElementById('aes-cpville')?document.getElementById('aes-cpville').value.trim():null;var rue=document.getElementById('aes-rue')?document.getElementById('aes-rue').value.trim():null;var codeacces=document.getElementById('aes-codeacces')?document.getElementById('aes-codeacces').value.trim():null;if(codeacces!==null)a.codeacces=codeacces;if(aesCurrentBalIdx===-1){if(!a._edited)a._edited={};
   var groupLieuDitEl=document.getElementById('aes-group-lieudit');
   if(groupLieuDitEl){a.groupLieuDit=groupLieuDitEl.value.trim();a._edited.groupLieuDit=true;}
   var noteElG=document.getElementById('aes-note');if(noteElG&&noteElG.value.trim()){addNoteToHistory(a,noteElG.value);a._edited.note=true;a._edited.noteHistory=true;}if(rue){a.rue=rue.toUpperCase();a._edited.rue=true;}a.num=num;a._edited.num=true;if(cpville){a.cp_ville=cpville;a._edited.cp_ville=true;}if(compl!==null){
@@ -5607,7 +5667,7 @@ function showRecap(){stopChrono();stopGPSFollow();var sn=document.getElementById
 function finishTournee(){var sr=document.getElementById('screen-recap');sr.classList.remove('open');var sn=document.getElementById('screen-nav');if(sn){sn.classList.remove('open');sn.style.display='none';}
 var st=document.getElementById('screen-tournee');if(st){st.classList.remove('open');st.style.display='none';}
 navStartTime=null;navElapsedMs=0;navPaused=false;navPausedTourneeCode=null;navStops=[];navCurrentStop=null;currentTourneeCode=null;setHomeMode('distrib');
-navigateToScreen('screen-recap','screen-home','back');updateHomeCards();loadWeather();renderPartieBadge();}
+navigateToScreen('screen-recap','screen-home','back');updateHomeCards();loadWeather();renderPartieBadge();checkEndOfDayReminder();}
 function resetAndFinishTournee(){if(currentTourneeCode){var t=getTourneeData(currentTourneeCode);t.done={};t.courrierState={};saveTourneeData();updateHomeCards();}
 finishTournee();}
 function confirmResetLivraisons(){if(!confirm('Réinitialiser toutes les livraisons effectuées ?'))return;TOURNEE_CODES.forEach(function(code){var t=getTourneeData(code);t.done={};t.courrierState={};});saveTourneeData();updateHomeCards();
@@ -6318,7 +6378,21 @@ function animateCounter(el,newVal){
   }
   requestAnimationFrame(step);
 }
-function updateTListStats(){if(!currentTourneeCode)return;var t=getTourneeData(currentTourneeCode);var total=0;t.adresses.forEach(function(a){total+=1+(a.boites?a.boites.length:0);});var done=Object.keys(t.done).filter(function(k){return t.done[k];}).length;var remain=total-done;var dEl=document.getElementById('tls-done');if(dEl)animateCounter(dEl,done);var tEl=document.getElementById('tls-total');if(tEl)animateCounter(tEl,total);var rEl=document.getElementById('tls-remain');if(rEl)animateCounter(rEl,remain);var sEl=document.getElementById('tls-sel');if(sEl)animateCounter(sEl,Object.keys(selectedStops).length);var pct=total>0?Math.round(done/total*100):0;var pFill=document.getElementById('tlist-progress-fill');if(pFill)pFill.style.width=pct+'%';var pPct=document.getElementById('tlist-progress-pct');if(pPct)pPct.textContent=pct+'%';var subEl=document.getElementById('tlist-title-sub');if(subEl)subEl.textContent=t.adresses.length+' arrêts · '+total+' BAL';}
+function updateTListStats(){if(!currentTourneeCode)return;var t=getTourneeData(currentTourneeCode);var total=0;t.adresses.forEach(function(a){total+=1+(a.boites?a.boites.length:0);});var done=Object.keys(t.done).filter(function(k){return t.done[k];}).length;var remain=total-done;var dEl=document.getElementById('tls-done');if(dEl)animateCounter(dEl,done);var tEl=document.getElementById('tls-total');if(tEl)animateCounter(tEl,total);var rEl=document.getElementById('tls-remain');if(rEl)animateCounter(rEl,remain);var sEl=document.getElementById('tls-sel');if(sEl)animateCounter(sEl,Object.keys(selectedStops).length);var pct=total>0?Math.round(done/total*100):0;var pFill=document.getElementById('tlist-progress-fill');if(pFill)pFill.style.width=pct+'%';var pPct=document.getElementById('tlist-progress-pct');if(pPct)pPct.textContent=pct+'%';
+var colisTotal=0,colisDone=0,recoTotal=0,recoDone=0;
+Object.keys(stopTypes).forEach(function(key){
+  var tp=stopTypes[key];
+  if(tp&&tp.colis){colisTotal++;if(t.done[key])colisDone++;}
+  if(tp&&tp.recommande){recoTotal++;if(t.done[key])recoDone++;}
+});
+var colisRemain=colisTotal-colisDone,recoRemain=recoTotal-recoDone;
+var typeRow=document.getElementById('tlist-type-counters');
+var colisBadge=document.getElementById('tlist-colis-badge');
+var recoBadge=document.getElementById('tlist-reco-badge');
+if(colisBadge){colisBadge.style.display=colisTotal>0?'flex':'none';var cc=document.getElementById('tlist-colis-count');if(cc)cc.textContent=colisRemain;var cs=document.getElementById('tlist-colis-s');if(cs)cs.textContent=colisRemain>1?'s':'';}
+if(recoBadge){recoBadge.style.display=recoTotal>0?'flex':'none';var rc=document.getElementById('tlist-reco-count');if(rc)rc.textContent=recoRemain;var rs=document.getElementById('tlist-reco-s');if(rs)rs.textContent=recoRemain>1?'s':'';}
+if(typeRow)typeRow.style.display=(colisTotal>0||recoTotal>0)?'flex':'none';
+var subEl=document.getElementById('tlist-title-sub');if(subEl)subEl.textContent=t.adresses.length+' arrêts · '+total+' BAL';}
 function renderEditList(){var editColor=getTourneeColor(editScreenCode);if(!editScreenCode)return;var renfortBanner=document.getElementById('renfort-tools-banner');if(renfortBanner)renfortBanner.style.display=(editScreenCode==='RENFORT')?'flex':'none';var t=getTourneeData(editScreenCode);var searchEl=document.getElementById('edit-tlist-search');var q=(reorderMode||mergeMode)?'':(searchEl?(searchEl.value||'').toLowerCase().trim():'');var es=(typeof editSort!=='undefined')?editSort:'distrib';var container=document.getElementById('edit-tlist-items');if(!container)return;var total=t.adresses.length;var subEl=document.getElementById('edit-screen-sub');if(subEl)subEl.textContent=total+' arrêt'+(total>1?'s':'')+(reorderMode?' · Réorganisation':mergeMode?' · Sélectionner':'');if(editGroupByStreet&&!reorderMode&&!mergeMode){var items=t.adresses.slice();if(es==='alpha')items.sort(function(a,b){var na=(a.nom||a.entreprise||a.lieu_dit||'').toUpperCase();var nb=(b.nom||b.entreprise||b.lieu_dit||'').toUpperCase();return na.localeCompare(nb,'fr')||((a.ordre||0)-(b.ordre||0));});else items.sort(function(a,b){return(a.ordre||0)-(b.ordre||0);});var runs=[];items.forEach(function(a){var k=a.rue||'';if(runs.length&&runs[runs.length-1].rue===k)runs[runs.length-1].items.push(a);else runs.push({rue:k,items:[a]});});var html='';runs.forEach(function(run,ri){var key=(run.rue||'')+'__'+ri;var isOpen=editOpenStreetGroups[key]||false;html+='<div style="border:1px solid var(--border);border-radius:10px;margin-bottom:8px;overflow:hidden">'+'<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;background:var(--accent-light)" onclick="toggleEditStreetGroupRun(this,\''+escHtml(key)+'\')">'+'<div style="flex:1;font-size:13px;font-weight:700;color:var(--accent)">'+escHtml(run.rue||'—')+'</div>'+'<div style="font-size:11px;color:var(--muted)">'+run.items.length+' arrêt'+(run.items.length>1?'s':'')+'</div>'+'<svg style="transition:transform 0.2s;transform:rotate('+(isOpen?90:0)+'deg);flex-shrink:0" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>'+'</div>'+'<div data-streetbody="'+escHtml(key)+'" style="display:'+(isOpen?'block':'none')+'">'+
 run.items.map(function(a){var addrLine=formatStreetAddress(a.num,a.rue);var eNom=a.nom||'';var eLieu=a.lieu_dit||'';var eEntr=a.entreprise||'';var hp=!!(a.lat&&a.lng);var metaParts=[];if(a.cp_ville)metaParts.push('<span class="edit-meta-cp">'+escHtml(a.cp_ville)+'</span>');if(eNom)metaParts.push('<span class="edit-meta-nom">'+escHtml(eNom)+'</span>');if(eLieu)metaParts.push('<span class="edit-meta-lieu">'+escHtml(eLieu)+'</span>');if(eEntr)metaParts.push('<span class="edit-meta-entr">'+escHtml(eEntr)+'</span>');return'<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-top:1px solid var(--border);background:var(--surface)">'+'<div style="width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">'+a.ordre+'</div>'+'<div style="flex:1;min-width:0">'+'<div style="font-size:13px;font-weight:700;color:var(--text)">'+escHtml(addrLine)+'</div>'+
 (metaParts.length?'<div style="font-size:11px;display:flex;flex-wrap:wrap;align-items:center;gap:2px;margin-top:2px">'+metaParts.join('<span class="edit-meta-cp"> · </span>')+'</div>':'')+'</div>'+'<button style="background:'+(hp?'#e8f5e9':'var(--bg)')+';border:1.5px solid '+(hp?'#2d7a3a':'var(--border)')+';color:'+(hp?'#2d7a3a':'var(--muted)')+';border-radius:6px;padding:4px 7px;font-size:11px;cursor:pointer" data-pinordre="'+a.ordre+'">'+(hp?'✓':'📍')+'</button>'+'<button style="background:var(--bg);border:1.5px solid var(--border);color:var(--muted);border-radius:6px;padding:4px 7px;font-size:11px;cursor:pointer" data-editordre="'+a.ordre+'" data-editbal="0">✏️</button>'+'<button style="background:#fff0f0;border:1.5px solid #d43030;color:#d43030;border-radius:6px;padding:4px 7px;font-size:11px;cursor:pointer" data-delordre="'+a.ordre+'">🗑</button>'+'</div>';}).join('')+'</div></div>';});container.innerHTML=html;container.onclick=function(e){var del=e.target.closest('[data-delordre]');if(del){e.stopPropagation();deleteAdresse(parseInt(del.dataset.delordre));return;}
@@ -6388,7 +6462,7 @@ return(document.body.classList.contains('dark')?STREET_PALETTE_DARK:STREET_PALET
 var SEL=function(key){var on=!!(selectedStops[key]);return'<div class="sel-check'+(on?' on':'')+'" data-selkey="'+key+'"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>';};rows.forEach(function(r){getStreetBg(r.a.rue);});function renderRow(r){var a=r.a;var addrLine=formatStreetAddress(a.num,a.rue);var sBg=getStreetBg(a.rue);if(r.type==='single'){var b=r.b,key=r.key;var isDone=!!(t.done[key]),isSel=!!(selectedStops[key]);var nom=r._displayNom||(b.balIdx===0?(a.nom||b.nom||''):(b.nom||''));var lieu=b.balIdx===0?(a.lieu_dit||b.lieu_dit||''):(b.lieu_dit||'');var entr=b.balIdx===0?(a.entreprise||b.entreprise||''):(b.entreprise||'');var name=nom||lieu||entr||b.complement||a.complement||'';stopMeta[key]={nom:name||addrLine,addr:addrLine};
       var titre1=addrLine;
       var sous1=(a.cp_ville||'')+(nom?' · '+nom:'')+(lieu?' · '+lieu:'')+(entr?' · '+entr:'');
-      var sous1Html=(a.cp_ville?escHtml(a.cp_ville):'')+(nom?' · '+escHtml(nom):'')+(lieu?' · <span style="color:#c0392b!important;font-weight:700;opacity:0.5">'+escHtml(lieu)+'</span>':'')+(entr?' · <span style="color:#1a6b1a!important;font-weight:700;opacity:0.5">'+escHtml(entr)+'</span>':'')+(a.codeacces?' · <span style="color:#b8860b!important;font-weight:700;opacity:0.5">🔑 '+escHtml(a.codeacces)+'</span>':'')+(a.note?' · <span style="color:#b8860b!important;font-weight:700;opacity:0.5">⚠️ '+escHtml(a.note.length>45?a.note.substring(0,45)+'…':a.note)+'</span>':'');
+      var sous1Html=(a.cp_ville?escHtml(a.cp_ville):'')+(nom?' · '+escHtml(nom):'')+(lieu?' · <span style="color:#c0392b!important;font-weight:700;opacity:0.5">'+escHtml(lieu)+'</span>':'')+(entr?' · <span style="color:#1a6b1a!important;font-weight:700;opacity:0.5">'+escHtml(entr)+'</span>':'')+(a.codeacces?' · <span style="color:#b8860b!important;font-weight:700;opacity:0.5">🔑 '+escHtml(a.codeacces)+'</span>':'')+(a.note?' · <span style="color:#b8860b!important;font-weight:700;opacity:0.5">⚠️ '+escHtml(a.note.length>45?a.note.substring(0,45)+'…':a.note)+'</span>':'')+(isTempNoteActive(a)?' · <span style="color:#6b46c1!important;font-weight:700;opacity:0.6">⏳ '+escHtml(a.tempNote.length>40?a.tempNote.substring(0,40)+'…':a.tempNote)+'</span>':'');
       if(currentSort==='alpha'&&(r._displayNom||name)){
         titre1=r._displayNom||name;
         sous1Html=escHtml(addrLine)+(a.cp_ville?' · '+escHtml(a.cp_ville):'');
