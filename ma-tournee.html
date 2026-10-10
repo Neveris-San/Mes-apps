@@ -232,7 +232,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
       <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
 
-      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 10/10/2026 21:45</div>
+      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 10/10/2026 21:51</div>
     </div>
   </div>
 </div>
@@ -873,7 +873,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='10/10/2026 21:45';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='10/10/2026 21:51';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -2449,7 +2449,7 @@ function activateBureau(bureau){var tours=getBureauTournees(bureau);TOURNEE_CODE
     });}}});}
 var coords=saved[code].coords||{};(getTourneeData(code).adresses||[]).forEach(function(a){if(coords[a.ordre]){a.lat=coords[a.ordre].lat;a.lng=coords[a.ordre].lng;a.pinned=true;}});}});}}catch(e){}
 buildHomeTourneeCards();updateHomeCards();
-  _fbLoaded=true; /* Autoriser fbSaveAll maintenant que tout est chargé */
+  _fbLoaded=true; /* Autoriser fbSaveAll maintenant que tout est chargé */ try{addrDbInitSigs();}catch(e){}
   /* Restaurer depuis sauvegarde d'urgence si Firebase a moins de points */
   restoreCoordsEmergency();
   /* Backup automatique */
@@ -2549,6 +2549,7 @@ function buildAddrDbIndex(){
       if(!idx[k])idx[k]={key:k,addr:a,tours:[]};
       var e=idx[k];
       if(!e.tours.some(function(x){return x.code===code;}))e.tours.push({code:code,ordre:a.ordre});
+      if(!e.copies)e.copies=[];e.copies.push({code:code,addr:a});
       if(!e.addr.nom&&a.nom)e.addr=a;
     });
   });
@@ -2606,7 +2607,7 @@ function renderAddrDb(){
     var a=e.addr;
     var title=(a.num?a.num+' ':'')+escHtml(a.rue||'');
     var sub2=[a.nom,a.entreprise,a.lieu_dit].filter(Boolean).map(escHtml).join(' · ');
-    var chips=e.tours.map(function(t){var col=getTourneeColor(t.code);return'<span style="display:inline-block;padding:2px 4px 2px 8px;border-radius:10px;font-size:11px;font-weight:700;color:#fff;background:'+col+';margin:4px 4px 0 0">'+t.code+' <span style="opacity:.75">#'+t.ordre+'</span> <b data-rm="'+escHtml(e.key)+'" data-rmcode="'+t.code+'" style="cursor:pointer;padding:0 5px;opacity:.9" title="Retirer de '+t.code+'">✕</b></span>';}).join('')+'<span data-add="'+escHtml(e.key)+'" style="display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:700;color:var(--accent);border:1.5px dashed var(--accent);margin:4px 4px 0 0;cursor:pointer">＋ Tournée</span>';
+    var chips=e.tours.map(function(t){var col=getTourneeColor(t.code);return'<span style="display:inline-block;padding:2px 4px 2px 8px;border-radius:10px;font-size:11px;font-weight:700;color:#fff;background:'+col+';margin:4px 4px 0 0">'+t.code+' <span style="opacity:.75">#'+t.ordre+'</span> <b data-rm="'+escHtml(e.key)+'" data-rmcode="'+t.code+'" style="cursor:pointer;padding:0 5px;opacity:.9" title="Retirer de '+t.code+'">✕</b></span>';}).join('')+(addrDbDiverges(e)?'<span data-uni="'+escHtml(e.key)+'" style="display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:700;color:#b26a00;background:#fff3cd;border:1px solid #e0a800;margin:4px 4px 0 0;cursor:pointer">⚠ infos différentes</span>':'')+'<span data-add="'+escHtml(e.key)+'" style="display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:700;color:var(--accent);border:1.5px dashed var(--accent);margin:4px 4px 0 0;cursor:pointer">＋ Tournée</span>';
     return'<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 11px;margin-bottom:7px"><div style="font-size:14px;font-weight:700;color:var(--text)">'+title+'</div><div style="font-size:11.5px;color:var(--muted)">'+escHtml(a.cp_ville||'')+(sub2?' · '+sub2:'')+'</div><div>'+chips+'</div></div>';
   }).join('');
   if(res.length>MAX)html+='<div style="text-align:center;color:var(--muted);font-size:12px;padding:10px">… '+(res.length-MAX)+' autres, affine la recherche</div>';
@@ -2614,6 +2615,7 @@ function renderAddrDb(){
   list.innerHTML=html;
   list.onclick=function(ev){
     var rm=ev.target.closest('[data-rm]');if(rm){addrDbRemove(rm.dataset.rm,rm.dataset.rmcode);return;}
+    var un=ev.target.closest('[data-uni]');if(un){addrDbOpenUni(un.dataset.uni);return;}
     var ad=ev.target.closest('[data-add]');if(ad){addrDbOpenAdd(ad.dataset.add);return;}
   };
 }
@@ -2721,61 +2723,129 @@ function addrDbDoAdd(afterOrdre){
 }
 /* ===== BASE D'ADRESSES (étape 3 : les modifications d'une adresse se répercutent sur toutes ses tournées) ===== */
 var ADDRDB_SYNC_FIELDS=['nom','entreprise','tel','lieu_dit','complement','codeacces','hasPresse','presseNom','note','noteHistory','tempNote','tempNoteExpiry','groupLieuDit','rue','num','cp_ville','adresse','nbBal','boites'];
+var ADDRDB_FLAG_FIELDS=['nom','entreprise','tel','lieu_dit','complement','note','noteHistory','groupLieuDit','hasPresse','presseNom','rue','num','cp_ville','boites'];
+var _addrSigs=new WeakMap(); /* signature des champs partagés de chaque adresse (non sérialisée) */
+function addrDbSigOf(a){return JSON.stringify(ADDRDB_SYNC_FIELDS.map(function(f){return a[f]===undefined?null:a[f];}));}
+function addrDbRecordSig(a){_addrSigs.set(a,{key:renfortDedupKey(a),sig:addrDbSigOf(a)});}
+function addrDbCountKey(t,key){var n=0;(t.adresses||[]).forEach(function(x){if(renfortDedupKey(x)===key)n++;});return n;}
+/* jumeaux = même adresse dans une AUTRE tournée, à condition qu'elle y soit en un seul exemplaire (sinon : plusieurs arrêts distincts, on ne touche pas) */
 function addrDbFindTwins(oldKey,exceptCode){
   var out=[];
   Object.keys(TOURNEES_DATA).forEach(function(code){
     if(code===exceptCode)return;
     var t=TOURNEES_DATA[code];
     if(!t||!t.adresses||t._lazy)return;
-    t.adresses.forEach(function(x){if(renfortDedupKey(x)===oldKey)out.push({code:code,addr:x});});
+    var m=t.adresses.filter(function(x){return renfortDedupKey(x)===oldKey;});
+    if(m.length===1)out.push({code:code,addr:m[0]});
   });
   return out;
 }
 function addrDbPropagate(src,twins){
   var changed={};
   twins.forEach(function(w){
+    var did=false;
     ADDRDB_SYNC_FIELDS.forEach(function(f){
-      if(src[f]===undefined)delete w.addr[f];
-      else w.addr[f]=JSON.parse(JSON.stringify(src[f]));
+      var nv=src[f]===undefined?undefined:JSON.parse(JSON.stringify(src[f]));
+      if(JSON.stringify(w.addr[f])!==JSON.stringify(nv)){
+        if(nv===undefined)delete w.addr[f];else w.addr[f]=nv;
+        if(ADDRDB_FLAG_FIELDS.indexOf(f)>=0){if(!w.addr._edited)w.addr._edited={};w.addr._edited[f]=true;}
+        did=true;
+      }
     });
-    if(src._edited)w.addr._edited=JSON.parse(JSON.stringify(src._edited));
-    changed[w.code]=true;
+    addrDbRecordSig(w.addr);
+    if(did)changed[w.code]=true;
   });
+  addrDbRecordSig(src);
   return Object.keys(changed);
 }
-(function(){
-  var orig=saveAesPanel;
-  saveAesPanel=function(){
-    var pre=null;
-    try{
-      if(aesCurrentOrdre!==null&&editScreenCode){
-        var t0=getTourneeData(editScreenCode);
-        var a0=t0.adresses.find(function(x){return x.ordre===aesCurrentOrdre;});
-        if(a0){
-          var k0=renfortDedupKey(a0),tw=addrDbFindTwins(k0,editScreenCode);
-          if(tw.length){
-            var codes=[];tw.forEach(function(w){if(codes.indexOf(w.code)<0)codes.push(w.code);});
-            addrDbBackup(codes,'Propagation modification');
-            pre={code:editScreenCode,ordre:aesCurrentOrdre,twins:tw};
-          }
-        }
-      }
-    }catch(e){pre=null;}
-    var r=orig.apply(this,arguments);
-    try{
-      if(pre){
-        var t1=getTourneeData(pre.code);
-        var a1=t1.adresses.find(function(x){return x.ordre===pre.ordre;});
-        if(a1){
-          var ch=addrDbPropagate(a1,pre.twins);
-          saveTourneeData();
-          if(ch.length)showToast('Répercuté sur '+ch.join(', ')+' ✓');
-        }
-      }
-    }catch(e){}
-    return r;
-  };
-})();
+/* Détecte à chaque sauvegarde les adresses modifiées par n'importe quel écran et répercute sur leurs jumeaux */
+var _addrSyncBusy=false,_addrSigsReady=false;
+function addrDbInitSigs(){
+  Object.keys(TOURNEES_DATA).forEach(function(code){var t=TOURNEES_DATA[code];if(!t||!t.adresses||t._lazy)return;t.adresses.forEach(function(a){if(a&&!_addrSigs.has(a))addrDbRecordSig(a);});});
+  _addrSigsReady=true;
+}
+function addrDbSyncModified(){
+  if(_addrSyncBusy)return 0;
+  if(!_addrSigsReady){addrDbInitSigs();return 0;}
+  _addrSyncBusy=true;
+  var total=0;
+  try{
+    var mods=[];
+    Object.keys(TOURNEES_DATA).forEach(function(code){
+      var t=TOURNEES_DATA[code];
+      if(!t||!t.adresses||t._lazy)return;
+      t.adresses.forEach(function(a){
+        var rec=_addrSigs.get(a);
+        if(!rec){addrDbRecordSig(a);return;}
+        if(rec.sig!==addrDbSigOf(a))mods.push({code:code,addr:a,oldKey:rec.key});
+      });
+    });
+    mods.forEach(function(m){
+      var tSrc=TOURNEES_DATA[m.code];
+      /* la source doit être seule de son adresse dans sa tournée, sinon on ne propage pas */
+      var cnt=0;tSrc.adresses.forEach(function(x){var r=_addrSigs.get(x);if(x===m.addr||(r&&r.key===m.oldKey))cnt++;});
+      if(cnt!==1){addrDbRecordSig(m.addr);return;}
+      var tw=addrDbFindTwins(m.oldKey,m.code);
+      if(!tw.length){addrDbRecordSig(m.addr);return;}
+      var codes=[];tw.forEach(function(w){if(codes.indexOf(w.code)<0)codes.push(w.code);});
+      addrDbBackup(codes,'Propagation modification');
+      var ch=addrDbPropagate(m.addr,tw);
+      total+=ch.length;
+      if(ch.length)showToast('Répercuté sur '+ch.join(', ')+' ✓');
+    });
+  }catch(e){}
+  _addrSyncBusy=false;
+  return total;
+}
+/* ===== Divergences entre tournées + uniformisation ===== */
+var ADDRDB_CMP_FIELDS=['nom','entreprise','tel','lieu_dit','complement','codeacces'];
+function addrDbCmpSig(a){return JSON.stringify(ADDRDB_CMP_FIELDS.map(function(f){return(a[f]||'').toString().trim().toUpperCase();}));}
+function addrDbUniqueCopies(e){
+  var out=[];
+  (e.copies||[]).forEach(function(cp){
+    var t=TOURNEES_DATA[cp.code];
+    if(t&&addrDbCountKey(t,e.key)===1)out.push(cp);
+  });
+  return out;
+}
+function addrDbDiverges(e){
+  if(!e.copies||e.tours.length<2)return false;
+  var u=addrDbUniqueCopies(e);
+  if(u.length<2)return false;
+  var s0=addrDbCmpSig(u[0].addr);
+  return u.some(function(x){return addrDbCmpSig(x.addr)!==s0;});
+}
+function addrDbOpenUni(key){
+  if(blockIfFacteur())return;
+  addrDbAddKey=key;addrDbAddCode=null;
+  var m=document.getElementById('addrdb-add-modal');
+  if(!m){m=document.createElement('div');m.id='addrdb-add-modal';m.style.cssText='position:absolute;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column';document.getElementById('screen-addrdb').appendChild(m);}
+  m.style.display='flex';
+  var db=buildAddrDbIndex();
+  var e=db.list.filter(function(x){return x.key===key;})[0];
+  if(!e){addrDbCloseAdd();return;}
+  var u=addrDbUniqueCopies(e),a=e.addr;
+  var head='<div style="background:var(--surface);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0"><button onclick="addrDbCloseAdd()" style="background:var(--bg);border:1.5px solid var(--border);color:var(--text);border-radius:50%;width:36px;height:36px;cursor:pointer">‹</button><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;color:var(--text)">Uniformiser l\'adresse</div><div style="font-size:11px;color:var(--muted)">'+escHtml((a.num?a.num+' ':'')+a.rue)+'</div></div></div>';
+  var body='<div style="padding:12px;overflow-y:auto"><div style="font-size:12px;color:var(--muted);margin-bottom:8px">Touche la version à garder : elle sera appliquée à toutes les tournées.</div>'+u.map(function(cp){var x=cp.addr;var col=getTourneeColor(cp.code);return'<div onclick="addrDbApplyUni(\''+cp.code+'\')" style="background:var(--surface);border:2px solid '+col+';border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer"><div style="font-weight:700;color:'+col+';font-size:13px;margin-bottom:3px">'+cp.code+'</div>'+ADDRDB_CMP_FIELDS.map(function(f){return'<div style="font-size:12.5px;color:var(--text)"><span style="color:var(--muted)">'+f+' :</span> '+(x[f]?escHtml(x[f]):'<i style="color:var(--muted)">vide</i>')+'</div>';}).join('')+'</div>';}).join('')+'</div>';
+  m.innerHTML=head+body;
+}
+function addrDbApplyUni(code){
+  if(blockIfFacteur())return;
+  var db=buildAddrDbIndex();
+  var e=db.list.filter(function(x){return x.key===addrDbAddKey;})[0];
+  if(!e)return;
+  var u=addrDbUniqueCopies(e);
+  var src=u.filter(function(x){return x.code===code;})[0];
+  if(!src)return;
+  var others=u.filter(function(x){return x.code!==code;});
+  if(!confirm('Appliquer la version de '+code+' aux autres tournées ?'))return;
+  addrDbBackup(others.map(function(x){return x.code;}),'Uniformisation');
+  addrDbPropagate(src.addr,others);
+  saveTourneeData();
+  addrDbCloseAdd();
+  renderAddrDb();
+  showToast('Uniformisé ✓ (↶ Annuler en haut)');
+}
 function openTrackingScreen(){
   if(blockIfFacteur())return;
   var ebb=document.getElementById('edit-bottom-bar');if(ebb)ebb.style.display='none';
@@ -6598,7 +6668,7 @@ function updateUndoButton(){
     btn.style.display='none';
   }
 }
-function saveTourneeData(){try{var toSave={};
+function saveTourneeData(){try{addrDbSyncModified();}catch(e){}try{var toSave={};
   /* Sauvegarder TOUTES les tournées qui ont des données — pas seulement le bureau actif */
   var allCodesToSave=Object.keys(TOURNEES_DATA).filter(function(c){return c!=='_version'&&TOURNEES_DATA[c];});
   /* Ajouter aussi les codes du bureau actif (même sans données encore) */
