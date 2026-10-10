@@ -232,7 +232,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
       <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
 
-      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 10/10/2026 21:38</div>
+      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 10/10/2026 21:42</div>
     </div>
   </div>
 </div>
@@ -594,6 +594,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
     <div style="color:var(--text);flex:1"><div style="font-size:15px;font-weight:700">🗂 Base d'adresses</div><div id="addrdb-subtitle" style="font-size:11px;color:var(--muted)">…</div></div>
+    <button onclick="addrDbUndo()" style="height:32px;padding:0 10px;border-radius:16px;background:var(--bg);color:var(--text);border:1.5px solid var(--border);font-size:12.5px;font-weight:700;cursor:pointer;flex-shrink:0">↶ Annuler</button>
     <button onclick="toggleHomeDrawer()" style="height:32px;padding:0 12px;border-radius:16px;background:var(--accent);color:#fff;border:none;font-size:12.5px;font-weight:700;cursor:pointer;flex-shrink:0">☰ Menu</button>
   </div>
   <div style="padding:10px 12px;flex-shrink:0;background:var(--surface);border-bottom:1px solid var(--border)">
@@ -872,7 +873,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='10/10/2026 21:38';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='10/10/2026 21:42';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -2605,12 +2606,118 @@ function renderAddrDb(){
     var a=e.addr;
     var title=(a.num?a.num+' ':'')+escHtml(a.rue||'');
     var sub2=[a.nom,a.entreprise,a.lieu_dit].filter(Boolean).map(escHtml).join(' · ');
-    var chips=e.tours.map(function(t){var col=getTourneeColor(t.code);return'<span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;color:#fff;background:'+col+';margin:4px 4px 0 0">'+t.code+' <span style="opacity:.75">#'+t.ordre+'</span></span>';}).join('');
+    var chips=e.tours.map(function(t){var col=getTourneeColor(t.code);return'<span style="display:inline-block;padding:2px 4px 2px 8px;border-radius:10px;font-size:11px;font-weight:700;color:#fff;background:'+col+';margin:4px 4px 0 0">'+t.code+' <span style="opacity:.75">#'+t.ordre+'</span> <b data-rm="'+escHtml(e.key)+'" data-rmcode="'+t.code+'" style="cursor:pointer;padding:0 5px;opacity:.9" title="Retirer de '+t.code+'">✕</b></span>';}).join('')+'<span data-add="'+escHtml(e.key)+'" style="display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:700;color:var(--accent);border:1.5px dashed var(--accent);margin:4px 4px 0 0;cursor:pointer">＋ Tournée</span>';
     return'<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 11px;margin-bottom:7px"><div style="font-size:14px;font-weight:700;color:var(--text)">'+title+'</div><div style="font-size:11.5px;color:var(--muted)">'+escHtml(a.cp_ville||'')+(sub2?' · '+sub2:'')+'</div><div>'+chips+'</div></div>';
   }).join('');
   if(res.length>MAX)html+='<div style="text-align:center;color:var(--muted);font-size:12px;padding:10px">… '+(res.length-MAX)+' autres, affine la recherche</div>';
   if(!res.length)html='<div style="text-align:center;color:var(--muted);padding:30px;font-size:13px">Aucune adresse trouvée</div>';
   list.innerHTML=html;
+  list.onclick=function(ev){
+    var rm=ev.target.closest('[data-rm]');if(rm){addrDbRemove(rm.dataset.rm,rm.dataset.rmcode);return;}
+    var ad=ev.target.closest('[data-add]');if(ad){addrDbOpenAdd(ad.dataset.add);return;}
+  };
+}
+/* ===== BASE D'ADRESSES (étape 2 : retirer / ajouter à une tournée) ===== */
+function addrDbBackup(codes,label){
+  pushUndo(codes,label);
+  try{
+    var arr=JSON.parse(localStorage.getItem('addrdb_backups')||'[]');
+    var snaps={};
+    codes.forEach(function(code){var t=TOURNEES_DATA[code];if(t)snaps[code]=JSON.parse(JSON.stringify({adresses:t.adresses||[],done:t.done||{},splitOrdre:t.splitOrdre||null}));});
+    arr.push({ts:Date.now(),label:label,snaps:snaps});
+    while(arr.length>3)arr.shift();
+    for(var tries=0;tries<3;tries++){try{localStorage.setItem('addrdb_backups',JSON.stringify(arr));break;}catch(e){arr.shift();if(!arr.length)break;}}
+  }catch(e){}
+}
+function addrDbRenumber(t){
+  var oldMap={};t.adresses.forEach(function(a,i){if(a.ordre>0)oldMap[a.ordre]=i+1;});
+  t.adresses.forEach(function(a,i){a.ordre=i+1;});
+  remapOrdreKeyedState(t,oldMap);
+  t._restructured=true;
+}
+function addrDbUndo(){
+  if(blockIfFacteur())return;
+  undoLast();
+  renderAddrDb();
+}
+function addrDbRemove(key,code){
+  if(blockIfFacteur())return;
+  var t=getTourneeData(code);if(!t||!t.adresses)return;
+  var matches=t.adresses.filter(function(a){return renfortDedupKey(a)===key;});
+  if(!matches.length){showToast('Adresse introuvable dans '+code);return;}
+  var a=matches[0];
+  if(!confirm('Retirer « '+((a.num?a.num+' ':'')+a.rue)+' » de la tournée '+code+' ?'))return;
+  addrDbBackup([code],'Retrait '+code);
+  t.adresses=t.adresses.filter(function(x){return renfortDedupKey(x)!==key;});
+  addrDbRenumber(t);
+  saveTourneeData();
+  updateHomeCards();
+  renderAddrDb();
+  showToast('Retirée de '+code+' ✓ (↶ Annuler en haut)');
+}
+var addrDbAddKey=null,addrDbAddCode=null;
+function addrDbOpenAdd(key){
+  if(blockIfFacteur())return;
+  addrDbAddKey=key;addrDbAddCode=null;
+  var m=document.getElementById('addrdb-add-modal');
+  if(!m){
+    m=document.createElement('div');m.id='addrdb-add-modal';
+    m.style.cssText='position:absolute;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column';
+    document.getElementById('screen-addrdb').appendChild(m);
+  }
+  m.style.display='flex';
+  renderAddrDbAdd();
+}
+function addrDbCloseAdd(){var m=document.getElementById('addrdb-add-modal');if(m)m.style.display='none';}
+function addrDbPickTour(code){addrDbAddCode=code;renderAddrDbAdd();}
+function renderAddrDbAdd(){
+  var m=document.getElementById('addrdb-add-modal');if(!m)return;
+  var db=buildAddrDbIndex();
+  var e=db.list.filter(function(x){return x.key===addrDbAddKey;})[0];
+  if(!e){addrDbCloseAdd();return;}
+  var a=e.addr,title=(a.num?a.num+' ':'')+a.rue+' · '+(a.cp_ville||'');
+  var head='<div style="background:var(--surface);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0"><button onclick="'+(addrDbAddCode?'addrDbPickTour(null)':'addrDbCloseAdd()')+'" style="background:var(--bg);border:1.5px solid var(--border);color:var(--text);border-radius:50%;width:36px;height:36px;cursor:pointer">‹</button><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;color:var(--text)">Ajouter à une tournée</div><div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escHtml(title)+'</div></div></div>';
+  var body='';
+  if(!addrDbAddCode){
+    var avail=db.codes.filter(function(c){return!e.tours.some(function(t){return t.code===c;});});
+    body='<div style="padding:14px"><div style="font-size:12px;color:var(--muted);margin-bottom:8px">Choisis la tournée :</div>'+(avail.length?avail.map(function(c){var col=getTourneeColor(c);return'<button onclick="addrDbPickTour(\''+c+'\')" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border-radius:12px;border:none;background:'+col+';color:#fff;font-weight:700;font-size:14px;cursor:pointer">'+c+'</button>';}).join(''):'<div style="color:var(--muted);font-size:13px">Cette adresse est déjà dans toutes les tournées.</div>')+'</div>';
+  } else {
+    var t=getTourneeData(addrDbAddCode);
+    var q=((document.getElementById('addrdb-add-search')||{}).value||'').trim().toUpperCase();
+    var rows=(t.adresses||[]).filter(function(x){return!q||((x.num||'')+' '+(x.rue||'')+' '+(x.nom||'')).toUpperCase().indexOf(q)>=0;});
+    var rowHtml=function(label,sub,after){return'<div onclick="addrDbDoAdd('+after+')" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 11px;margin-bottom:6px;cursor:pointer"><div style="font-size:13.5px;font-weight:700;color:var(--text)">'+label+'</div>'+(sub?'<div style="font-size:11px;color:var(--muted)">'+sub+'</div>':'')+'</div>';};
+    body='<div style="padding:10px 12px;flex-shrink:0"><div style="font-size:12px;color:var(--muted);margin-bottom:6px">Touche l\'adresse <b>après</b> laquelle insérer dans <b>'+addrDbAddCode+'</b> :</div><input id="addrdb-add-search" type="search" value="'+escHtml(q)+'" placeholder="Filtrer les adresses de la tournée…" oninput="renderAddrDbAdd();var s=document.getElementById(\'addrdb-add-search\');s.focus();s.setSelectionRange(s.value.length,s.value.length)" style="width:100%;box-sizing:border-box;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:14px"></div><div style="flex:1;overflow-y:auto;padding:0 12px 14px">'
+      +(q?'':rowHtml('⬆ En début de tournée','',0))
+      +rows.slice(0,300).map(function(x){return rowHtml('#'+x.ordre+' · '+((x.num?x.num+' ':'')+escHtml(x.rue||'')),escHtml(x.cp_ville||'')+(x.nom?' · '+escHtml(x.nom):''),x.ordre);}).join('')
+      +(rows.length>300?'<div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">… affine le filtre</div>':'')
+      +(q?'':rowHtml('⬇ À la fin de la tournée','',-1))+'</div>';
+  }
+  m.innerHTML=head+body;
+}
+function addrDbDoAdd(afterOrdre){
+  if(blockIfFacteur())return;
+  var code=addrDbAddCode,key=addrDbAddKey;
+  var db=buildAddrDbIndex();
+  var e=db.list.filter(function(x){return x.key===key;})[0];
+  if(!e||!code)return;
+  var t=getTourneeData(code);
+  if(t.adresses.some(function(x){return renfortDedupKey(x)===key;})){showToast('Déjà dans '+code);return;}
+  var a=e.addr;
+  if(!confirm('Ajouter « '+((a.num?a.num+' ':'')+a.rue)+' » à '+code+' ?'))return;
+  addrDbBackup([code],'Ajout '+code);
+  var copy=JSON.parse(JSON.stringify(a));
+  copy.ordre=0;delete copy.pinned;
+  var idx;
+  if(afterOrdre===0)idx=0;
+  else if(afterOrdre<0)idx=t.adresses.length;
+  else{var fi=t.adresses.findIndex(function(x){return x.ordre===afterOrdre;});idx=fi>=0?fi+1:t.adresses.length;}
+  t.adresses.splice(idx,0,copy);
+  addrDbRenumber(t);
+  saveTourneeData();
+  updateHomeCards();
+  addrDbCloseAdd();
+  renderAddrDb();
+  showToast('Ajoutée à '+code+' ✓ (↶ Annuler en haut)');
 }
 function openTrackingScreen(){
   if(blockIfFacteur())return;
@@ -6298,7 +6405,7 @@ function remapOrdreKeyedState(t,oldOrdreMap){
     var balPart=key.substring(dashIdx+1);
     var newOrdre=oldOrdreMap[oldOrdre];
     if(newOrdre!==undefined){
-      newDone[newOrdre+'-'+balPart]=true;
+      newDone[newOrdre+'-'+balPart]=t.done[key];
     }
   });
   t.done=newDone;
