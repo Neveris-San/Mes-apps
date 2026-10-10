@@ -232,7 +232,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
       <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
 
-      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 10/10/2026 21:51</div>
+      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 10/10/2026 21:59</div>
     </div>
   </div>
 </div>
@@ -602,6 +602,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
     <div style="display:flex;gap:6px;margin-top:8px;overflow-x:auto" id="addrdb-filters"></div>
   </div>
   <div id="addrdb-list" style="flex:1;overflow-y:auto;padding:10px 12px"></div>
+  <div id="addrdb-tabbar" style="display:flex;border-top:1px solid var(--border);background:var(--surface);flex-shrink:0;padding-bottom:env(safe-area-inset-bottom)"></div>
 </div>
 
 <div id="screen-tracking" style="position:fixed;inset:0;z-index:99999;background:var(--bg);display:none;flex-direction:column;overflow:hidden">
@@ -873,7 +874,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='10/10/2026 21:51';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='10/10/2026 21:59';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -2449,7 +2450,7 @@ function activateBureau(bureau){var tours=getBureauTournees(bureau);TOURNEE_CODE
     });}}});}
 var coords=saved[code].coords||{};(getTourneeData(code).adresses||[]).forEach(function(a){if(coords[a.ordre]){a.lat=coords[a.ordre].lat;a.lng=coords[a.ordre].lng;a.pinned=true;}});}});}}catch(e){}
 buildHomeTourneeCards();updateHomeCards();
-  _fbLoaded=true; /* Autoriser fbSaveAll maintenant que tout est chargé */ try{addrDbInitSigs();}catch(e){}
+  _fbLoaded=true; /* Autoriser fbSaveAll maintenant que tout est chargé */ try{addrDbInitSigs();}catch(e){} try{freeAddrsLoad();}catch(e){}
   /* Restaurer depuis sauvegarde d'urgence si Firebase a moins de points */
   restoreCoordsEmergency();
   /* Backup automatique */
@@ -2535,7 +2536,7 @@ var trackingMapInstance=null;
 var trackingMarkers=[];
 var trackingRefreshInterval=null;
 /* ===== BASE D'ADRESSES GLOBALE (étape 1 : index en lecture, calculé depuis les tournées) ===== */
-var addrDbFilter='ALL';
+var addrDbFilter='ALL';var FREE_ADDRS=[];var addrDbOpenGroups={};var addrDbEditKey=null;
 function buildAddrDbIndex(){
   var codes=(currentBureau&&BUREAU_TOURNEES[currentBureau])?BUREAU_TOURNEES[currentBureau]:TOURNEE_CODES;
   var idx={};
@@ -2553,12 +2554,21 @@ function buildAddrDbIndex(){
       if(!e.addr.nom&&a.nom)e.addr=a;
     });
   });
+  (FREE_ADDRS||[]).forEach(function(f){
+    if(!f||!f.rue)return;
+    if(f.b&&currentBureau&&f.b!==currentBureau)return;
+    var k=renfortDedupKey(f);
+    if(idx[k])return;
+    idx[k]={key:k,addr:f,tours:[],copies:[],free:true};
+  });
   var list=Object.keys(idx).map(function(k){return idx[k];});
   list.sort(function(x,y){
     var vx=(x.addr.cp_ville||'').toUpperCase(),vy=(y.addr.cp_ville||'').toUpperCase();
     if(vx!==vy)return vx<vy?-1:1;
     var sx=renfortStreetId(x.addr.rue),sy=renfortStreetId(y.addr.rue);
     if(sx!==sy)return sx<sy?-1:1;
+    var fx=renfortFullStreetKey(x.addr.rue),fy=renfortFullStreetKey(y.addr.rue);
+    if(fx!==fy)return fx<fy?-1:1;
     return parseNumForSort(x.addr.num)-parseNumForSort(y.addr.num);
   });
   return {list:list,codes:codes.filter(function(c){return c!=='RENFORT';})};
@@ -2568,56 +2578,199 @@ function openAddrDbScreen(){
   var ebb=document.getElementById('edit-bottom-bar');if(ebb)ebb.style.display='none';
   addrDbFilter='ALL';
   var s=document.getElementById('addrdb-search');if(s)s.value='';
+  addrDbEditKey=null;
   navigateToScreen('screen-home','screen-addrdb','forward');
   renderAddrDb();
+  freeAddrsLoad(function(){renderAddrDb();});
 }
 function closeAddrDbScreen(){
   var ebb=document.getElementById('edit-bottom-bar');if(ebb&&editScreenCode)ebb.style.display='block';
   navigateToScreen('screen-addrdb','screen-home','back');
 }
 function setAddrDbFilter(code){addrDbFilter=code;renderAddrDb();}
+function addrDbGroups(res){
+  var groups=[],map={};
+  res.forEach(function(e){
+    var gk=(e.addr.cp_ville||'').toUpperCase()+'|'+renfortFullStreetKey(e.addr.rue);
+    if(!map[gk]){map[gk]={key:gk,rue:e.addr.rue||'',ville:e.addr.cp_ville||'',items:[]};groups.push(map[gk]);}
+    map[gk].items.push(e);
+  });
+  return groups;
+}
 function renderAddrDb(){
   var list=document.getElementById('addrdb-list');if(!list)return;
   var db=buildAddrDbIndex();
-  var q=((document.getElementById('addrdb-search')||{}).value||'').trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  var q=((document.getElementById('addrdb-search')||{}).value||'').trim().toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  var nbFree=db.list.filter(function(e){return e.free;}).length;
+  /* filtres */
   var f=document.getElementById('addrdb-filters');
   if(f){
-    var chips=['ALL','NONE'].concat(db.codes);
+    var chips=['ALL'].concat(db.codes);
     f.innerHTML=chips.map(function(c){
-      var lbl=c==='ALL'?'Toutes':(c==='NONE'?'Sans tournée':c);
-      var on=addrDbFilter===c;
-      var col=(c==='ALL'||c==='NONE')?'var(--accent)':getTourneeColor(c);
-      return'<button onclick="setAddrDbFilter(\''+c+'\')" style="flex-shrink:0;padding:5px 11px;border-radius:14px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid '+col+';background:'+(on?col:'transparent')+';color:'+(on?'#fff':col)+'">'+lbl+'</button>';
+      var on=addrDbFilter===c,col=c==='ALL'?'var(--accent)':getTourneeColor(c);
+      return'<button onclick="setAddrDbFilter(\''+c+'\')" style="flex-shrink:0;padding:5px 11px;border-radius:14px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid '+col+';background:'+(on?col:'transparent')+';color:'+(on?'#fff':col)+'">'+(c==='ALL'?'Toutes':c)+'</button>';
     }).join('');
   }
-  var norm=function(s){return(s||'').toString().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');};
+  /* barre du bas */
+  var bar=document.getElementById('addrdb-tabbar');
+  if(bar){
+    var tab=function(label,icon,on,fn,badge){return'<button onclick="'+fn+'" class="home-tab'+(on?' active':'')+'" style="position:relative"><span style="font-size:18px">'+icon+'</span><span>'+label+'</span>'+(badge?'<span style="position:absolute;top:2px;left:calc(50% + 8px);background:#e0a800;color:#fff;border-radius:8px;font-size:10px;padding:0 5px;font-weight:700">'+badge+'</span>':'')+'</button>';};
+    bar.innerHTML=tab('Toutes','🗂',addrDbFilter!=='NONE',"setAddrDbFilter('ALL')")+tab('Sans tournée','📭',addrDbFilter==='NONE',"setAddrDbFilter('NONE')",nbFree||'')+tab('Créer','＋',false,'addrDbOpenCreate()');
+  }
+  var norm=function(s){return(s||'').toString().toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'');};
   var res=db.list.filter(function(e){
-    if(addrDbFilter==='NONE')return false;
-    if(addrDbFilter!=='ALL'&&!e.tours.some(function(t){return t.code===addrDbFilter;}))return false;
+    if(addrDbFilter==='NONE'){if(!e.free)return false;}
+    else if(addrDbFilter!=='ALL'&&!e.tours.some(function(t){return t.code===addrDbFilter;}))return false;
     if(!q)return true;
     var a=e.addr;
     return norm([a.num,a.rue,a.nom,a.entreprise,a.lieu_dit,a.cp_ville].join(' ')).indexOf(q)>=0;
   });
   var multi=db.list.filter(function(e){return e.tours.length>1;}).length;
   var sub=document.getElementById('addrdb-subtitle');
-  if(sub)sub.textContent=db.list.length+' adresses uniques · '+multi+' sur plusieurs tournées'+(res.length!==db.list.length?' · '+res.length+' affichées':'');
-  if(addrDbFilter==='NONE'){list.innerHTML='<div style="text-align:center;color:var(--muted);padding:30px 10px;font-size:13px">Les adresses « sans tournée » apparaîtront ici dès que la base pourra contenir des adresses hors tournée (étape suivante).</div>';return;}
-  var MAX=150;
-  var html=res.slice(0,MAX).map(function(e){
-    var a=e.addr;
-    var title=(a.num?a.num+' ':'')+escHtml(a.rue||'');
-    var sub2=[a.nom,a.entreprise,a.lieu_dit].filter(Boolean).map(escHtml).join(' · ');
-    var chips=e.tours.map(function(t){var col=getTourneeColor(t.code);return'<span style="display:inline-block;padding:2px 4px 2px 8px;border-radius:10px;font-size:11px;font-weight:700;color:#fff;background:'+col+';margin:4px 4px 0 0">'+t.code+' <span style="opacity:.75">#'+t.ordre+'</span> <b data-rm="'+escHtml(e.key)+'" data-rmcode="'+t.code+'" style="cursor:pointer;padding:0 5px;opacity:.9" title="Retirer de '+t.code+'">✕</b></span>';}).join('')+(addrDbDiverges(e)?'<span data-uni="'+escHtml(e.key)+'" style="display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:700;color:#b26a00;background:#fff3cd;border:1px solid #e0a800;margin:4px 4px 0 0;cursor:pointer">⚠ infos différentes</span>':'')+'<span data-add="'+escHtml(e.key)+'" style="display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:700;color:var(--accent);border:1.5px dashed var(--accent);margin:4px 4px 0 0;cursor:pointer">＋ Tournée</span>';
-    return'<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 11px;margin-bottom:7px"><div style="font-size:14px;font-weight:700;color:var(--text)">'+title+'</div><div style="font-size:11.5px;color:var(--muted)">'+escHtml(a.cp_ville||'')+(sub2?' · '+sub2:'')+'</div><div>'+chips+'</div></div>';
+  if(sub)sub.textContent=db.list.length+' adresses · '+multi+' multi-tournées · '+nbFree+' sans tournée'+(res.length!==db.list.length?' · '+res.length+' affichées':'');
+  if(!res.length){list.innerHTML='<div style="text-align:center;color:var(--muted);padding:40px 10px;font-size:13px"><div style="font-size:40px;margin-bottom:8px">'+(addrDbFilter==='NONE'?'📭':'🔍')+'</div>'+(addrDbFilter==='NONE'?'Aucune adresse sans tournée.<br>Utilise « Créer » pour en ajouter une.':'Aucune adresse trouvée')+'</div>';list.onclick=null;return;}
+  var groups=addrDbGroups(res);
+  var MAXG=400;
+  var html=groups.slice(0,MAXG).map(function(g){
+    var open=!!addrDbOpenGroups[g.key]||(q&&groups.length<=40);
+    var cols=[];g.items.forEach(function(e){e.tours.forEach(function(t){var cc=getTourneeColor(t.code);if(cols.indexOf(cc)<0)cols.push(cc);});});
+    var head='<div data-grp="'+escHtml(g.key)+'" style="display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer"><span style="color:var(--muted);font-size:11px;transition:transform .2s;transform:rotate('+(open?90:0)+'deg)">▶</span><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escHtml(g.rue)+'</div><div style="font-size:10.5px;color:var(--muted)">'+escHtml(g.ville)+'</div></div><span style="display:flex;gap:3px">'+cols.slice(0,5).map(function(cc){return'<i style="width:8px;height:8px;border-radius:50%;background:'+cc+'"></i>';}).join('')+'</span><span style="font-size:11px;color:var(--muted);background:var(--bg);border-radius:9px;padding:1px 8px">'+g.items.length+'</span></div>';
+    var body='';
+    if(open)body='<div style="border-top:1px solid var(--border)">'+g.items.map(function(e){return addrDbRowHtml(e);}).join('')+'</div>';
+    return'<div style="background:var(--surface);border:1px solid var(--border);border-radius:11px;margin-bottom:7px;overflow:hidden">'+head+body+'</div>';
   }).join('');
-  if(res.length>MAX)html+='<div style="text-align:center;color:var(--muted);font-size:12px;padding:10px">… '+(res.length-MAX)+' autres, affine la recherche</div>';
-  if(!res.length)html='<div style="text-align:center;color:var(--muted);padding:30px;font-size:13px">Aucune adresse trouvée</div>';
+  if(groups.length>MAXG)html+='<div style="text-align:center;color:var(--muted);font-size:12px;padding:10px">… '+(groups.length-MAXG)+' autres rues, affine la recherche</div>';
   list.innerHTML=html;
   list.onclick=function(ev){
-    var rm=ev.target.closest('[data-rm]');if(rm){addrDbRemove(rm.dataset.rm,rm.dataset.rmcode);return;}
-    var un=ev.target.closest('[data-uni]');if(un){addrDbOpenUni(un.dataset.uni);return;}
-    var ad=ev.target.closest('[data-add]');if(ad){addrDbOpenAdd(ad.dataset.add);return;}
+    var t=ev.target;
+    var rm=t.closest('[data-rm]');if(rm){addrDbRemove(rm.dataset.rm,rm.dataset.rmcode);return;}
+    var ad=t.closest('[data-add]');if(ad){addrDbOpenAdd(ad.dataset.add);return;}
+    var un=t.closest('[data-uni]');if(un){addrDbOpenUni(un.dataset.uni);return;}
+    var sv=t.closest('[data-save]');if(sv){addrDbSaveEdit(sv.dataset.save);return;}
+    var dt=t.closest('[data-detail]');if(dt){addrDbOpenDetail(dt.dataset.detail);return;}
+    var dl=t.closest('[data-freedel]');if(dl){addrDbDeleteFree(dl.dataset.freedel);return;}
+    if(t.closest('[data-editbox]'))return;
+    var row=t.closest('[data-row]');if(row){addrDbEditKey=(addrDbEditKey===row.dataset.row)?null:row.dataset.row;renderAddrDb();return;}
+    var gh=t.closest('[data-grp]');if(gh){var k=gh.dataset.grp;addrDbOpenGroups[k]=!addrDbOpenGroups[k];if(q&&groups.length<=40)addrDbOpenGroups[k]=false;renderAddrDb();return;}
   };
+}
+function addrDbRowHtml(e){
+  var a=e.addr,isEdit=addrDbEditKey===e.key;
+  var tcs=e.tours.map(function(t){return'<span style="font-size:9.5px;font-weight:700;color:#fff;background:'+getTourneeColor(t.code)+';border-radius:8px;padding:1px 6px;margin-left:2px">'+t.code+'</span>';}).join('');
+  if(e.free)tcs='<span style="font-size:9.5px;font-weight:700;color:#fff;background:#e0a800;border-radius:8px;padding:1px 6px">Sans tournée</span>';
+  var warn=addrDbDiverges(e)?'<span data-uni="'+escHtml(e.key)+'" style="font-size:12px;margin-left:4px" title="Infos différentes entre tournées">⚠️</span>':'';
+  var sub2=[a.nom,a.entreprise].filter(Boolean).map(escHtml).join(' · ')||(a.tel?escHtml(a.tel):'—');
+  var row='<div data-row="'+escHtml(e.key)+'" style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border);cursor:pointer;'+(isEdit?'background:var(--accent-light);':'')+'"><span style="width:38px;font-size:12.5px;font-weight:800;color:var(--accent)">'+escHtml(a.num||'—')+'</span><div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+sub2+warn+'</div>'+(a.lieu_dit?'<div style="font-size:10.5px;color:var(--muted)">'+escHtml(a.lieu_dit)+'</div>':'')+'</div><span style="display:flex;flex-wrap:wrap;justify-content:flex-end;max-width:110px;gap:2px">'+tcs+'</span><span style="color:var(--accent);font-size:13px">'+(isEdit?'⌃':'✎')+'</span></div>';
+  if(!isEdit)return row;
+  var inp=function(id,label,val,type){return'<div style="margin-bottom:7px"><div style="font-size:10.5px;color:var(--muted);font-weight:600;margin-bottom:2px">'+label+'</div><input id="'+id+'" type="'+(type||'text')+'" value="'+escHtml(val||'')+'" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;background:var(--surface);color:var(--text)"></div>';};
+  var tours=e.tours.map(function(t){return'<span style="display:inline-block;padding:3px 4px 3px 9px;border-radius:10px;font-size:11px;font-weight:700;color:#fff;background:'+getTourneeColor(t.code)+';margin:0 5px 5px 0">'+t.code+' <span style="opacity:.75">#'+t.ordre+'</span> <b data-rm="'+escHtml(e.key)+'" data-rmcode="'+t.code+'" style="cursor:pointer;padding:0 5px">✕</b></span>';}).join('')+'<span data-add="'+escHtml(e.key)+'" style="display:inline-block;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;color:var(--accent);border:1.5px dashed var(--accent);margin:0 5px 5px 0;cursor:pointer">＋ Tournée</span>';
+  return row+'<div data-editbox="1" style="padding:10px 12px;background:var(--accent-light);border-bottom:1px solid var(--border)">'
+    +'<div style="font-size:11.5px;color:var(--muted);margin-bottom:6px">'+escHtml((a.num?a.num+' ':'')+(a.rue||'')+' · '+(a.cp_ville||''))+'</div>'
+    +inp('ae-nom','Nom',a.nom)+'<div style="display:flex;gap:8px"><div style="flex:1">'+inp('ae-tel','Téléphone',a.tel,'tel')+'</div><div style="flex:1">'+inp('ae-code','Code d\'accès',a.codeacces)+'</div></div>'
+    +inp('ae-entr','Entreprise',a.entreprise)+inp('ae-lieu','Lieu-dit / complément',a.lieu_dit||a.complement)
+    +'<div style="margin:2px 0 8px">'+tours+'</div>'
+    +'<div style="display:flex;gap:6px"><button data-save="'+escHtml(e.key)+'" style="flex:1;padding:9px;background:var(--accent);color:#fff;border:none;border-radius:11px;font-weight:700;font-size:13px;cursor:pointer">Enregistrer</button>'
+    +(e.free?'<button data-freedel="'+escHtml(e.key)+'" style="padding:9px 12px;border:1.5px solid #d43030;color:#d43030;background:var(--surface);border-radius:11px;font-size:13px;cursor:pointer">🗑</button>':'<button data-detail="'+escHtml(e.key)+'" style="padding:9px 12px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);border-radius:11px;font-size:13px;cursor:pointer">Détails…</button>')
+    +'</div></div>';
+}
+/* ===== Sans tournée : stockage, création, enregistrement ===== */
+function freeAddrsSave(){
+  try{localStorage.setItem('free_addrs',JSON.stringify(FREE_ADDRS));}catch(e){}
+  try{if(db&&_fbLoaded)db.collection('app_data').doc('addr_free').set({json:JSON.stringify(FREE_ADDRS),ts:Date.now()}).catch(function(){});}catch(e){}
+}
+function freeAddrsLoad(cb){
+  try{var raw=localStorage.getItem('free_addrs');if(raw&&!FREE_ADDRS.length)FREE_ADDRS=JSON.parse(raw)||[];}catch(e){}
+  try{
+    if(db){db.collection('app_data').doc('addr_free').get().then(function(d){
+      if(d.exists&&d.data().json){try{var arr=JSON.parse(d.data().json);if(Array.isArray(arr))FREE_ADDRS=arr;}catch(e){}}
+      if(cb)cb();
+    }).catch(function(){if(cb)cb();});return;}
+  }catch(e){}
+  if(cb)cb();
+}
+function addrDbDeleteFree(key){
+  if(blockIfFacteur())return;
+  if(!confirm('Supprimer cette adresse de la base ?'))return;
+  FREE_ADDRS=FREE_ADDRS.filter(function(f){return renfortDedupKey(f)!==key;});
+  freeAddrsSave();addrDbEditKey=null;renderAddrDb();showToast('Adresse supprimée');
+}
+function addrDbSaveEdit(key){
+  if(blockIfFacteur())return;
+  var db2=buildAddrDbIndex();
+  var e=db2.list.filter(function(x){return x.key===key;})[0];if(!e)return;
+  var g=function(id){var el=document.getElementById(id);return el?el.value.trim():'';};
+  var vals={nom:g('ae-nom'),tel:g('ae-tel'),codeacces:g('ae-code'),entreprise:g('ae-entr'),lieu_dit:g('ae-lieu')};
+  var apply=function(a){
+    if(!a._edited)a._edited={};
+    ['nom','tel','entreprise'].forEach(function(f){a[f]=vals[f];a._edited[f]=true;});
+    a.codeacces=vals.codeacces;
+    a.lieu_dit=vals.lieu_dit;a._edited.lieu_dit=true;
+  };
+  if(e.free){apply(e.addr);freeAddrsSave();showToast('Enregistré ✓');renderAddrDb();return;}
+  if(!_addrSigsReady)addrDbInitSigs();
+  var codes=[];e.copies.forEach(function(cp){if(codes.indexOf(cp.code)<0)codes.push(cp.code);});
+  addrDbBackup(codes,'Modification adresse');
+  var u=addrDbUniqueCopies(e);
+  if(u.length){
+    var tgt=u[0];
+    if(!_addrSigs.has(tgt.addr))addrDbRecordSig(tgt.addr);
+    apply(tgt.addr);
+    var tw=addrDbFindTwins(key,tgt.code);
+    var ch=addrDbPropagate(tgt.addr,tw);
+    showToast(ch.length?'Enregistré et répercuté sur '+ch.join(', ')+' ✓':'Enregistré ✓');
+  } else {
+    e.copies.forEach(function(cp){apply(cp.addr);addrDbRecordSig(cp.addr);});
+    showToast('Enregistré ✓');
+  }
+  saveTourneeData();
+  renderAddrDb();
+}
+function addrDbOpenDetail(key){
+  var db2=buildAddrDbIndex();
+  var e=db2.list.filter(function(x){return x.key===key;})[0];
+  if(!e||!e.tours.length)return;
+  var code=e.tours[0].code,ordre=e.tours[0].ordre;
+  closeAddrDbScreen();
+  setTimeout(function(){
+    openEditScreen(code);
+    setTimeout(function(){try{openAesPanel(ordre,0);}catch(err){}},500);
+  },450);
+}
+function addrDbOpenCreate(){
+  if(blockIfFacteur())return;
+  var m=document.getElementById('addrdb-add-modal');
+  if(!m){m=document.createElement('div');m.id='addrdb-add-modal';m.style.cssText='position:absolute;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column';document.getElementById('screen-addrdb').appendChild(m);}
+  m.style.display='flex';
+  var cnt={},best='';
+  buildAddrDbIndex().list.forEach(function(e){var v=e.addr.cp_ville||'';cnt[v]=(cnt[v]||0)+1;if(!best||cnt[v]>cnt[best])best=v;});
+  var fld=function(id,l,ph,val,type){return'<div style="margin-bottom:9px"><div style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:2px">'+l+'</div><input id="'+id+'" type="'+(type||'text')+'" value="'+escHtml(val||'')+'" placeholder="'+(ph||'')+'" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;background:var(--surface);color:var(--text)"></div>';};
+  m.innerHTML='<div style="background:var(--surface);border-bottom:1px solid var(--border);padding:10px 14px;padding-top:max(10px,env(safe-area-inset-top));display:flex;align-items:center;gap:10px;flex-shrink:0"><button onclick="addrDbCloseAdd()" style="background:var(--bg);border:1.5px solid var(--border);color:var(--text);border-radius:50%;width:36px;height:36px;cursor:pointer">‹</button><div style="font-size:15px;font-weight:700;color:var(--text)">Nouvelle adresse</div></div>'
+   +'<div style="flex:1;overflow-y:auto;padding:12px 14px"><div style="font-size:10.5px;font-weight:800;color:var(--accent);margin-bottom:6px">ADRESSE</div>'
+   +'<div style="display:flex;gap:8px"><div style="width:90px">'+fld('nc-num','N°','12')+'</div><div style="flex:1">'+fld('nc-rue','Rue','RUE DES ARÈNES')+'</div></div>'
+   +fld('nc-cp','Code postal / ville','13150 TARASCON',best)+fld('nc-compl','Complément / lieu-dit','')
+   +'<div style="font-size:10.5px;font-weight:800;color:var(--accent);margin:8px 0 6px">DESTINATAIRE</div>'
+   +fld('nc-nom','Nom','')+fld('nc-entr','Entreprise','')+fld('nc-tel','Téléphone','','','tel')+fld('nc-nbal','Nombre de boîtes aux lettres','','1','number')
+   +'<div style="font-size:11.5px;color:var(--muted);margin-top:4px">L\'adresse sera créée sans tournée. Tu pourras ensuite l\'ajouter à une tournée avec « ＋ Tournée ».</div></div>'
+   +'<button onclick="addrDbCreate()" style="margin:8px 14px 14px;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer">Créer l\'adresse</button>';
+}
+function addrDbCreate(){
+  if(blockIfFacteur())return;
+  var g=function(id){var el=document.getElementById(id);return el?el.value.trim():'';};
+  var rue=g('nc-rue').toUpperCase(),num=g('nc-num'),cp=g('nc-cp');
+  if(!rue){showToast('La rue est obligatoire');return;}
+  var nbal=Math.max(1,parseInt(g('nc-nbal'))||1),boites=[];
+  for(var i=1;i<nbal;i++)boites.push({nom:'',complement:'',lieu_dit:'',entreprise:'',tel:'',nom_entreprise:''});
+  var a={ordre:0,num:num,rue:rue,nom:g('nc-nom'),complement:'',lieu_dit:g('nc-compl'),entreprise:g('nc-entr'),cp_ville:cp,adresse:(num?num+' ':'')+rue+', '+cp,nbBal:nbal,boites:boites,tel:g('nc-tel'),note:'',lat:null,lng:null,b:currentBureau||''};
+  var key=renfortDedupKey(a);
+  var exists=buildAddrDbIndex().list.some(function(e){return e.key===key;});
+  if(exists){showToast('Cette adresse existe déjà dans la base');return;}
+  FREE_ADDRS.push(a);
+  freeAddrsSave();
+  try{var cp2=JSON.parse(JSON.stringify(a));delete cp2.b;if(addToRenfortIfNew(cp2)){sortRenfortAddresses();saveTourneeData();}}catch(e){}
+  addrDbCloseAdd();
+  addrDbFilter='NONE';addrDbEditKey=null;
+  renderAddrDb();
+  showToast('Adresse créée (sans tournée) ✓');
 }
 /* ===== BASE D'ADRESSES (étape 2 : retirer / ajouter à une tournée) ===== */
 function addrDbBackup(codes,label){
@@ -2650,6 +2803,8 @@ function addrDbRemove(key,code){
   var a=matches[0];
   if(!confirm('Retirer « '+((a.num?a.num+' ':'')+a.rue)+' » de la tournée '+code+' ?'))return;
   addrDbBackup([code],'Retrait '+code);
+  var othersHave=addrDbFindTwins(key,code).some(function(w){return w.code!=='RENFORT';});
+  if(!othersHave){var fc=JSON.parse(JSON.stringify(a));fc.ordre=0;fc.b=currentBureau||'';delete fc.pinned;FREE_ADDRS.push(fc);freeAddrsSave();}
   t.adresses=t.adresses.filter(function(x){return renfortDedupKey(x)!==key;});
   addrDbRenumber(t);
   saveTourneeData();
@@ -2708,7 +2863,7 @@ function addrDbDoAdd(afterOrdre){
   if(!confirm('Ajouter « '+((a.num?a.num+' ':'')+a.rue)+' » à '+code+' ?'))return;
   addrDbBackup([code],'Ajout '+code);
   var copy=JSON.parse(JSON.stringify(a));
-  copy.ordre=0;delete copy.pinned;
+  copy.ordre=0;delete copy.pinned;delete copy.b;
   var idx;
   if(afterOrdre===0)idx=0;
   else if(afterOrdre<0)idx=t.adresses.length;
@@ -2717,6 +2872,7 @@ function addrDbDoAdd(afterOrdre){
   addrDbRenumber(t);
   saveTourneeData();
   updateHomeCards();
+  var nf=FREE_ADDRS.length;FREE_ADDRS=FREE_ADDRS.filter(function(f){return renfortDedupKey(f)!==key;});if(FREE_ADDRS.length!==nf)freeAddrsSave();
   addrDbCloseAdd();
   renderAddrDb();
   showToast('Ajoutée à '+code+' ✓ (↶ Annuler en haut)');
