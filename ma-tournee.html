@@ -232,7 +232,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
       <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
 
-      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 13/10/2026 14:24</div>
+      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 13/10/2026 14:35</div>
     </div>
   </div>
 </div>
@@ -875,7 +875,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='13/10/2026 14:24';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='13/10/2026 14:35';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -2420,6 +2420,17 @@ function saveBureauTournees(){try{var d={};BUREAUX_LIST.forEach(function(b){if(B
 function selectBureau(bureau){selectedBureauTemp=bureau;currentBureau=bureau;try{localStorage.setItem('last_bureau',bureau);}catch(e){}
 activateBureau(bureau);var s=document.getElementById('screen-bureau');s.style.display='none';showHome();checkProfileNeeded();}
 
+/* Les coords sauvegardées sont indexées par n° d'ordre : inutilisables pour une tournée restructurée (les ordres bougent), où chaque adresse porte déjà ses lat/lng. */
+function applyCoordsFromEntry(list,entry){
+  if(!entry||!list)return;
+  var coords=entry.coords||{};
+  if(entry._restructured){
+    var anyPlaced=list.some(function(a){return a.lat&&a.lng;});
+    list.forEach(function(a){if(a.lat&&a.lng)a.pinned=true;});
+    if(anyPlaced)return; /* sinon : anciennes données sans lat/lng dans les adresses → repli sur coords */
+  }
+  list.forEach(function(a){if(coords[a.ordre]){a.lat=coords[a.ordre].lat;a.lng=coords[a.ordre].lng;a.pinned=true;}});
+}
 function activateBureau(bureau){var tours=getBureauTournees(bureau);TOURNEE_CODES=tours;var badge=document.getElementById('bureau-badge-home');if(badge)badge.textContent=bureau.replace(/-/g,' ');try{var raw=localStorage.getItem('tournee_done_v1');if(raw){var saved=JSON.parse(raw);TOURNEE_CODES.forEach(function(code){if(saved[code]){var t2=getTourneeData(code);
         /* Restaurer les adresses */
         if(saved[code].adresses&&saved[code].adresses.length>0){
@@ -2449,7 +2460,7 @@ function activateBureau(bureau){var tours=getBureauTournees(bureau);TOURNEE_CODE
       if(eb.note!==undefined)a.boites[bi].note=eb.note;
       if(eb.noteHistory!==undefined)a.boites[bi].noteHistory=eb.noteHistory;
     });}}});}
-var coords=saved[code].coords||{};(getTourneeData(code).adresses||[]).forEach(function(a){if(coords[a.ordre]){a.lat=coords[a.ordre].lat;a.lng=coords[a.ordre].lng;a.pinned=true;}});}});}}catch(e){}
+applyCoordsFromEntry(getTourneeData(code).adresses,saved[code]);}});}}catch(e){}
 buildHomeTourneeCards();updateHomeCards();
   _fbLoaded=true; /* Autoriser fbSaveAll maintenant que tout est chargé */ try{addrDbInitSigs();}catch(e){} try{freeAddrsLoad();}catch(e){}
   /* Restaurer depuis sauvegarde d'urgence si Firebase a moins de points */
@@ -3240,7 +3251,7 @@ function fbSaveAll(forceCode){if(!db||!_fbLoaded)return;try{var toSave={};var al
         if(t._restructured)fbEntry._restructured=true;
       }
       toSave[code]=fbEntry;}});var bureauData={};Object.keys(BUREAU_TOURNEES).forEach(function(b){if(BUREAU_TOURNEES[b]&&BUREAU_TOURNEES[b].length>0)bureauData[b]=BUREAU_TOURNEES[b];});var infos={};try{var r=localStorage.getItem('infos_utiles_v1');if(r)infos=JSON.parse(r);}catch(e){}
-var renfortEntry=toSave['RENFORT'];if(renfortEntry)delete toSave['RENFORT'];db.collection('app_data').doc('tournees').set(toSave,{merge:true}).then(function(){showSyncStatus('saved');}).catch(function(e){showSyncStatus('error');});if(renfortEntry){var renfortAddrs=renfortEntry.adresses||[];delete renfortEntry.adresses;var RENFORT_CHUNK_SIZE=800;var chunkCount=Math.max(1,Math.ceil(renfortAddrs.length/RENFORT_CHUNK_SIZE));renfortEntry.chunkCount=chunkCount;db.collection('app_data').doc('tournee_renfort_meta').set({RENFORT:renfortEntry},{merge:true}).catch(function(e){showSyncStatus('error');});for(var rci=0;rci<chunkCount;rci++){var rslice=renfortAddrs.slice(rci*RENFORT_CHUNK_SIZE,(rci+1)*RENFORT_CHUNK_SIZE);db.collection('app_data').doc('tournee_renfort_chunk_'+rci).set({adresses:rslice}).catch(function(e){showSyncStatus('error');});}for(var rcx=chunkCount;rcx<chunkCount+3;rcx++){db.collection('app_data').doc('tournee_renfort_chunk_'+rcx).set({adresses:[]}).catch(function(){});}}db.collection('app_data').doc('bureaux').set(bureauData);db.collection('app_data').doc('infos').set(infos);}catch(e){showSyncStatus('error');}}
+var renfortEntry=toSave['RENFORT'];if(renfortEntry)delete toSave['RENFORT'];db.collection('app_data').doc('tournees').set(toSave,{merge:true}).then(function(){var upd={};Object.keys(toSave).forEach(function(k){if(k==='_version')return;var e=toSave[k];if(e&&e.coords)upd[k+'.coords']=e.coords;});if(Object.keys(upd).length)return db.collection('app_data').doc('tournees').update(upd);}).then(function(){showSyncStatus('saved');}).catch(function(e){showSyncStatus('error');});if(renfortEntry){var renfortAddrs=renfortEntry.adresses||[];delete renfortEntry.adresses;var RENFORT_CHUNK_SIZE=800;var chunkCount=Math.max(1,Math.ceil(renfortAddrs.length/RENFORT_CHUNK_SIZE));renfortEntry.chunkCount=chunkCount;db.collection('app_data').doc('tournee_renfort_meta').set({RENFORT:renfortEntry},{merge:true}).catch(function(e){showSyncStatus('error');});for(var rci=0;rci<chunkCount;rci++){var rslice=renfortAddrs.slice(rci*RENFORT_CHUNK_SIZE,(rci+1)*RENFORT_CHUNK_SIZE);db.collection('app_data').doc('tournee_renfort_chunk_'+rci).set({adresses:rslice}).catch(function(e){showSyncStatus('error');});}for(var rcx=chunkCount;rcx<chunkCount+3;rcx++){db.collection('app_data').doc('tournee_renfort_chunk_'+rcx).set({adresses:[]}).catch(function(){});}}db.collection('app_data').doc('bureaux').set(bureauData);db.collection('app_data').doc('infos').set(infos);}catch(e){showSyncStatus('error');}}
 function fbLoadAll(callback){if(!db){if(callback)callback(false);return;}
 showSyncStatus('saving');
 db.collection('app_data').doc('tournee_renfort_meta').get().then(function(renfortMetaDoc){
@@ -3314,7 +3325,7 @@ if(tourneeDoc.exists||preloadedRenfortEntry){var saved=tourneeDoc.exists?tournee
       if(eb.note!==undefined)a.boites[bi].note=eb.note;
       if(eb.noteHistory!==undefined)a.boites[bi].noteHistory=eb.noteHistory;
     });}}});}
-var coords=saved[code].coords||{};(t.adresses||[]).forEach(function(a){if(coords[a.ordre]){a.lat=coords[a.ordre].lat;a.lng=coords[a.ordre].lng;a.pinned=true;}});try{var local=JSON.parse(localStorage.getItem('tournee_done_v1')||'{}');local[code]={done:saved[code].done||{},coords:saved[code].coords||{},edits:saved[code].edits||{},courrierState:saved[code].courrierState||{},notes:saved[code].notes||{}};
+applyCoordsFromEntry(t.adresses,saved[code]);try{var local=JSON.parse(localStorage.getItem('tournee_done_v1')||'{}');local[code]={done:saved[code].done||{},coords:saved[code].coords||{},edits:saved[code].edits||{},courrierState:saved[code].courrierState||{},notes:saved[code].notes||{}};
           if(saved[code]._restructured){
             local[code]._restructured=true;
             if(saved[code].adresses&&saved[code].adresses.length>0)local[code].adresses=saved[code].adresses;
@@ -5135,7 +5146,7 @@ function restoreCoordsEmergency(){
     Object.keys(coords).forEach(function(code){
       if(code==='_saved')return;
       var t=TOURNEES_DATA[code];
-      if(!t)return;
+      if(!t||t._restructured)return; /* ordres instables sur une tournée restructurée */
       var codeCoords=coords[code];
       var firebaseCount=(t.adresses||[]).filter(function(a){return a.lat&&a.lng;}).length;
       var emergCount=Object.keys(codeCoords).length;
@@ -5538,7 +5549,7 @@ var nbalEl=document.getElementById('na-nbal');
 window.addEventListener('load',function(){
   var dr=document.getElementById('home-drawer-overlay');
   if(dr&&dr.parentElement!==document.body)document.body.appendChild(dr);
-  applyDarkMode();try{var raw=localStorage.getItem('tournee_done_v1');if(raw){var saved=JSON.parse(raw);TOURNEE_CODES.forEach(function(code){if(saved[code]){if(!TOURNEES_DATA[code])TOURNEES_DATA[code]={adresses:[],done:{}};TOURNEES_DATA[code].done=saved[code].done||{};var coords=saved[code].coords||{};(TOURNEES_DATA[code].adresses||[]).forEach(function(a){if(coords[a.ordre]){a.lat=coords[a.ordre].lat;a.lng=coords[a.ordre].lng;a.pinned=true;}});}});}}catch(e){}
+  applyDarkMode();try{var raw=localStorage.getItem('tournee_done_v1');if(raw){var saved=JSON.parse(raw);TOURNEE_CODES.forEach(function(code){if(saved[code]){if(!TOURNEES_DATA[code])TOURNEES_DATA[code]={adresses:[],done:{}};TOURNEES_DATA[code].done=saved[code].done||{};applyCoordsFromEntry(TOURNEES_DATA[code].adresses,saved[code]);}});}}catch(e){}
 /* S'assurer que FERRAGES est dans BUREAU_TOURNEES après chargement localStorage */
   if(BUREAU_TOURNEES['TARASCON']&&BUREAU_TOURNEES['TARASCON'].indexOf('FERRAGES')<0){
     BUREAU_TOURNEES['TARASCON'].splice(BUREAU_TOURNEES['TARASCON'].indexOf('TM07'),0,'FERRAGES');
@@ -5616,12 +5627,14 @@ function openEditScreen(code){editScreenCode=code;checkPresenceAndWarn(code);
       var saved=JSON.parse(raw);
       if(saved[code]){
         var t=getTourneeData(code);
+        if(!saved[code]._restructured){
         var coords=saved[code].coords||{};
         (t.adresses||[]).forEach(function(a){
           if(coords[a.ordre]&&!a.pinned){
             a.lat=coords[a.ordre].lat;a.lng=coords[a.ordre].lng;a.pinned=true;
           }
         });
+        }
       }
     }
   }catch(e){}reorderMode=false;editGroupByStreet=false;editOpenGroups={};var titleEl=document.getElementById('edit-screen-title');if(titleEl){titleEl.textContent=code;titleEl.style.color=getTourneeColor(code);}
@@ -7204,7 +7217,7 @@ function clearLocalCacheOnly(){
 window.addEventListener('load',function(){applyDarkMode();initFirebase();showBureauScreen();});window.addEventListener('load',function(){try{var raw=localStorage.getItem('tournee_done_v1');if(!raw)return;var saved=JSON.parse(raw);Object.keys(saved||{}).forEach(function(code){if(!TOURNEES_DATA[code])return;TOURNEES_DATA[code].infos=saved[code].infos||TOURNEES_DATA[code].infos||{vehicle:'',services:'',notes:''};});}catch(e){}});function getToolsMapCodes(){var codes=currentBureau?(BUREAU_TOURNEES[currentBureau]||[]).slice():[];if(!codes.length&&currentBureau){codes=Object.keys(TOURNEES_DATA||{}).filter(function(code){return(BUREAU_TOURNEES[currentBureau]||[]).indexOf(code)>=0;});}
 return codes.filter(function(code,idx){return code&&codes.indexOf(code)===idx;});}
 function normalizeTourneeCode(code){var raw=(code||'').trim().toUpperCase();if(/^TM\d$/.test(raw))return'TM0'+raw.slice(2);if(/^TL\d$/.test(raw))return'TL0'+raw.slice(2);return raw;}
-function restoreTourneeCoordsFromStorage(code){try{var savedRaw=localStorage.getItem('tournee_done_v1');if(!savedRaw)return;var saved=JSON.parse(savedRaw);var lookup=normalizeTourneeCode(code);var entry=saved[lookup]||saved[code];if(!entry||!entry.coords||!TOURNEES_DATA[lookup])return;(TOURNEES_DATA[lookup].adresses||[]).forEach(function(a){var c=entry.coords[a.ordre];if(c&&c.lat&&c.lng){a.lat=c.lat;a.lng=c.lng;a.pinned=true;}});}catch(e){}}
+function restoreTourneeCoordsFromStorage(code){try{var savedRaw=localStorage.getItem('tournee_done_v1');if(!savedRaw)return;var saved=JSON.parse(savedRaw);var lookup=normalizeTourneeCode(code);var entry=saved[lookup]||saved[code];if(!entry||!entry.coords||entry._restructured||!TOURNEES_DATA[lookup])return;(TOURNEES_DATA[lookup].adresses||[]).forEach(function(a){var c=entry.coords[a.ordre];if(c&&c.lat&&c.lng){a.lat=c.lat;a.lng=c.lng;a.pinned=true;}});}catch(e){}}
 function getStoredTourneeEntry(code){try{var savedRaw=localStorage.getItem('tournee_done_v1');if(!savedRaw)return null;var saved=JSON.parse(savedRaw);var lookup=normalizeTourneeCode(code);return saved[lookup]||saved[code]||null;}catch(e){return null;}}
 
 renderToolsMapForTournee=function(code){
