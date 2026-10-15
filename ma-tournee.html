@@ -232,7 +232,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
       <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
 
-      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 13/10/2026 14:35</div>
+      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 15/10/2026 12:29</div>
     </div>
   </div>
 </div>
@@ -615,7 +615,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
     <button onclick="toggleHomeDrawer()" style="height:32px;padding:0 12px;border-radius:16px;background:var(--accent);color:#fff;border:none;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:6px;cursor:pointer;flex-shrink:0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>Menu</button>
     <button onclick="refreshTrackingMap()" style="background:var(--bg);border:1.5px solid var(--border);color:var(--text);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer">↻</button>
   </div>
-  <div id="tracking-map" style="flex:1;position:relative"></div>
+  <div style="flex:1;position:relative;min-height:0"><div id="tracking-map" style="position:absolute;inset:0"></div><div id="tracking-legend" style="position:absolute;top:8px;left:8px;right:8px;z-index:500;display:flex;gap:6px;overflow-x:auto;pointer-events:none"></div></div>
 </div>
 
 <!-- ===== PLACEMENT CARTE ===== -->
@@ -875,7 +875,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='13/10/2026 14:35';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='15/10/2026 12:29';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -3037,6 +3037,29 @@ function closeTrackingScreen(){
   var ebb=document.getElementById('edit-bottom-bar');if(ebb&&editScreenCode)ebb.style.display='block';
   navigateToScreen('screen-tracking','screen-home','back');
 }
+function trackingFindProfile(name){
+  var list=[];try{list=getProfilesForBureau()||[];}catch(e){}
+  var n=(name||'').trim().toLowerCase();
+  for(var i=0;i<list.length;i++){if((list[i].name||'').trim().toLowerCase()===n)return list[i];}
+  return null;
+}
+function trackingAvatarInner(p,prof,size){
+  var ring=getTourneeColor(p.code);
+  var initial=escHtml((p.profile||'?').trim().charAt(0).toUpperCase());
+  var inner=(prof&&prof.photo)
+    ? '<img src="'+prof.photo+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block">'
+    : '<span style="color:#fff;font-weight:800;font-size:'+Math.round(size*0.45)+'px;line-height:'+size+'px">'+initial+'</span>';
+  return{ring:ring,html:inner,bg:(prof&&prof.accentColor)||ring};
+}
+function trackingMakeIcon(p,prof){
+  var S=44,a=trackingAvatarInner(p,prof,S);
+  var h='<div style="position:relative;width:'+S+'px;height:'+(S+22)+'px;text-align:center">'
+    +'<div style="width:'+S+'px;height:'+S+'px;border-radius:50%;box-sizing:border-box;border:3px solid '+a.ring+';background:'+a.bg+';overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.45);text-align:center">'+a.html+'</div>'
+    +'<div style="position:absolute;left:50%;top:'+(S-4)+'px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:9px solid '+a.ring+'"></div>'
+    +'<div style="position:absolute;left:50%;top:'+(S+6)+'px;transform:translateX(-50%);white-space:nowrap;background:'+a.ring+';color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:9px;box-shadow:0 1px 4px rgba(0,0,0,.4)">'+escHtml(p.profile)+'</div>'
+    +'</div>';
+  return L.divIcon({html:h,className:'tracking-avatar-icon',iconSize:[S,S+22],iconAnchor:[S/2,S+4],popupAnchor:[0,-S]});
+}
 function refreshTrackingMap(){
   fetchAllActivePresencesWithLocation(function(list){
     var sub=document.getElementById('tracking-subtitle');
@@ -3044,15 +3067,26 @@ function refreshTrackingMap(){
     if(!trackingMapInstance)return;
     trackingMarkers.forEach(function(m){trackingMapInstance.removeLayer(m);});
     trackingMarkers=[];
-    var bounds=[];
-    list.forEach(function(p){
+    var bounds=[],legend=document.getElementById('tracking-legend'),legendHtml='',seen={};
+    list.forEach(function(p,idx){
       var mins=Math.round((Date.now()-p.ts)/60000);
-      var marker=L.marker([p.lat,p.lng]).addTo(trackingMapInstance);
-      marker.bindPopup('<b>'+escHtml(p.profile)+'</b><br>Tournée '+escHtml(p.code)+'<br><span style="color:#888;font-size:11px">'+(mins<1?'à l\'instant':'il y a '+mins+' min')+'</span>');
+      var prof=trackingFindProfile(p.profile);
+      /* deux personnes quasi au même endroit : léger décalage pour que les deux avatars restent visibles */
+      var k=p.lat.toFixed(4)+','+p.lng.toFixed(4),n=seen[k]||0;seen[k]=n+1;
+      var lat=p.lat+(n?0.0003*Math.sin(n*2.1):0),lng=p.lng+(n?0.0003*Math.cos(n*2.1):0);
+      var marker=L.marker([lat,lng],{icon:trackingMakeIcon(p,prof),zIndexOffset:idx*10}).addTo(trackingMapInstance);
+      var av=trackingAvatarInner(p,prof,36);
+      marker.bindPopup('<div style="display:flex;align-items:center;gap:8px"><div style="width:36px;height:36px;border-radius:50%;border:3px solid '+av.ring+';background:'+av.bg+';overflow:hidden;flex-shrink:0;box-sizing:border-box;text-align:center">'+av.html+'</div><div><b>'+escHtml(p.profile)+'</b><br>Tournée '+escHtml(p.code)+'<br><span style="color:#888;font-size:11px">'+(mins<1?'à l\'instant':'il y a '+mins+' min')+'</span></div></div>');
       trackingMarkers.push(marker);
-      bounds.push([p.lat,p.lng]);
+      bounds.push([lat,lng]);
+      var lav=trackingAvatarInner(p,prof,24);
+      legendHtml+='<button data-trk="'+idx+'" style="pointer-events:auto;flex-shrink:0;display:flex;align-items:center;gap:6px;padding:3px 10px 3px 3px;border-radius:20px;border:2px solid '+lav.ring+';background:var(--surface);color:var(--text);font-size:11.5px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.25);cursor:pointer"><span style="width:24px;height:24px;border-radius:50%;background:'+lav.bg+';overflow:hidden;display:inline-block;text-align:center;flex-shrink:0">'+lav.html+'</span>'+escHtml(p.profile)+' · '+escHtml(p.code)+'</button>';
     });
-    if(bounds.length)trackingMapInstance.fitBounds(bounds,{padding:[40,40],maxZoom:16});
+    if(legend){
+      legend.innerHTML=legendHtml;
+      legend.onclick=function(ev){var b=ev.target.closest('[data-trk]');if(!b)return;var m=trackingMarkers[parseInt(b.dataset.trk,10)];if(m){trackingMapInstance.setView(m.getLatLng(),Math.max(trackingMapInstance.getZoom(),16),{animate:true});m.openPopup();}};
+    }
+    if(bounds.length)trackingMapInstance.fitBounds(bounds,{padding:[60,60],maxZoom:16});
   });
 }
 function fetchAllActivePresencesWithLocation(callback){
