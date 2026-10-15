@@ -232,7 +232,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
       <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
 
-      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 13/10/2026 14:35</div>
+      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 15/10/2026 12:17</div>
     </div>
   </div>
 </div>
@@ -462,6 +462,12 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
     <button class="home-tab active" id="tab-btn-clients" onclick="switchToolsTab('clients')">
       <span class="home-tab-ic">👥</span><span class="home-tab-lbl">Clients</span>
     </button>
+    <button class="home-tab" id="tab-btn-entreprises" onclick="switchToolsTab('entreprises')">
+      <span class="home-tab-ic">🏢</span><span class="home-tab-lbl">Entreprises</span>
+    </button>
+    <button class="home-tab" id="tab-btn-lieux" onclick="switchToolsTab('lieux')">
+      <span class="home-tab-ic">🏡</span><span class="home-tab-lbl">Lieux-dits</span>
+    </button>
     <button class="home-tab" id="tab-btn-map" onclick="switchToolsTab('map')">
       <span class="home-tab-ic">🗺</span><span class="home-tab-lbl">Carte</span>
     </button>
@@ -476,6 +482,20 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
         <button id="clients-hide-notel-btn" onclick="toggleClientsHideNoTel()" title="Masquer les clients sans numéro de téléphone" style="flex-shrink:0;height:42px;padding:0 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap">📞 Tous</button></div>
       </div>
       <div id="tab-clients-list" style="flex:1;overflow-y:auto;padding:10px 12px"></div>
+    </div>
+    <div id="tab-entreprises" style="position:absolute;inset:0;bottom:64px;display:none;flex-direction:column">
+      <div style="padding:10px 12px 0;flex-shrink:0">
+        <div style="display:flex;gap:8px;align-items:center"><input id="entreprises-search-input" type="text" placeholder="🔍 Rechercher une entreprise, une adresse…" oninput="renderToolsDirectory('entreprises')" style="flex:1;min-width:0;box-sizing:border-box;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:14px">
+        <button id="entreprises-hide-notel-btn" onclick="toggleClientsHideNoTel()" title="Masquer celles sans numéro de téléphone" style="flex-shrink:0;height:42px;padding:0 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap">📞 Tous</button></div>
+      </div>
+      <div id="tab-entreprises-list" style="flex:1;overflow-y:auto;padding:10px 12px"></div>
+    </div>
+    <div id="tab-lieux" style="position:absolute;inset:0;bottom:64px;display:none;flex-direction:column">
+      <div style="padding:10px 12px 0;flex-shrink:0">
+        <div style="display:flex;gap:8px;align-items:center"><input id="lieux-search-input" type="text" placeholder="🔍 Rechercher un lieu-dit, une rue…" oninput="renderToolsDirectory('lieux')" style="flex:1;min-width:0;box-sizing:border-box;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:14px">
+        </div>
+      </div>
+      <div id="tab-lieux-list" style="flex:1;overflow-y:auto;padding:10px 12px"></div>
     </div>
     <div id="tab-map-container" style="position:absolute;inset:0;bottom:64px;display:none;flex-direction:column">
       <div id="tools-map-bar" style="flex-shrink:0;background:var(--surface);border-bottom:1px solid var(--border);padding:8px 10px">
@@ -875,7 +895,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='13/10/2026 14:35';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='15/10/2026 12:17';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -3723,7 +3743,106 @@ renderEditList();}
 
 
 function toggleEditStreetGroupRun(el,key){editOpenStreetGroups[key]=!editOpenStreetGroups[key];var container=document.getElementById('edit-tlist-items');var body=container.querySelector('[data-streetbody="'+key+'"]');var arrow=el.querySelector('svg');if(body)body.style.display=editOpenStreetGroups[key]?'block':'none';if(arrow)arrow.style.transform='rotate('+(editOpenStreetGroups[key]?90:0)+'deg)';}
-function toggleClientsHideNoTel(){var v=false;try{v=localStorage.getItem('clients_hide_notel')==='1';localStorage.setItem('clients_hide_notel',v?'0':'1');}catch(e){}renderClientsTab();}
+/* ===== Outils : listes Entreprises et Lieux-dits ===== */
+var _lieuxOpen={};
+function toolsDirCodes(){return(TOURNEE_CODES.length>0?TOURNEE_CODES:(currentBureau?(BUREAU_TOURNEES[currentBureau]||[]):[])).filter(function(c){return c!=='RENFORT';});}
+function toolsDirNorm(s){return(s||'').toString().trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ');}
+function collectEntreprises(){
+  var out=[],seen={};
+  toolsDirCodes().forEach(function(code){
+    var t=getTourneeData(code);
+    (t.adresses||[]).forEach(function(a){
+      var addrStr=(a.num?a.num+' ':'')+(a.rue||'');
+      buildBalList(a).forEach(function(b){
+        var e=(b.entreprise||b.nom_entreprise||(b.balIdx===0?a.entreprise:'')||'').trim();
+        if(e.length<2)return;
+        var tel=b.tel||(b.balIdx===0?a.tel:'')||'';
+        var k=toolsDirNorm(e)+'|'+toolsDirNorm(addrStr)+'|'+code;
+        if(seen[k])return;seen[k]=true;
+        out.push({nom:e,addr:addrStr,cp:a.cp_ville||'',tel:tel,tournee:code});
+      });
+    });
+  });
+  return out;
+}
+function collectLieuxDits(){
+  var map={};
+  toolsDirCodes().forEach(function(code){
+    var t=getTourneeData(code);
+    (t.adresses||[]).forEach(function(a){
+      var addrStr=(a.num?a.num+' ':'')+(a.rue||'');
+      var names={};
+      if(a.lieu_dit&&a.lieu_dit.trim())names[a.lieu_dit.trim()]=1;
+      if(a.groupLieuDit&&a.groupLieuDit.trim())names[a.groupLieuDit.trim()]=1;
+      buildBalList(a).forEach(function(b){if(b.lieu_dit&&b.lieu_dit.trim())names[b.lieu_dit.trim()]=1;});
+      Object.keys(names).forEach(function(n){
+        var k=toolsDirNorm(n);if(!k)return;
+        if(/^\d/.test(k)||/^(APPARTEMENT|APPART|APT|BATIMENT|BAT|BAL|BOITE|CASIER|LOT|LOCAL|PORTE|ETAGE|ESCALIER|IMMEUBLE|ENTREE|RDC|RESIDENCE)\b/.test(k))return; /* numéros d'appartement, bâtiments… ne sont pas des lieux-dits */
+        if(!map[k])map[k]={nom:n,adresses:[],tournees:[]};
+        var g=map[k];
+        var ak=toolsDirNorm(addrStr)+'|'+toolsDirNorm(a.nom)+'|'+code;
+        if(!g.adresses.some(function(x){return x.k===ak;}))g.adresses.push({k:ak,addr:addrStr,cp:a.cp_ville||'',nom:a.nom||a.entreprise||'',tournee:code});
+        if(g.tournees.indexOf(code)<0)g.tournees.push(code);
+      });
+    });
+  });
+  return Object.keys(map).map(function(k){return map[k];});
+}
+function renderToolsDirectory(kind){
+  var container=document.getElementById('tab-'+kind+'-list');if(!container)return;
+  var codes=toolsDirCodes();
+  if(!codes.length){container.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px"><div style="font-size:42px;margin-bottom:10px;opacity:0.6">📭</div>Ouvrez une tournée pour voir la liste.</div>';return;}
+  var sEl=document.getElementById(kind+'-search-input');
+  var q=toolsDirNorm(sEl?sEl.value:'');
+  var phoneSvg='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.07 12 19.79 19.79 0 0 1 1 3.18 2 2 0 0 1 3 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21 15z"/></svg>';
+  var letterHead=function(l){return'<div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;padding:8px 4px 4px">'+escHtml(l)+'</div>';};
+  var tbadge=function(code){return'<span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:10px;background:var(--accent-light);color:var(--accent);flex-shrink:0">'+code+'</span>';};
+  var html='';
+  if(kind==='entreprises'){
+    var hideNoTel=false;try{hideNoTel=localStorage.getItem('clients_hide_notel')==='1';}catch(e){}
+    var hb=document.getElementById('entreprises-hide-notel-btn');
+    if(hb){hb.textContent=hideNoTel?'📞 Avec tél.':'📞 Tous';hb.style.background=hideNoTel?'var(--accent)':'var(--surface)';hb.style.color=hideNoTel?'#fff':'var(--text)';hb.style.borderColor=hideNoTel?'var(--accent)':'var(--border)';}
+    var list=collectEntreprises();
+    if(hideNoTel)list=list.filter(function(e){return(e.tel||'').replace(/\D/g,'').length>0;});
+    if(q)list=list.filter(function(e){return toolsDirNorm([e.nom,e.addr,e.cp,e.tel,e.tournee].join(' ')).indexOf(q)>=0;});
+    if(!list.length){container.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px"><div style="font-size:38px;margin-bottom:8px;opacity:0.6">'+(q?'🔍':'🏢')+'</div>'+(q?'Aucun résultat.':'Aucune entreprise renseignée.<br><br>Ajoutez-en dans le menu Modifier.')+'</div>';return;}
+    list.sort(function(a,b){return toolsDirNorm(a.nom).localeCompare(toolsDirNorm(b.nom),'fr');});
+    var last='';
+    list.forEach(function(e){
+      var l=toolsDirNorm(e.nom).charAt(0)||'#';if(!/[A-Z]/.test(l))l='#';
+      if(l!==last){html+=letterHead(l);last=l;}
+      html+='<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;margin-bottom:3px;background:var(--surface);border:1px solid var(--border)">'
+        +'<div style="width:32px;height:32px;border-radius:50%;background:'+getTourneeColor(e.tournee)+';color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">🏢</div>'
+        +'<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--text)">'+escHtml(e.nom)+'</div><div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escHtml(e.addr)+(e.cp?' · '+escHtml(e.cp):'')+(e.tel?' · 📞 '+escHtml(e.tel):'')+'</div></div>'
+        +(e.tel?'<a href="tel:'+e.tel.replace(/\s/g,'')+'" style="width:30px;height:30px;border-radius:50%;background:var(--green-light);color:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0;text-decoration:none">'+phoneSvg+'</a>':'')
+        +tbadge(e.tournee)+'</div>';
+    });
+  } else {
+    var lx=collectLieuxDits();
+    if(q)lx=lx.filter(function(g){return toolsDirNorm(g.nom).indexOf(q)>=0||g.adresses.some(function(a){return toolsDirNorm([a.addr,a.nom,a.cp].join(' ')).indexOf(q)>=0;});});
+    if(!lx.length){container.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px"><div style="font-size:38px;margin-bottom:8px;opacity:0.6">'+(q?'🔍':'🏡')+'</div>'+(q?'Aucun résultat.':'Aucun lieu-dit renseigné.<br><br>Ajoutez-en dans le menu Modifier.')+'</div>';return;}
+    lx.sort(function(a,b){return toolsDirNorm(a.nom).localeCompare(toolsDirNorm(b.nom),'fr');});
+    var last2='';
+    _lieuxList=lx;
+    lx.forEach(function(g,gi){
+      var l=toolsDirNorm(g.nom).charAt(0)||'#';if(!/[A-Z]/.test(l))l='#';
+      if(l!==last2){html+=letterHead(l);last2=l;}
+      var key=toolsDirNorm(g.nom),open=!!_lieuxOpen[key]||(q&&lx.length<=15);
+      html+='<div style="border-radius:8px;margin-bottom:3px;background:var(--surface);border:1px solid var(--border);overflow:hidden">'
+        +'<div onclick="toggleLieuOpen('+gi+')" style="display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer">'
+        +'<div style="width:32px;height:32px;border-radius:50%;background:'+getTourneeColor(g.tournees[0])+';color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">🏡</div>'
+        +'<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--text)">'+escHtml(g.nom)+'</div><div style="font-size:11px;color:var(--muted)">'+g.adresses.length+' adresse'+(g.adresses.length>1?'s':'')+'</div></div>'
+        +g.tournees.slice(0,3).map(tbadge).join(' ')
+        +'<span style="color:var(--muted);font-size:11px;transition:transform .2s;transform:rotate('+(open?90:0)+'deg)">▶</span></div>'
+        +(open?'<div style="border-top:1px solid var(--border)">'+g.adresses.map(function(a){return'<div style="display:flex;align-items:center;gap:8px;padding:7px 12px 7px 54px;border-bottom:1px solid var(--border)"><div style="flex:1;min-width:0"><div style="font-size:12.5px;color:var(--text)">'+escHtml(a.addr||'—')+'</div><div style="font-size:11px;color:var(--muted)">'+escHtml(a.nom)+(a.cp?(a.nom?' · ':'')+escHtml(a.cp):'')+'</div></div>'+tbadge(a.tournee)+'</div>';}).join('')+'</div>':'')
+        +'</div>';
+    });
+  }
+  container.innerHTML=html;
+}
+var _lieuxList=[];
+function toggleLieuOpen(i){var g=_lieuxList[i];if(!g)return;var k=toolsDirNorm(g.nom);_lieuxOpen[k]=!_lieuxOpen[k];renderToolsDirectory('lieux');}
+function toggleClientsHideNoTel(){var v=false;try{v=localStorage.getItem('clients_hide_notel')==='1';localStorage.setItem('clients_hide_notel',v?'0':'1');}catch(e){}renderClientsTab();if(toolsTab==='entreprises')renderToolsDirectory('entreprises');}
 function renderClientsTab(){var container=document.getElementById('tab-clients-list');if(!container)return;var codes=(TOURNEE_CODES.length>0?TOURNEE_CODES:(currentBureau?(BUREAU_TOURNEES[currentBureau]||[]):[])).filter(function(c){return c!=='RENFORT';});if(!codes.length){container.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px"><div style="font-size:42px;margin-bottom:10px;opacity:0.6">📭</div>Ouvrez une tournée pour voir les clients.</div>';return;}
 function isRealClientName(name){var nomClean=(name||'').trim();if(nomClean.length<=1)return false;if(/^\d+$/.test(nomClean)||/^\d/.test(nomClean))return false;var upper=nomClean.toUpperCase().replace(/[ÀÂÄ]/g,'A').replace(/[ÉÈÊË]/g,'E').replace(/[ÎÏ]/g,'I').replace(/[ÔÖ]/g,'O').replace(/[ÙÛÜ]/g,'U').replace(/Ç/g,'C');if(/^(APPARTEMENT|APT|BATIMENT|BAT\b|BAL\b|BOITE\b|BOITE AUX LETTRES|CASIER|LOT|LOCAL|PORTE|ETAGE|ESCALIER|IMMEUBLE)\b/.test(upper))return false;if(/\b(APPARTEMENT|APT|BOITE AUX LETTRES)\b/.test(upper))return false;return true;}
 
@@ -6583,8 +6702,8 @@ if(reorderMode&&editGroupByStreet){editGroupByStreet=false;var ebtn=document.get
 renderEditList();}
 var toolsTab='clients',toolsMapLayer=null,toolsSelectedTournee=null,infosData={},toolsMapSelectedTournees=[];function openToolsScreen(){var ebb=document.getElementById('edit-bottom-bar');if(ebb)ebb.style.display='none';navigateToScreen('screen-home','screen-tools','forward');switchToolsTab('clients');}
 function closeToolsScreen(){var ebb=document.getElementById('edit-bottom-bar');if(ebb&&editScreenCode)ebb.style.display='block';navigateToScreen('screen-tools','screen-home','back');setHomeMode(homeMode);}
-function switchToolsTab(tab){toolsTab=tab;var tabOrder=['clients','map','infos'];tabOrder.forEach(function(t){var btn=document.getElementById('tab-btn-'+t);var panel=document.getElementById(t==='map'?'tab-map-container':'tab-'+t);var active=t===tab;if(btn){btn.classList.toggle('active',active);}
-if(panel)panel.style.display=active?((t==='map'||t==='clients')?'flex':'block'):'none';});if(tab==='clients')renderClientsTab();if(tab==='map')setTimeout(initToolsMap,100);if(tab==='infos')renderInfosTab();}
+function switchToolsTab(tab){toolsTab=tab;var tabOrder=['clients','entreprises','lieux','map','infos'];tabOrder.forEach(function(t){var btn=document.getElementById('tab-btn-'+t);var panel=document.getElementById(t==='map'?'tab-map-container':'tab-'+t);var active=t===tab;if(btn){btn.classList.toggle('active',active);}
+if(panel)panel.style.display=active?((t==='map'||t==='clients'||t==='entreprises'||t==='lieux')?'flex':'block'):'none';});if(tab==='clients')renderClientsTab();if(tab==='entreprises'||tab==='lieux')renderToolsDirectory(tab);if(tab==='map')setTimeout(initToolsMap,100);if(tab==='infos')renderInfosTab();}
 
 function closeAddrDetail(evt){var ov=document.getElementById('addr-detail-overlay');if(evt&&ov&&evt.target!==ov)return;if(ov)ov.classList.remove('open');}
 
