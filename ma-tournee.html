@@ -232,7 +232,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
       <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
       <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
 
-      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 15/10/2026 19:38</div>
+      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 15/10/2026 20:06</div>
     </div>
   </div>
 </div>
@@ -895,7 +895,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
   </div>
 </div>
 
-<script>var APP_BUILD='15/10/2026 19:38';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='15/10/2026 20:06';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -3805,13 +3805,25 @@ function collectLieuxDits(){
     var t=getTourneeData(code);
     (t.adresses||[]).forEach(function(a){
       var addrStr=(a.num?a.num+' ':'')+(a.rue||'');
-      var names={};
-      if(a.lieu_dit&&a.lieu_dit.trim())names[a.lieu_dit.trim()]=1;
-      if(a.groupLieuDit&&a.groupLieuDit.trim())names[a.groupLieuDit.trim()]=1;
-      buildBalList(a).forEach(function(b){if(b.lieu_dit&&b.lieu_dit.trim())names[b.lieu_dit.trim()]=1;});
+      var names={},fallback=false;
+      var bals=buildBalList(a),balNames=[];
+      bals.forEach(function(b){var bl=(b.lieu_dit||'').trim();if(bl&&balNames.indexOf(bl)<0)balNames.push(bl);});
+      if(bals.length>1){
+        /* Groupe de boîtes : les noms propres à chaque boîte (VILLA 1, VILLA 2…) n'ont pas de sens
+           seuls → on ne garde que le lieu-dit de base du groupe. */
+        var base=(a.groupLieuDit||'').trim();
+        if(!base&&a.lieu_dit&&balNames.indexOf(a.lieu_dit.trim())<0)base=a.lieu_dit.trim();
+        if(base)names[base]=1;
+        else if(balNames.length===1)names[balNames[0]]=1;
+        else if(balNames.length>1&&addrStr.trim()){names[addrStr.trim()]=1;fallback=true;} /* pas de base : regroupé sous l'adresse */
+      } else {
+        if(a.lieu_dit&&a.lieu_dit.trim())names[a.lieu_dit.trim()]=1;
+        if(a.groupLieuDit&&a.groupLieuDit.trim())names[a.groupLieuDit.trim()]=1;
+        balNames.forEach(function(n){names[n]=1;});
+      }
       Object.keys(names).forEach(function(n){
         var k=toolsDirNorm(n);if(!k)return;
-        if(/^\d/.test(k)||/^(APPARTEMENT|APPART|APT|BATIMENT|BAT|BAL|BOITE|CASIER|LOT|LOCAL|PORTE|ETAGE|ESCALIER|IMMEUBLE|ENTREE|RDC|RESIDENCE)\b/.test(k))return; /* numéros d'appartement, bâtiments… ne sont pas des lieux-dits */
+        if(!fallback&&(/^\d/.test(k)||/^(APPARTEMENT|APPART|APT|BATIMENT|BAT|BAL|BOITE|CASIER|LOT|LOCAL|PORTE|ETAGE|ESCALIER|IMMEUBLE|ENTREE|RDC|RESIDENCE)\b/.test(k)))return; /* numéros d'appartement, bâtiments… ne sont pas des lieux-dits */
         if(!map[k])map[k]={nom:n,adresses:[],tournees:[]};
         var g=map[k];
         var ak=toolsDirNorm(addrStr)+'|'+toolsDirNorm(a.nom)+'|'+code;
