@@ -412,7 +412,7 @@ body.sun{--bg:#fff;--surface:#fff;--border:#000;--text:#000;--muted:#1a1a1a;--ac
           oninput="showNaSuggestions('rue',this.value)" onfocus="showNaSuggestions('rue',this.value)" onblur="setTimeout(function(){hideNaSuggestions('rue')},200)"/>
         <div id="na-rue-list" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:0 0 8px 8px;max-height:160px;overflow-y:auto;z-index:100;box-shadow:0 4px 12px rgba(0,0,0,0.15)"></div>
       </div>
-      <div><label class="form-label">COMPLÉMENT</label><input id="na-complement" class="aes-input" placeholder="Appartement, Mas..." autocomplete="off" style="width:100%;box-sizing:border-box"/></div>
+      <div><label class="form-label">LIEU-DIT</label><input id="na-lieudit" class="aes-input" placeholder="Mas, lieu-dit, appartement..." autocomplete="off" style="width:100%;box-sizing:border-box"/></div>
       <div style="position:relative">
         <label class="form-label">CODE POSTAL + VILLE</label>
         <input id="na-cpville" class="aes-input" placeholder="Ex: 13150 Tarascon" autocomplete="off" style="width:100%;box-sizing:border-box"
@@ -2482,7 +2482,7 @@ function activateBureau(bureau){var tours=getBureauTournees(bureau);TOURNEE_CODE
     });}}});}
 applyCoordsFromEntry(getTourneeData(code).adresses,saved[code]);}});}}catch(e){}
 buildHomeTourneeCards();updateHomeCards();
-  _fbLoaded=true; /* Autoriser fbSaveAll maintenant que tout est chargé */ try{addrDbInitSigs();}catch(e){} try{freeAddrsLoad();}catch(e){}
+  _fbLoaded=true; /* Autoriser fbSaveAll maintenant que tout est chargé */ migrateAllComplements(); try{addrDbInitSigs();}catch(e){} try{freeAddrsLoad();}catch(e){}
   /* Restaurer depuis sauvegarde d'urgence si Firebase a moins de points */
   restoreCoordsEmergency();
   /* Backup automatique */
@@ -3385,7 +3385,7 @@ applyCoordsFromEntry(t.adresses,saved[code]);try{var local=JSON.parse(localStora
             if(saved[code].adresses&&saved[code].adresses.length>0)local[code].adresses=saved[code].adresses;
           }localStorage.setItem('tournee_done_v1',JSON.stringify(local));}catch(e){}}});}
 if(infosDoc.exists){try{localStorage.setItem('infos_utiles_v1',JSON.stringify(infosDoc.data()));}catch(e){}}
-showSyncStatus('saved');if(callback)callback(true);}).catch(function(e){showSyncStatus('error');_fbLoaded=true;if(callback)callback(false);});});}
+migrateAllComplements();showSyncStatus('saved');if(callback)callback(true);}).catch(function(e){showSyncStatus('error');_fbLoaded=true;if(callback)callback(false);});});}
 var fbUnsubscribe=null;function fbStartLiveSync(){if(!db)return;fbLoadAll(function(ok){if(ok){updateHomeCards();if(currentTourneeCode)renderTList();if(editScreenCode)renderEditList();}});}
 function openCreateTourneeModal(){var o=document.getElementById('create-tournee-overlay');if(o)o.classList.add('open');var i=document.getElementById('new-tournee-code');if(i){i.value='';i.focus();}}
 
@@ -5491,7 +5491,7 @@ function setLastCreatedAddr(code,a){var m={};try{m=JSON.parse(localStorage.getIt
 function getLastCreatedAddr(code,t){var m={};try{m=JSON.parse(localStorage.getItem('last_created_addr')||'{}');}catch(e){}var k=m[code];if(!k)return null;var f=(t.adresses||[]).filter(function(a){return renfortDedupKey(a)===k;});return f.length?f[0]:null;}
 function openNewAddrPanel(){if(blockIfFacteur())return;if(!editScreenCode){showToast('Ouvrez une tournée d\'abord');return;}
 var t=getTourneeData(editScreenCode);var sel=document.getElementById('na-position');if(sel){sel.innerHTML='<option value="0">En début de tournée</option>';(t.adresses||[]).forEach(function(a){var lbl=(a.num?a.num+' ':'')+a.rue+(a.nom?' — '+a.nom:'');sel.innerHTML+='<option value="'+a.ordre+'">Après : '+escHtml(lbl.substring(0,50))+'</option>';});if(t.adresses.length>0)sel.value=t.adresses[t.adresses.length-1].ordre;var lc=getLastCreatedAddr(editScreenCode,t);if(lc){sel.value=lc.ordre;for(var oi=0;oi<sel.options.length;oi++){if(sel.options[oi].value===String(lc.ordre)){sel.options[oi].text='★ '+sel.options[oi].text+' (dernière créée)';break;}}}}
-['na-num','na-rue','na-complement','na-cpville','na-nom','na-entr','na-tel'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});document.getElementById('new-addr-modal').style.display='flex';}
+['na-num','na-rue','na-lieudit','na-cpville','na-nom','na-entr','na-tel'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});document.getElementById('new-addr-modal').style.display='flex';}
 function closeNewAddrPanel(){document.getElementById('new-addr-modal').style.display='none';}
 function renfortFullStreetKey(rue){
   return (rue||'').trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ');
@@ -5696,7 +5696,7 @@ function cleanRenfortDuplicates(){
 }
 function saveNewAddr(){var rue=(document.getElementById('na-rue').value||'').trim();if(!rue){showToast('Le nom de rue est requis');return;}
 pushUndo(editScreenCode,'Nouvelle adresse');
-var t=getTourneeData(editScreenCode);var num=(document.getElementById('na-num').value||'').trim();var complement=(document.getElementById('na-complement').value||'').trim();var cpville=(document.getElementById('na-cpville').value||'').trim()||'13150 Tarascon';var nom=(document.getElementById('na-nom').value||'').trim();var entr=(document.getElementById('na-entr').value||'').trim();var tel=(document.getElementById('na-tel').value||'').trim();var posEl=document.getElementById('na-position');var afterOrdre=posEl?parseInt(posEl.value):null;
+var t=getTourneeData(editScreenCode);var num=(document.getElementById('na-num').value||'').trim();var lieuditNew=(document.getElementById('na-lieudit').value||'').trim();var cpville=(document.getElementById('na-cpville').value||'').trim()||'13150 Tarascon';var nom=(document.getElementById('na-nom').value||'').trim();var entr=(document.getElementById('na-entr').value||'').trim();var tel=(document.getElementById('na-tel').value||'').trim();var posEl=document.getElementById('na-position');var afterOrdre=posEl?parseInt(posEl.value):null;
   var insertIdx;
   if(afterOrdre===null||afterOrdre===0){
     /* "En début de tournée" → insérer en position 0 */
@@ -5710,7 +5710,7 @@ var nbalEl=document.getElementById('na-nbal');
   var nbal=nbalEl?Math.max(1,parseInt(nbalEl.value)||1):1;
   var boites=[];
   for(var bi=1;bi<nbal;bi++) boites.push({nom:'',complement:'',lieu_dit:'',entreprise:'',tel:'',nom_entreprise:''});
-  var _newAddrObj={ordre:0,num:num,rue:rue.toUpperCase(),nom:nom,complement:complement,entreprise:entr,cp_ville:cpville,adresse:(num?num+' ':'')+rue.toUpperCase()+', '+cpville,nbBal:nbal,boites:boites,tel:tel,note:'',lat:null,lng:null};t.adresses.splice(insertIdx,0,_newAddrObj);try{setLastCreatedAddr(editScreenCode,_newAddrObj);}catch(e){}var oldOrdreMap4={};t.adresses.forEach(function(a,i){if(a.ordre>0)oldOrdreMap4[a.ordre]=i+1;});t.adresses.forEach(function(a,i){a.ordre=i+1;});remapOrdreKeyedState(t,oldOrdreMap4);t._restructured=true;if(editScreenCode!=='RENFORT'){if(addToRenfortIfNew(_newAddrObj))sortRenfortAddresses();}else{sortRenfortAddresses();}saveTourneeData();closeNewAddrPanel();renderEditList();showToast('Arrêt ajouté ✓');}
+  var _newAddrObj={ordre:0,num:num,rue:rue.toUpperCase(),nom:nom,complement:'',lieu_dit:lieuditNew,entreprise:entr,cp_ville:cpville,adresse:(num?num+' ':'')+rue.toUpperCase()+', '+cpville,nbBal:nbal,boites:boites,tel:tel,note:'',lat:null,lng:null};t.adresses.splice(insertIdx,0,_newAddrObj);try{setLastCreatedAddr(editScreenCode,_newAddrObj);}catch(e){}var oldOrdreMap4={};t.adresses.forEach(function(a,i){if(a.ordre>0)oldOrdreMap4[a.ordre]=i+1;});t.adresses.forEach(function(a,i){a.ordre=i+1;});remapOrdreKeyedState(t,oldOrdreMap4);t._restructured=true;if(editScreenCode!=='RENFORT'){if(addToRenfortIfNew(_newAddrObj))sortRenfortAddresses();}else{sortRenfortAddresses();}saveTourneeData();closeNewAddrPanel();renderEditList();showToast('Arrêt ajouté ✓');}
 window.addEventListener('load',function(){
   var dr=document.getElementById('home-drawer-overlay');
   if(dr&&dr.parentElement!==document.body)document.body.appendChild(dr);
@@ -7245,13 +7245,35 @@ updateTListStats();updateStartBar();container.onclick=function(e){
   if(arrow){e.stopPropagation();var grp=arrow.closest('[id^="grp-"]');if(grp){var o=parseInt(grp.id.replace('grp-',''));toggleGroup(o);}return;}
   var item=e.target.closest('[data-typekey]');if(item){var k=item.dataset.typekey;var meta=stopMeta[k]||{};openTypeSheet(k,meta.nom||'',meta.addr||'');}
 };}
+/* Le champ « Complément » n'existe plus : son contenu est transféré dans « Lieu-dit » (idempotent, rejoué à chaque chargement) */
+function migrateComplementToLieuDit(t){
+  if(!t||!t.adresses||t._lazy)return 0;
+  var n=0;
+  var mv=function(o){
+    var c=(o.complement||'').toString().trim();
+    if(!c){if(o.complement)o.complement='';return false;}
+    var ld=(o.lieu_dit||'').toString().trim(),cu=c.toUpperCase(),lu=ld.toUpperCase();
+    if(!ld||cu.indexOf(lu)>=0)o.lieu_dit=c;
+    else if(lu.indexOf(cu)>=0){/* déjà inclus */}
+    else o.lieu_dit=ld+' - '+c;
+    o.complement='';
+    return true;
+  };
+  t.adresses.forEach(function(a){
+    if(!a)return;
+    if(mv(a)){if(!a._edited)a._edited={};a._edited.lieu_dit=true;a._edited.complement=true;n++;}
+    (a.boites||[]).forEach(function(b){if(b&&mv(b)){b._edited=true;if(!a._edited)a._edited={};a._edited.boites=true;n++;}});
+  });
+  return n;
+}
+function migrateAllComplements(){var n=0;try{Object.keys(TOURNEES_DATA).forEach(function(c){n+=migrateComplementToLieuDit(TOURNEES_DATA[c]);});}catch(e){}return n;}
 function getTourneeData(code){
   if(!TOURNEES_DATA[code]) TOURNEES_DATA[code]={adresses:[],done:{}};
   if(TOURNEES_DATA[code]._lazy){
-    if(code==='TM06'&&typeof _loadTM06==='function') _loadTM06();
+    if(code==='TM06'&&typeof _loadTM06==='function'){_loadTM06();migrateComplementToLieuDit(TOURNEES_DATA[code]);}
   }
   if(code==='TL02'&&typeof _loadTL02==='function'&&(!TOURNEES_DATA[code]||!TOURNEES_DATA[code]._tl02loaded)){
-    _loadTL02();
+    _loadTL02();migrateComplementToLieuDit(TOURNEES_DATA[code]);
   }
   
   return TOURNEES_DATA[code];
