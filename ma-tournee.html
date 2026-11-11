@@ -274,7 +274,7 @@ body.poste .toast{background:#FFCC00;color:#0A1530}
       <button onclick="showBackupInfo()" style="display:none;margin-top:16px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer">💾 Backup GPS</button>
       <button onclick="if(confirm('Purger Firebase et localStorage ?')){purgeFirebaseAndReset();}" style="display:none;margin-top:8px;background:var(--bg);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">🗑 Purger cache</button>
 
-      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 11/11/2026 17:55</div>
+      <div style="text-align:center;font-size:9px;color:var(--muted);opacity:0.5;margin-top:24px">build 11/11/2026 18:10</div>
     </div>
   </div>
 </div>
@@ -937,7 +937,7 @@ body.poste .toast{background:#FFCC00;color:#0A1530}
   </div>
 </div>
 
-<script>var APP_BUILD='11/11/2026 17:55';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='11/11/2026 18:10';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -7700,5 +7700,43 @@ body.dark span.edit-meta-lieu { color: #e05040 !important; }
 body.dark span.edit-meta-entr { color: #27a355 !important; }
 </style>
 
+<script>
+/* ===== Bouton Retour du téléphone : revient à l'écran précédent de l'appli ===== */
+(function(){
+  function shown(el){if(!el)return false;var cs=getComputedStyle(el);return cs.display!=='none'&&cs.visibility!=='hidden';}
+  function zOf(el){var z=parseInt(getComputedStyle(el).zIndex,10);return isNaN(z)?0:z;}
+  var LAYERS=[
+    {id:'aes-overlay',open:function(el){return el.style.display==='flex';},close:function(){closeAesPanel();}},
+    {id:'edit-overlay',open:function(el){return el.classList.contains('open');},close:function(){closeEditPanel();}},
+    {id:'home-drawer-overlay',open:function(){var d=document.getElementById('home-drawer');return !!d&&(d.style.right==='0px'||d.style.right==='0%');},close:function(){toggleHomeDrawer();}},
+    {id:'screen-nav',open:shown,close:function(){closeNavScreen();}},
+    {id:'screen-pinmap',open:shown,close:function(){closePinMap();}},
+    {id:'screen-tracking',open:shown,close:function(){closeTrackingScreen();}},
+    {id:'screen-addrdb',open:shown,close:function(){closeAddrDbScreen();}},
+    {id:'screen-tutorial',open:shown,close:function(){closeTutorialScreen();}},
+    {id:'screen-tools',open:shown,close:function(){closeToolsScreen();}},
+    {id:'screen-edit',open:shown,close:function(){closeEditScreen();}},
+    {id:'screen-tournee',open:shown,close:function(){closeTournee();}}
+  ];
+  var CLICK_OVERLAYS='.addr-detail-overlay.open,.addr-edit-sheet-overlay.open,.new-addr-overlay.open,.type-sheet-overlay.open,#create-tournee-overlay.open';
+  function topLayer(){
+    var best=null,bz=-1;
+    LAYERS.forEach(function(L){var el=document.getElementById(L.id);if(!el)return;var o=false;try{o=L.open(el);}catch(e){}if(!o)return;var z=zOf(el);if(z>bz){bz=z;best={close:L.close};}});
+    var ov=document.querySelectorAll(CLICK_OVERLAYS);
+    for(var i=0;i<ov.length;i++){var z2=zOf(ov[i]);if(z2>=bz){bz=z2;best={close:(function(e){return function(){e.click();};})(ov[i])};}}
+    return best;
+  }
+  var armed=false;
+  function arm(){if(armed)return;try{history.pushState({maTournee:1},'');armed=true;}catch(e){}}
+  window.addEventListener('popstate',function(){
+    armed=false;
+    var L=topLayer();
+    if(L){try{L.close();}catch(e){}arm();}
+    else{try{history.back();}catch(e){}}  /* accueil : un second retour quitte l'appli */
+  });
+  ['pointerdown','touchstart','click','keydown'].forEach(function(ev){document.addEventListener(ev,arm,{capture:true,passive:true});});
+  window.__maBackTop=topLayer;
+})();
+</script>
 </body>
 </html>
