@@ -120,26 +120,29 @@ body.poste #edit-tlist-items button[style*="background:#e8f5e9"]{background:#0F2
 body.poste .edit-meta-lieu,body.poste .edit-meta-lieu *,body.poste #screen-edit .edit-meta-lieu,body.poste #edit-tlist-items .edit-meta-lieu,body.poste #screen-tournee .edit-meta-lieu{color:#FF8E7A!important}
 body.poste #screen-tournee span[style*="#c0392b"]{color:#FF8E7A!important;opacity:1!important}
 body.poste .toast{background:#FFCC00;color:#0A1530}
-/* ===== Accueil « Tampon » (Nuit Poste) : cachet postal, cartes en pointillés, dégradés ===== */
-body.poste #screen-home{font-family:'Bricolage Grotesque','Archivo',system-ui,sans-serif;background:linear-gradient(170deg,#1B1F6B 0,#0A1530 42%)!important}
-body.poste #screen-home::before{content:'';position:absolute;right:-46px;top:70px;width:190px;height:190px;border-radius:50%;border:3px dashed rgba(255,204,0,.32);transform:rotate(-14deg);pointer-events:none;z-index:-1}
-body.poste #screen-home::after{content:'LA POSTE';position:absolute;right:-46px;top:70px;width:190px;height:190px;display:flex;align-items:center;justify-content:center;transform:rotate(-14deg);font-weight:800;font-size:15px;letter-spacing:3px;color:rgba(255,204,0,.32);pointer-events:none;z-index:-1}
-body.poste #screen-home>div:first-child{background:transparent!important;border-bottom:2px dashed rgba(255,204,0,.45)!important}
-body.poste #screen-home>div[style*="overflow-y:auto"]{padding-bottom:calc(150px + env(safe-area-inset-bottom))!important}
-body.poste #home-tournee-list{flex-direction:row!important;flex-wrap:wrap;gap:10px}
-body.poste #home-tournee-list>div{width:calc(50% - 5px);box-sizing:border-box;flex-wrap:wrap;align-content:center;gap:4px 8px!important;min-height:84px;padding:12px!important;border:2px dashed color-mix(in srgb,var(--c,#3A5AA8) 70%,#23376B)!important;border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--c,#3A5AA8) 28%,#11204A),rgba(17,32,74,.9) 70%)}
-body.poste #home-tournee-list>div>div:nth-of-type(2){font-size:21px!important;min-width:0;font-weight:800!important;line-height:1.1}
-body.poste #home-tournee-list>div{position:relative}
-body.poste #home-tournee-list>div>svg{display:none}
-body.poste #home-tournee-list>div>div:nth-of-type(1){width:12px!important;height:12px!important;box-shadow:0 0 0 2px rgba(255,255,255,.45)}
-body.poste #home-tournee-list>div>.home-reset{position:absolute;top:8px;right:8px;width:26px!important;height:26px!important;font-size:13px!important}
-body.poste #home-tournee-list>div>span[id^="home-tag-"]{order:3;flex-basis:100%;width:fit-content;max-width:100%;overflow:hidden;text-overflow:ellipsis}
-body.poste #home-tournee-grid>div{border:2px dashed rgba(255,255,255,.55)}
-body.poste #home-pick-seg{background:rgba(17,32,74,.7);border:2px dashed #3A5AA8}
-body.poste #resume-nav-banner{position:fixed!important;left:14px;right:14px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:82;margin:0!important;min-height:64px;box-sizing:border-box;border-radius:34px!important;padding:0 22px!important;background:linear-gradient(100deg,#FFCC00,#FF9F1C)!important;border:2px dashed #0A1530!important;outline:3px solid #FFCC00;box-shadow:0 8px 24px rgba(0,0,0,.45)}
+/* ===== Accueil « Tampon » (tous les thèmes) : cachet postal, cartes en pointillés, dégradés ===== */
+body:not(.zz) #screen-home{font-family:'Bricolage Grotesque','Archivo',system-ui,sans-serif;background:linear-gradient(170deg,color-mix(in srgb,var(--accent) 22%,var(--bg)) 0,var(--bg) 42%)!important}
+body:not(.zz) #screen-home::before{content:'';position:absolute;right:-46px;top:70px;width:190px;height:190px;border-radius:50%;border:3px dashed color-mix(in srgb,var(--accent) 32%,transparent);transform:rotate(-14deg);pointer-events:none;z-index:-1}
+body:not(.zz) #screen-home::after{content:'LA POSTE';position:absolute;right:-46px;top:70px;width:190px;height:190px;display:flex;align-items:center;justify-content:center;transform:rotate(-14deg);font-weight:800;font-size:15px;letter-spacing:3px;color:color-mix(in srgb,var(--accent) 32%,transparent);pointer-events:none;z-index:-1}
+body:not(.zz) #screen-home>div:first-child{background:transparent!important;border-bottom:2px dashed color-mix(in srgb,var(--accent) 45%,transparent)!important}
+body:not(.zz) #screen-home>div[style*="overflow-y:auto"]{padding-bottom:calc(150px + env(safe-area-inset-bottom))!important}
+body:not(.zz) #home-tournee-list{flex-direction:row!important;flex-wrap:wrap;gap:10px}
+body:not(.zz) #home-tournee-list>div{width:calc(50% - 5px);box-sizing:border-box;flex-wrap:wrap;align-content:center;gap:4px 8px!important;min-height:84px;padding:12px!important;border:2px dashed color-mix(in srgb,var(--c,var(--accent)) 70%,var(--border))!important;border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--c,var(--accent)) 24%,var(--surface)),var(--surface) 70%)}
+body:not(.zz) #home-tournee-list>div>div:nth-of-type(2){font-size:21px!important;min-width:0;font-weight:800!important;line-height:1.1}
+body:not(.zz) #home-tournee-list>div{position:relative}
+body:not(.zz) #home-tournee-list>div>svg{display:none}
+body:not(.zz) #home-tournee-list>div>div:nth-of-type(1){width:12px!important;height:12px!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--text) 35%,transparent)}
+body:not(.zz) #home-tournee-list>div>.home-reset{position:absolute;top:8px;right:8px;width:26px!important;height:26px!important;font-size:13px!important}
+body:not(.zz) #home-tournee-list>div>span[id^="home-tag-"]{order:3;flex-basis:100%;width:fit-content;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+body:not(.zz) #home-tournee-grid>div{border:2px dashed rgba(255,255,255,.55)}
+body:not(.zz) #home-pick-seg{background:var(--surface);border:2px dashed color-mix(in srgb,var(--accent) 40%,var(--border))}
+body:not(.zz) #resume-nav-banner{position:fixed!important;left:14px;right:14px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:82;margin:0!important;min-height:64px;box-sizing:border-box;border-radius:34px!important;padding:0 22px!important;background:linear-gradient(100deg,color-mix(in srgb,var(--accent) 55%,#1E2A78),color-mix(in srgb,var(--accent) 35%,#4B1FA8))!important;border:2px dashed rgba(255,255,255,.75)!important;outline:3px solid var(--accent);box-shadow:0 8px 24px rgba(0,0,0,.45)}
+body:not(.zz) #resume-nav-banner *{color:#fff!important}
+body:not(.zz) #home-bottom-tabbar{background:var(--surface)!important;border-top:2px dashed color-mix(in srgb,var(--accent) 40%,var(--border))!important}
+body.poste #screen-home{background:linear-gradient(170deg,#1B1F6B 0,#0A1530 42%)!important}
+body.poste #resume-nav-banner{background:linear-gradient(100deg,#FFCC00,#FF9F1C)!important;border-color:#0A1530!important}
 body.poste #resume-nav-banner *{color:#0A1530!important}
-body.poste #home-bottom-tabbar{background:rgba(13,27,61,.96)!important;border-top:2px dashed #3A5AA8!important}
-
+body.poste #home-bottom-tabbar{background:rgba(13,27,61,.96)!important}
 </style>
 </head>
 <body>
@@ -957,7 +960,7 @@ body.poste #home-bottom-tabbar{background:rgba(13,27,61,.96)!important;border-to
   </div>
 </div>
 
-<script>var APP_BUILD='24/11/2026 21:10';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='24/11/2026 21:40';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
