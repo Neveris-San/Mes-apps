@@ -143,6 +143,7 @@ body.poste #screen-home{background:linear-gradient(170deg,#1B1F6B 0,#0A1530 42%)
 body.poste #resume-nav-banner{background:linear-gradient(100deg,#FFCC00,#FF9F1C)!important;border-color:#0A1530!important}
 body.poste #resume-nav-banner *{color:#0A1530!important}
 body.poste #home-bottom-tabbar{background:rgba(13,27,61,.96)!important}
+.ip-badge{display:inline-flex;align-items:center;gap:3px;margin-left:6px;padding:1px 6px 1px 5px;border-radius:7px;background:rgba(232,120,32,0.18);color:#e87820;font-size:10px;font-weight:800;letter-spacing:.3px;vertical-align:middle;line-height:1.5}
 </style>
 </head>
 <body>
@@ -7492,7 +7493,7 @@ var SEL=function(key){var on=!!(selectedStops[key]);return'<div class="sel-check
 SEL(key)+'<div style="flex:1;min-width:0">'+
   '<div style="display:flex;align-items:center;gap:10px">'+
     '<div class="tlist-group-order" style="background:'+tourneeColor+'">'+(isDone?'✓':a.ordre)+'</div>'+
-    '<div class="tlist-group-info">'+'<div class="tlist-group-rue">'+escHtml(titre1)+'</div>'+'<div class="tlist-group-meta">'+sous1Html+'</div>'+'</div>'+
+    '<div class="tlist-group-info">'+'<div class="tlist-group-rue">'+escHtml(titre1)+ipBadgeHtml(addrHasIp(a))+'</div>'+'<div class="tlist-group-meta">'+sous1Html+'</div>'+'</div>'+
   '</div>'+
   renderTypePillsHtml(key)+
 '</div>'+'</div>';}
@@ -7500,7 +7501,7 @@ var allBals=buildBalList(a);var nbBal=allBals.length;var doneCount=allBals.filte
 SEL(bKey)+'<div style="flex:1;min-width:0">'+
   '<div style="display:flex;align-items:center;gap:10px">'+
     '<div class="tlist-bal-num" style="background:'+tourneeColor+'">'+(bDone?'✓':(b.balIdx+1))+'</div>'+
-    '<div class="tlist-bal-info">'+'<div class="tlist-bal-name">'+escHtml(bLabel)+'</div>'+
+    '<div class="tlist-bal-info">'+'<div class="tlist-bal-name">'+escHtml(bLabel)+ipBadgeHtml(balHasIp(a,b.balIdx))+'</div>'+
     (bNom&&bNom!==bLabel?'<div class="tlist-bal-compl">'+escHtml(bNom)+'</div>':'')+
     (bLieu?'<div class="tlist-bal-compl" style="color:#c0392b!important;font-weight:700;opacity:0.5">'+escHtml(bLieu)+'</div>':'')+
     (bEntr?'<div class="tlist-bal-compl" style="color:'+(LIEU_PAT_B.test(bEntr)?'#c0392b':'#1a6b1a')+'!important;font-weight:700;opacity:0.5">'+escHtml(bEntr)+'</div>':'')+'</div>'+
@@ -7539,7 +7540,7 @@ var grpTitre,grpSousTitre='',grpTitreLieu=false;
 var grpSelChk='<div class="sel-check'+(anySelInGroup?' on':'')+'" data-selgroup="'+a.ordre+'" onclick="event.stopPropagation();toggleGroupSelect('+a.ordre+')" style="flex-shrink:0"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>';var grpAllKeys=allBals.map(function(b){return a.ordre+'-'+b.balIdx;});
 return'<div class="tlist-group'+(allDone?' done-all':'')+(isOpen?' open':'')+(anySelInGroup?' sel-stop':'')+'" id="grp-'+a.ordre+'" style="background:'+sBg+'">'+'<div class="tlist-group-header" onclick="toggleGroupSelect('+a.ordre+')" style="background:'+sBg+';flex-direction:column;align-items:stretch">'+
 '<div style="display:flex;align-items:center;gap:10px">'+
-grpSelChk+'<div class="tlist-group-order" style="background:'+tourneeColor+'">'+(allDone?'✓':a.ordre)+'</div>'+'<div class="tlist-group-info">'+'<div class="tlist-group-rue" style="color:'+(grpTitreLieu?'#c0392b':(!a.num&&grpTitre!==addrLine&&a.entreprise?'#1a6b1a':'var(--text)'))+'">'+(grpTitreLieu||(!a.num&&grpTitre!==addrLine)?'🏡 ':'')+escHtml(grpTitre)+'</div>'+'<div class="tlist-group-meta">'+(grpSousTitre?escHtml(grpSousTitre)+' · ':'')+subGrp.join(' · ')+'</div>'+'</div>'+'<svg class="tlist-group-arrow" onclick="event.stopPropagation();toggleGroup('+a.ordre+')" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="cursor:pointer;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>'+
+grpSelChk+'<div class="tlist-group-order" style="background:'+tourneeColor+'">'+(allDone?'✓':a.ordre)+'</div>'+'<div class="tlist-group-info">'+'<div class="tlist-group-rue" style="color:'+(grpTitreLieu?'#c0392b':(!a.num&&grpTitre!==addrLine&&a.entreprise?'#1a6b1a':'var(--text)'))+'">'+(grpTitreLieu||(!a.num&&grpTitre!==addrLine)?'🏡 ':'')+escHtml(grpTitre)+ipBadgeHtml(addrHasIp(a))+'</div>'+'<div class="tlist-group-meta">'+(grpSousTitre?escHtml(grpSousTitre)+' · ':'')+subGrp.join(' · ')+'</div>'+'</div>'+'<svg class="tlist-group-arrow" onclick="event.stopPropagation();toggleGroup('+a.ordre+')" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="cursor:pointer;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>'+
 '</div>'+
 renderGroupTypePillsHtml(a.ordre,grpAllKeys)+
 '</div>'+'<div class="tlist-group-body">'+balsHtml+'</div>'+'</div>';}
@@ -7598,6 +7599,9 @@ function getTourneeData(code){
   
   return TOURNEES_DATA[code];
 }
+function ipBadgeHtml(on){return on?'<span class="ip-badge" title="Imprimé Publicitaire"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a1 1 0 0 0 1 1h3l6 4V6L7 10H4a1 1 0 0 0-1 1z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>IP</span>':'';}
+function addrHasIp(a){return !!(a&&(a.ip||(a.boites||[]).some(function(b){return b&&b.ip;})));}
+function balHasIp(a,balIdx){return balIdx===0?!!a.ip:!!(a.boites&&a.boites[balIdx-1]&&a.boites[balIdx-1].ip);}
 function buildBalList(a){var list=[];list.push({balIdx:0,nom:a.nom||'',complement:a.complement||'',lieu_dit:a.lieu_dit||a.complement||'',entreprise:a.entreprise||'',nom_entreprise:''});(a.boites||[]).forEach(function(b,i){list.push({balIdx:i+1,nom:b.nom||'',complement:b.complement||'',lieu_dit:b.lieu_dit||'',entreprise:b.entreprise||'',nom_entreprise:b.nom_entreprise||''});});return list;}
 function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function showToast(msg){var t=document.getElementById('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2200);}
