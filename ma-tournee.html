@@ -960,7 +960,7 @@ body.poste #home-bottom-tabbar{background:rgba(13,27,61,.96)!important}
   </div>
 </div>
 
-<script>var APP_BUILD='24/11/2026 22:00';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='26/11/2026 19:00';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -2508,6 +2508,8 @@ activateBureau(bureau);var s=document.getElementById('screen-bureau');s.style.di
 /* Les coords sauvegardées sont indexées par n° d'ordre : inutilisables pour une tournée restructurée (les ordres bougent), où chaque adresse porte déjà ses lat/lng. */
 function applyCoordsFromEntry(list,entry){
   if(!entry||!list)return;
+  /* RENFORT : les n° d'ordre sont recalculés à chaque tri → coords[ordre] ne correspond plus aux adresses (points décalés). Chaque adresse porte déjà ses lat/lng. */
+  if(TOURNEES_DATA&&TOURNEES_DATA['RENFORT']&&list===TOURNEES_DATA['RENFORT'].adresses)return;
   var coords=entry.coords||{};
   if(entry._restructured){
     var anyPlaced=list.some(function(a){return a.lat&&a.lng;});
@@ -6005,7 +6007,7 @@ function openEditScreen(code){editScreenCode=code;editNoGps=false;try{updateEdit
       var saved=JSON.parse(raw);
       if(saved[code]){
         var t=getTourneeData(code);
-        if(!saved[code]._restructured){
+        if(!saved[code]._restructured&&code!=='RENFORT'){
         var coords=saved[code].coords||{};
         (t.adresses||[]).forEach(function(a){
           if(coords[a.ordre]&&!a.pinned){
@@ -7651,7 +7653,7 @@ function clearLocalCacheOnly(){
 window.addEventListener('load',function(){applyDarkMode();initFirebase();showBureauScreen();try{initBottomPads();}catch(e){}});window.addEventListener('load',function(){try{var raw=localStorage.getItem('tournee_done_v1');if(!raw)return;var saved=JSON.parse(raw);Object.keys(saved||{}).forEach(function(code){if(!TOURNEES_DATA[code])return;TOURNEES_DATA[code].infos=saved[code].infos||TOURNEES_DATA[code].infos||{vehicle:'',services:'',notes:''};});}catch(e){}});function getToolsMapCodes(){var codes=currentBureau?(BUREAU_TOURNEES[currentBureau]||[]).slice():[];if(!codes.length&&currentBureau){codes=Object.keys(TOURNEES_DATA||{}).filter(function(code){return(BUREAU_TOURNEES[currentBureau]||[]).indexOf(code)>=0;});}
 return codes.filter(function(code,idx){return code&&codes.indexOf(code)===idx;});}
 function normalizeTourneeCode(code){var raw=(code||'').trim().toUpperCase();if(/^TM\d$/.test(raw))return'TM0'+raw.slice(2);if(/^TL\d$/.test(raw))return'TL0'+raw.slice(2);return raw;}
-function restoreTourneeCoordsFromStorage(code){try{var savedRaw=localStorage.getItem('tournee_done_v1');if(!savedRaw)return;var saved=JSON.parse(savedRaw);var lookup=normalizeTourneeCode(code);var entry=saved[lookup]||saved[code];if(!entry||!entry.coords||entry._restructured||!TOURNEES_DATA[lookup])return;(TOURNEES_DATA[lookup].adresses||[]).forEach(function(a){var c=entry.coords[a.ordre];if(c&&c.lat&&c.lng){a.lat=c.lat;a.lng=c.lng;a.pinned=true;}});}catch(e){}}
+function restoreTourneeCoordsFromStorage(code){try{var savedRaw=localStorage.getItem('tournee_done_v1');if(!savedRaw)return;var saved=JSON.parse(savedRaw);var lookup=normalizeTourneeCode(code);var entry=saved[lookup]||saved[code];if(!entry||!entry.coords||entry._restructured||lookup==='RENFORT'||!TOURNEES_DATA[lookup])return;(TOURNEES_DATA[lookup].adresses||[]).forEach(function(a){var c=entry.coords[a.ordre];if(c&&c.lat&&c.lng){a.lat=c.lat;a.lng=c.lng;a.pinned=true;}});}catch(e){}}
 function getStoredTourneeEntry(code){try{var savedRaw=localStorage.getItem('tournee_done_v1');if(!savedRaw)return null;var saved=JSON.parse(savedRaw);var lookup=normalizeTourneeCode(code);return saved[lookup]||saved[code]||null;}catch(e){return null;}}
 
 renderToolsMapForTournee=function(code){
