@@ -960,7 +960,7 @@ body.poste #home-bottom-tabbar{background:rgba(13,27,61,.96)!important}
   </div>
 </div>
 
-<script>var APP_BUILD='26/11/2026 19:20';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='26/11/2026 19:45';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -5615,7 +5615,9 @@ function closeNewAddrPanel(){document.getElementById('new-addr-modal').style.dis
 function renfortFullStreetKey(rue){
   return (rue||'').trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ');
 }
-var _renfortRenderedGroups=[];
+var _renfortRenderedGroups=[],_renfortRenderedCities=[],_rfOpenCity={},_rfOpenStreet={};
+function renfortCityOf(a){var c=(a.cp_ville||'').trim();var m=c.match(/^(\d{5})\s*(.*)$/);return {key:renfortFullStreetKey(c)||'?',name:(m?m[2]:c)||'(Sans ville)',cp:m?m[1]:''};}
+function rfMarkOpen(groupId){var gi=parseInt(String(groupId).replace('renfort-grp-',''),10);var g=_renfortRenderedGroups[gi];if(!g)return;_rfOpenStreet[g.id]=true;_rfOpenCity[g.cityKey]=true;}
 function renderRenfortStreetGroupedList(){
   var t=getTourneeData('RENFORT');
   var searchEl=document.getElementById('tlist-search');
@@ -5623,73 +5625,106 @@ function renderRenfortStreetGroupedList(){
   var container=document.getElementById('tlist-items');
   if(!container)return;
 
-  var groups={};
+  /* Niveau 1 : ville — niveau 2 : rue (listing habituel) */
+  var cities={};
   t.adresses.forEach(function(a){
-    var key=renfortFullStreetKey(a.rue);
-    if(!groups[key])groups[key]={displayName:a.rue||'(sans rue)',addrs:[]};
-    groups[key].addrs.push(a);
+    var c=renfortCityOf(a);
+    var city=cities[c.key]||(cities[c.key]={key:c.key,name:c.name,cp:c.cp,streets:{}});
+    var sk=renfortFullStreetKey(a.rue);
+    var g=city.streets[sk]||(city.streets[sk]={id:c.key+'|'+sk,cityKey:c.key,displayName:a.rue||'(sans rue)',addrs:[]});
+    g.addrs.push(a);
   });
-
-  var groupKeys=Object.keys(groups);
+  var cityKeys=Object.keys(cities);
   if(q){
-    groupKeys=groupKeys.filter(function(key){
-      var g=groups[key];
-      if(g.displayName.toLowerCase().indexOf(q)>=0)return true;
-      return g.addrs.some(function(a){
-        return (a.nom||'').toLowerCase().indexOf(q)>=0||(a.entreprise||'').toLowerCase().indexOf(q)>=0||(a.num||'').toLowerCase().indexOf(q)>=0;
+    cityKeys=cityKeys.filter(function(ck){
+      var city=cities[ck];var cityMatch=(city.name||'').toLowerCase().indexOf(q)>=0||(city.cp||'').indexOf(q)>=0;
+      Object.keys(city.streets).forEach(function(sk){
+        var g=city.streets[sk];
+        var ok=cityMatch||g.displayName.toLowerCase().indexOf(q)>=0||g.addrs.some(function(a){
+          return (a.nom||'').toLowerCase().indexOf(q)>=0||(a.entreprise||'').toLowerCase().indexOf(q)>=0||(a.num||'').toLowerCase().indexOf(q)>=0;
+        });
+        if(!ok)delete city.streets[sk];
       });
+      return Object.keys(city.streets).length>0;
     });
   }
 
-  if(!groupKeys.length){
+  if(!cityKeys.length){
     container.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px"><div style="font-size:38px;margin-bottom:8px;opacity:0.6">'+(q?'🔍':'📭')+'</div>'+(q?'Aucun résultat':'Aucune adresse.')+'</div>';
     updateTListStats();
     return;
   }
 
-  groupKeys.sort(function(ka,kb){return renfortStreetId(groups[ka].displayName).localeCompare(renfortStreetId(groups[kb].displayName),'fr');});
-  _renfortRenderedGroups=groupKeys.map(function(key){return groups[key];});
+  cityKeys.sort(function(ka,kb){return cities[ka].name.localeCompare(cities[kb].name,'fr');});
+  _renfortRenderedGroups=[];_renfortRenderedCities=[];
+  cityKeys.forEach(function(ck){
+    var city=cities[ck];
+    var sks=Object.keys(city.streets).sort(function(ka,kb){return renfortStreetId(city.streets[ka].displayName).localeCompare(renfortStreetId(city.streets[kb].displayName),'fr');});
+    city.gis=sks.map(function(sk){_renfortRenderedGroups.push(city.streets[sk]);return _renfortRenderedGroups.length-1;});
+    _renfortRenderedCities.push(city);
+  });
 
   var groupColor=getTourneeColor('RENFORT');
+  var chev=function(id,open){return '<svg id="'+id+'-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.2" stroke-linecap="round" style="transition:transform 0.2s'+(open?';transform:rotate(180deg)':'')+'"><polyline points="6 9 12 15 18 9"/></svg>';};
+  var chk=function(on){return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';};
   var html='';
-  _renfortRenderedGroups.forEach(function(g,gi){
-    var sortedAddrs=g.addrs.slice().sort(function(a,b){return parseNumForSort(a.num)-parseNumForSort(b.num);});
-    var groupId='renfort-grp-'+gi;
-    var allKeysInGroup=[];
-    sortedAddrs.forEach(function(a){buildBalList(a).forEach(function(b){allKeysInGroup.push(a.ordre+'-'+b.balIdx);});});
-    var selCount=allKeysInGroup.filter(function(k){return!!selectedStops[k];}).length;
-    var allSelected=selCount>0&&selCount===allKeysInGroup.length;
-
-    html+='<div class="tlist-group" style="margin-bottom:8px;border-left:4px solid '+groupColor+'">';
-    html+='<div class="tlist-group-header" onclick="toggleRenfortStreetGroup(\''+groupId+'\')" style="cursor:pointer;display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--surface);background:color-mix(in srgb,'+groupColor+' 14%,var(--surface))">';
-    html+='<div class="sel-check'+(allSelected?' on':'')+'" onclick="event.stopPropagation();toggleRenfortGroupSelectAll('+gi+')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>';
-    html+='<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escHtml(g.displayName)+'</div><div style="font-size:11px;color:var(--muted)">'+sortedAddrs.length+' adresse'+(sortedAddrs.length>1?'s':'')+(selCount>0?' · '+selCount+' sélectionnée'+(selCount>1?'s':''):'')+'</div></div>';
-    html+='<svg id="'+groupId+'-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.2" stroke-linecap="round" style="transition:transform 0.2s">'+'<polyline points="6 9 12 15 18 9"/></svg>';
+  _renfortRenderedCities.forEach(function(city,ci){
+    var cityKeysAll=[],nbAddr=0;
+    city.gis.forEach(function(gi){_renfortRenderedGroups[gi].addrs.forEach(function(a){nbAddr++;buildBalList(a).forEach(function(b){cityKeysAll.push(a.ordre+'-'+b.balIdx);});});});
+    var citySel=cityKeysAll.filter(function(k){return!!selectedStops[k];}).length;
+    var cityAll=citySel>0&&citySel===cityKeysAll.length;
+    var cityOpen=!!q||!!_rfOpenCity[city.key];
+    var cityId='renfort-city-'+ci;
+    html+='<div class="tlist-group" style="margin-bottom:10px;border-left:4px solid '+groupColor+'">';
+    html+='<div class="tlist-group-header" onclick="toggleRenfortCity('+ci+')" style="cursor:pointer;display:flex;align-items:center;gap:10px;padding:13px 14px;background:color-mix(in srgb,'+groupColor+' 22%,var(--surface))">';
+    html+='<div class="sel-check'+(cityAll?' on':'')+'" onclick="event.stopPropagation();toggleRenfortCitySelectAll('+ci+')">'+chk()+'</div>';
+    html+='<div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escHtml(city.name)+(city.cp?' <span style="font-size:11px;font-weight:600;color:var(--muted)">'+escHtml(city.cp)+'</span>':'')+'</div><div style="font-size:11px;color:var(--muted)">'+nbAddr+' adresse'+(nbAddr>1?'s':'')+' · '+city.gis.length+' rue'+(city.gis.length>1?'s':'')+(citySel>0?' · '+citySel+' sélectionnée'+(citySel>1?'s':''):'')+'</div></div>';
+    html+=chev(cityId,cityOpen);
     html+='</div>';
-    html+='<div id="'+groupId+'" style="display:none;border-top:1px solid var(--border)">';
-    sortedAddrs.forEach(function(a){
-      var key=a.ordre+'-0';
-      var isSel=!!selectedStops[key];
-      var isDone=!!t.done[key];
-      var titre=(a.num?a.num+' ':'')+g.displayName;
-      var sousParts=[];
-      if(a.nom)sousParts.push(escHtml(a.nom));
-      if(a.entreprise)sousParts.push('<span style="color:#1a6b1a!important;font-weight:700;opacity:0.5">'+escHtml(a.entreprise)+'</span>');
-      if(a.lieu_dit)sousParts.push('<span style="color:#c0392b!important;font-weight:700;opacity:0.5">'+escHtml(a.lieu_dit)+'</span>');
-      if(a.codeacces)sousParts.push('<span style="color:#b8860b!important;font-weight:700;opacity:0.5">🔑 '+escHtml(a.codeacces)+'</span>');
-      html+='<div class="tlist-item" style="margin:6px 10px;border-radius:8px;flex-direction:column;align-items:stretch;gap:0'+(isDone?';opacity:0.55':'')+'" data-key-sel="'+key+'">';
-      html+='<div style="display:flex;align-items:center;gap:10px;width:100%" onclick="toggleRenfortAddrSelect(\''+key+'\',\''+groupId+'\')">';
-      html+='<div class="sel-check'+(isSel?' on':'')+'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>';
-      html+='<div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:700;color:var(--text)">'+escHtml(titre)+(isDone?' ✓':'')+'</div>'+(sousParts.length?'<div style="font-size:11.5px;color:var(--muted)">'+sousParts.join(' · ')+'</div>':'')+'</div>';
+    html+='<div id="'+cityId+'" style="display:'+(cityOpen?'block':'none')+';padding:6px 0 0 8px;border-top:1px solid var(--border)">';
+    city.gis.forEach(function(gi){
+      var g=_renfortRenderedGroups[gi];
+      var sortedAddrs=g.addrs.slice().sort(function(a,b){return parseNumForSort(a.num)-parseNumForSort(b.num);});
+      var groupId='renfort-grp-'+gi;
+      var streetOpen=!!q||!!_rfOpenStreet[g.id];
+      var allKeysInGroup=[];
+      sortedAddrs.forEach(function(a){buildBalList(a).forEach(function(b){allKeysInGroup.push(a.ordre+'-'+b.balIdx);});});
+      var selCount=allKeysInGroup.filter(function(k){return!!selectedStops[k];}).length;
+      var allSelected=selCount>0&&selCount===allKeysInGroup.length;
+
+      html+='<div class="tlist-group" style="margin-bottom:8px;border-left:3px solid '+groupColor+'">';
+      html+='<div class="tlist-group-header" onclick="toggleRenfortStreetGroup(\''+groupId+'\')" style="cursor:pointer;display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--surface);background:color-mix(in srgb,'+groupColor+' 10%,var(--surface))">';
+      html+='<div class="sel-check'+(allSelected?' on':'')+'" onclick="event.stopPropagation();toggleRenfortGroupSelectAll('+gi+')">'+chk()+'</div>';
+      html+='<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escHtml(g.displayName)+'</div><div style="font-size:11px;color:var(--muted)">'+sortedAddrs.length+' adresse'+(sortedAddrs.length>1?'s':'')+(selCount>0?' · '+selCount+' sélectionnée'+(selCount>1?'s':''):'')+'</div></div>';
+      html+=chev(groupId,streetOpen);
       html+='</div>';
-      html+=renderRenfortTypePillsHtml(key,groupId);
-      html+='</div>';
+      html+='<div id="'+groupId+'" style="display:'+(streetOpen?'block':'none')+';border-top:1px solid var(--border)">';
+      sortedAddrs.forEach(function(a){
+        var key=a.ordre+'-0';
+        var isSel=!!selectedStops[key];
+        var isDone=!!t.done[key];
+        var titre=(a.num?a.num+' ':'')+g.displayName;
+        var sousParts=[];
+        if(a.nom)sousParts.push(escHtml(a.nom));
+        if(a.entreprise)sousParts.push('<span style="color:#1a6b1a!important;font-weight:700;opacity:0.5">'+escHtml(a.entreprise)+'</span>');
+        if(a.lieu_dit)sousParts.push('<span style="color:#c0392b!important;font-weight:700;opacity:0.5">'+escHtml(a.lieu_dit)+'</span>');
+        if(a.codeacces)sousParts.push('<span style="color:#b8860b!important;font-weight:700;opacity:0.5">🔑 '+escHtml(a.codeacces)+'</span>');
+        html+='<div class="tlist-item" style="margin:6px 10px;border-radius:8px;flex-direction:column;align-items:stretch;gap:0'+(isDone?';opacity:0.55':'')+'" data-key-sel="'+key+'">';
+        html+='<div style="display:flex;align-items:center;gap:10px;width:100%" onclick="toggleRenfortAddrSelect(\''+key+'\',\''+groupId+'\')">';
+        html+='<div class="sel-check'+(isSel?' on':'')+'">'+chk()+'</div>';
+        html+='<div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:700;color:var(--text)">'+escHtml(titre)+(isDone?' ✓':'')+'</div>'+(sousParts.length?'<div style="font-size:11.5px;color:var(--muted)">'+sousParts.join(' · ')+'</div>':'')+'</div>';
+        html+='</div>';
+        html+=renderRenfortTypePillsHtml(key,groupId);
+        html+='</div>';
+      });
+      html+='</div></div>';
     });
     html+='</div></div>';
   });
 
   container.innerHTML=html;
   updateTListStats();
+  updateStartBar();
 }
 function renderRenfortTypePillsHtml(key,groupId){
   var st=stopTypes[key];
@@ -5703,9 +5738,8 @@ function renderRenfortTypePillsHtml(key,groupId){
   return html;
 }
 function toggleRenfortStopType(key,tp,groupId){
+  rfMarkOpen(groupId);
   toggleStopTypeDirect(key,tp);
-  var body=document.getElementById(groupId);if(body)body.style.display='block';
-  var chevron=document.getElementById(groupId+'-chevron');if(chevron)chevron.style.transform='rotate(180deg)';
 }
 function toggleRenfortStreetGroup(groupId){
   var body=document.getElementById(groupId);
@@ -5714,12 +5748,24 @@ function toggleRenfortStreetGroup(groupId){
   var open=body.style.display==='block';
   body.style.display=open?'none':'block';
   if(chevron)chevron.style.transform=open?'':'rotate(180deg)';
+  var g=_renfortRenderedGroups[parseInt(String(groupId).replace('renfort-grp-',''),10)];
+  if(g)_rfOpenStreet[g.id]=!open;
+}
+function toggleRenfortCity(ci){
+  var city=_renfortRenderedCities[ci];if(!city)return;
+  var id='renfort-city-'+ci;
+  var body=document.getElementById(id),chevron=document.getElementById(id+'-chevron');
+  if(!body)return;
+  var open=body.style.display==='block';
+  body.style.display=open?'none':'block';
+  if(chevron)chevron.style.transform=open?'':'rotate(180deg)';
+  _rfOpenCity[city.key]=!open;
 }
 function toggleRenfortAddrSelect(key,groupId){
+  rfMarkOpen(groupId);
   if(selectedStops[key])delete selectedStops[key];else selectedStops[key]=true;
+  /* Le type d'objet est facultatif : une adresse sélectionnée suffit pour partir en tournée */
   renderRenfortStreetGroupedList();
-  var body=document.getElementById(groupId);if(body)body.style.display='block';
-  var chevron=document.getElementById(groupId+'-chevron');if(chevron)chevron.style.transform='rotate(180deg)';
 }
 function toggleRenfortGroupSelectAll(gi){
   var g=_renfortRenderedGroups[gi];
@@ -5728,10 +5774,17 @@ function toggleRenfortGroupSelectAll(gi){
   g.addrs.forEach(function(a){buildBalList(a).forEach(function(b){allKeys.push(a.ordre+'-'+b.balIdx);});});
   var allSelected=allKeys.length>0&&allKeys.every(function(k){return!!selectedStops[k];});
   allKeys.forEach(function(k){if(allSelected)delete selectedStops[k];else selectedStops[k]=true;});
-  var groupId='renfort-grp-'+gi;
+  rfMarkOpen('renfort-grp-'+gi);
   renderRenfortStreetGroupedList();
-  var body=document.getElementById(groupId);if(body)body.style.display='block';
-  var chevron=document.getElementById(groupId+'-chevron');if(chevron)chevron.style.transform='rotate(180deg)';
+}
+function toggleRenfortCitySelectAll(ci){
+  var city=_renfortRenderedCities[ci];if(!city)return;
+  var allKeys=[];
+  city.gis.forEach(function(gi){_renfortRenderedGroups[gi].addrs.forEach(function(a){buildBalList(a).forEach(function(b){allKeys.push(a.ordre+'-'+b.balIdx);});});});
+  var allSelected=allKeys.length>0&&allKeys.every(function(k){return!!selectedStops[k];});
+  allKeys.forEach(function(k){if(allSelected)delete selectedStops[k];else selectedStops[k]=true;});
+  _rfOpenCity[city.key]=true;
+  renderRenfortStreetGroupedList();
 }
 function renfortStreetId(rue){
   var cleaned=(rue||'').trim().replace(/\s*\([^)]*\)\s*$/,'').trim();
