@@ -197,17 +197,18 @@ body.poste #home-bottom-tabbar{background:rgba(13,27,61,.96)!important}
       <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:#7a4a00">Tournée en pause</div><div id="resume-nav-sub" style="font-size:11px;color:#a06000">—</div></div>
       <div style="font-size:12px;font-weight:800;color:#7a4a00;white-space:nowrap">▶️ Reprendre</div>
     </div>
-    <div id="partie-ab-badge" style="display:none;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:10px"></div>
-    <div id="weather-widget" style="display:none;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:10px">
+    <div id="home-info-row" style="display:flex;gap:8px;margin-bottom:10px;align-items:stretch">
+    <div id="partie-ab-badge" style="display:none;flex:1 1 0;min-width:0;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 12px"></div>
+    <div id="weather-widget" style="display:none;flex:1 1 0;min-width:0;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 12px">
       <div id="weather-icon" style="font-size:28px;flex-shrink:0">☀️</div>
       <div style="flex:1;min-width:0">
-        <div style="display:flex;align-items:baseline;gap:6px">
+        <div style="display:flex;align-items:baseline;gap:6px;min-width:0">
           <span id="weather-temp" style="font-size:18px;font-weight:700;color:var(--text)">—</span>
-          <span id="weather-desc" style="font-size:12px;color:var(--muted)"></span>
+          <span id="weather-desc" style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0"></span>
         </div>
-        <div id="weather-minmax" style="font-size:11px;color:var(--muted)"></div>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span id="weather-minmax" style="font-size:11px;color:var(--muted)"></span><span id="weather-rain" style="font-size:11px;color:var(--accent);font-weight:600"></span></div>
       </div>
-      <div id="weather-rain" style="font-size:11px;color:var(--accent);font-weight:600;text-align:right;flex-shrink:0"></div>
+    </div>
     </div>
     <div id="eod-reminder-banner" style="display:none;align-items:center;gap:10px;background:#fff4d6;border:1px solid #f5c800;border-radius:12px;padding:10px 14px;margin-bottom:10px">
       <div style="font-size:20px;flex-shrink:0">⏰</div>
@@ -4166,7 +4167,7 @@ function setPartieRef(dateStr,partie){
 }
 function renderPartieBadge(){
   var el=document.getElementById('partie-ab-badge');
-  if(!el)return;
+  if(!el)return;el.style.cursor='';el.onclick=null;
   var p=getPartieDuJour();
   if(p==='WEEKEND'){
     el.style.display='flex';
@@ -4186,8 +4187,9 @@ function renderPartieBadge(){
   var color=p==='A'?'#2196F3':'#E65100';
   el.style.display='flex';
   el.innerHTML='<div style="width:28px;height:28px;border-radius:50%;background:'+color+';color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0">'+p+'</div>'+
-    '<span style="font-size:13px;font-weight:600;color:var(--text);flex:1">Aujourd\'hui : Partie '+p+'</span>'+
-    '<button onclick="openPartieAbSetup()" style="background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;text-decoration:underline">modifier</button>';
+    '<div style="flex:1;min-width:0;line-height:1.2"><div style="font-size:11px;color:var(--muted)">Aujourd\'hui</div><div style="font-size:13px;font-weight:700;color:var(--text)">Partie '+p+'</div></div>'+
+    '<span style="color:var(--muted);font-size:13px;flex-shrink:0" title="Modifier">✎</span>';
+  el.style.cursor='pointer';el.onclick=openPartieAbSetup;
 }
 function openPartieAbSetup(){
   var raw=localStorage.getItem('partie_ab_ref');
