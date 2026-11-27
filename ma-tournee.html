@@ -966,7 +966,7 @@ body.poste #home-bottom-tabbar{background:rgba(13,27,61,.96)!important}
   </div>
 </div>
 
-<script>var APP_BUILD='27/11/2026 19:00:41';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
+<script>var APP_BUILD='27/11/2026 19:06:36';var TOURNEES_DATA_VERSION=5;var _fbLoaded=false; /* Interdit fbSaveAll avant le chargement complet */var deliveries=[];var nextId=1;var currentTourneeCode=null;var currentSort='distrib';var stopMeta={};var selectedStops={};var stopTypes={};var distribMode='select';var openGroups={};var editOpenGroups={};var editOpenStreetGroups={};var editGroupByStreet=false;var mergeMode=false;var mergeSelected=[];var moveMode=false;var moveSelected=[];var reorderSelected=[];var reorderMode=false;var editSort='distrib';var dragSrcOrdre=null;var homeMode='distrib';var editScreenCode=null;var navStops=[],navCurrentStop=null,navFollowGPS=true,navWatchId=null,navListVisible=false;var navStartTime=null,navChronoInterval=null;var navMapInstance=null,navUserMarker=null,navStopMarkers={};var pinMapInstance=null,pinMapLayer=null,pinMapMarkers={},pinMapCode=null,pinMapOrdre=null;var tileLayers={main:null,pinmap:null,nav:null,tools:null};var mapLayers={main:'plan',pinmap:'plan',nav:'plan',tools:'plan'};var typeSheetKey=null,typeSheetState={courrier:false,colis:false,recommande:false};var gpsDistanceKm=0,gpsTrackPoints=[];var bottomPanelOpen=false;var navRouteLayer=null;var navLastPan=0;var navPolyline=null;var NAV_START_POINT={lat:43.802192,lng:4.656734,label:'8 place du Colonel Berrurier, 13150 Tarascon'};var currentBureau=null;var selectedBureauTemp=null;var TOURNEES_DATA={};var TOURNEE_CODES=[];var BUREAUX_LIST=['ARLES','CHATEAURENARD','NOVES','SAINT-MARTIN-DE-CRAU','SAINT-REMY-DE-PROVENCE','SALON-DE-PROVENCE','SENAS','TARASCON'];
 var BUREAU_COORDS={
   'ARLES':[43.6767,4.6278],
   'CHATEAURENARD':[43.8814,4.8535],
@@ -7125,15 +7125,28 @@ function toggleGroup(ordre){
   }
 }
 
-function attachDragEvents(){var container=document.getElementById('edit-tlist-items');if(!container)return;var items=container.querySelectorAll('[data-ordre]');items.forEach(function(el){el.addEventListener('dragstart',onDragStart);el.addEventListener('dragend',onDragEnd);el.addEventListener('dragover',onDragOver);el.addEventListener('dragleave',onDragLeave);el.addEventListener('drop',onDrop);el.addEventListener('touchstart',onTouchStart,{passive:false});el.addEventListener('touchmove',onTouchMove,{passive:false});el.addEventListener('touchend',onTouchEnd);});}
-function onDragStart(e){dragSrcOrdre=parseInt(this.dataset.ordre);this.classList.add('dragging');e.dataTransfer.effectAllowed='move';}
-function onDragEnd(e){this.classList.remove('dragging');document.querySelectorAll('.drag-over').forEach(function(el){el.classList.remove('drag-over')});dragSrcOrdre=null;}
-function onDragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move';if(dragSrcOrdre===null)return;document.querySelectorAll('.drag-over').forEach(function(el){el.classList.remove('drag-over')});this.classList.add('drag-over');}
+function attachDragEvents(){var container=document.getElementById('edit-tlist-items');if(!container)return;var items=container.querySelectorAll('[data-ordre]');items.forEach(function(el){el.addEventListener('mousedown',function(ev){_dragZoneOk=(ev.clientX-this.getBoundingClientRect().left<=DRAG_ZONE_PX);});el.addEventListener('dragstart',onDragStart);el.addEventListener('dragend',onDragEnd);el.addEventListener('dragover',onDragOver);el.addEventListener('dragleave',onDragLeave);el.addEventListener('drop',onDrop);el.addEventListener('touchstart',onTouchStart,{passive:false});el.addEventListener('touchmove',onTouchMove,{passive:false});el.addEventListener('touchend',onTouchEnd);});}
+function onDragStart(e){if(!_dragZoneOk){e.preventDefault();return;}dragSrcOrdre=parseInt(this.dataset.ordre);this.classList.add('dragging');e.dataTransfer.effectAllowed='move';}
+function onDragEnd(e){autoScrollStop();this.classList.remove('dragging');document.querySelectorAll('.drag-over').forEach(function(el){el.classList.remove('drag-over')});dragSrcOrdre=null;}
+function onDragOver(e){e.preventDefault();autoScrollTick(e.clientY);e.dataTransfer.dropEffect='move';if(dragSrcOrdre===null)return;document.querySelectorAll('.drag-over').forEach(function(el){el.classList.remove('drag-over')});this.classList.add('drag-over');}
 function onDragLeave(e){this.classList.remove('drag-over');}
 function onDrop(e){e.preventDefault();var tgt=parseInt(this.dataset.ordre);if(dragSrcOrdre!==null&&dragSrcOrdre!==tgt){if(reorderSelected.length>=2&&reorderSelected.indexOf(dragSrcOrdre)>=0){reorderMultipleItems(reorderSelected,tgt);}else{reorderItem(dragSrcOrdre,tgt);}}this.classList.remove('drag-over');}
 
 /* Touch drag & drop */
 var touchDragOrdre=null,touchDragEl=null,touchClone=null,touchStartY=0;
+var DRAG_ZONE_PX=110,_dragZoneOk=true,_asY=null,_asRaf=0,_asEl=null;
+function _asScroller(){var c=document.getElementById('edit-tlist-items');var n=c;while(n&&n!==document.body){var o=getComputedStyle(n).overflowY;if((o==='auto'||o==='scroll')&&n.scrollHeight>n.clientHeight+2)return n;n=n.parentElement;}return document.scrollingElement;}
+function _asStep(){
+  _asRaf=0;if(_asY===null)return;
+  var sc=_asEl||(_asEl=_asScroller());if(!sc)return;
+  var r=(sc===document.scrollingElement||sc===document.documentElement)?{top:0,bottom:window.innerHeight}:sc.getBoundingClientRect();
+  var top=Math.max(r.top,0),bot=Math.min(r.bottom,window.innerHeight),zone=90,v=0;
+  if(_asY<top+zone)v=-Math.ceil((top+zone-_asY)/zone*18);
+  else if(_asY>bot-zone)v=Math.ceil((_asY-(bot-zone))/zone*18);
+  if(v){sc.scrollTop+=v;_asRaf=requestAnimationFrame(_asStep);}
+}
+function autoScrollTick(y){_asY=y;if(!_asRaf)_asRaf=requestAnimationFrame(_asStep);}
+function autoScrollStop(){_asY=null;_asEl=null;if(_asRaf){cancelAnimationFrame(_asRaf);_asRaf=0;}}
 function onTouchStart(e){
   var el=e.currentTarget;
   /* Démarrer le drag seulement si on est en mode réorganisation */
@@ -7141,6 +7154,8 @@ function onTouchStart(e){
   /* Ne pas demarrer un drag si le contact commence sur la case de selection multiple —
      laisser le tap normal (avec son propre stopPropagation) s'en occuper. */
   if(e.target.closest('.reorder-select-checkbox')) return;
+  /* Poignée = partie gauche de la ligne uniquement ; ailleurs, le doigt fait défiler normalement */
+  if(e.touches[0].clientX-el.getBoundingClientRect().left>DRAG_ZONE_PX) return;
   touchDragOrdre=parseInt(el.dataset.ordre);
   touchDragEl=el;
   touchStartY=e.touches[0].clientY;
@@ -7158,6 +7173,7 @@ function onTouchMove(e){
   var dy=e.touches[0].clientY-touchStartY;
   touchClone.style.top=(parseFloat(touchClone.style.top)+dy)+'px';
   touchStartY=e.touches[0].clientY;
+  autoScrollTick(e.touches[0].clientY);
   /* Trouver l'élément sous le doigt */
   touchClone.style.display='none';
   var elUnder=document.elementFromPoint(e.touches[0].clientX,e.touches[0].clientY);
@@ -7169,6 +7185,7 @@ function onTouchMove(e){
   }
 }
 function onTouchEnd(e){
+  autoScrollStop();
   if(!touchClone)return;
   if(touchDragEl)touchDragEl.style.opacity='';
   touchClone.remove();touchClone=null;
